@@ -32,11 +32,21 @@ const defaultTheme = createTheme();
 
 export default function SignInSide({ onLogin }) {
   const [errorMessage, setErrorMessage] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
+  const [senha, setSenha] = React.useState('');
+  const handleSenhaChange = (event) => {
+    setSenha(event.target.value);
+  };
+
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/pessoa/').then((response)=>{
+      const response = await axios.post('http://127.0.0.1:8000/api/login/', {email, senha}).then((response)=>{
         console.log(response.data);
         if (response.data === true){
           onLogin();
@@ -102,6 +112,7 @@ export default function SignInSide({ onLogin }) {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                onChange={handleEmailChange}
               />
               <TextField
                 margin="normal"
@@ -112,6 +123,7 @@ export default function SignInSide({ onLogin }) {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={handleSenhaChange}
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
