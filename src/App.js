@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useState, useEffect, useMemo } from "react";
 
 // react-router components
@@ -53,6 +38,9 @@ import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "co
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
 
+// Import SignInSide component
+import SignInSide from "components/Signin/SignIn";  // Ajuste o caminho para o seu componente SignInSide
+
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
   const {
@@ -68,6 +56,7 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Estado de autenticação
 
   // Cache for the rtl
   useMemo(() => {
@@ -145,6 +134,17 @@ export default function App() {
       </Icon>
     </MDBox>
   );
+
+  // Função de callback para atualizar o estado de autenticação
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+    console.log('Logado')
+  };
+
+  // Renderizar SignInSide se não estiver autenticado
+  if (!isAuthenticated) {
+    return <SignInSide onLogin={handleLogin} />;
+  }
 
   return direction === "rtl" ? (
     <CacheProvider value={rtlCache}>

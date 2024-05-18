@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -27,25 +28,35 @@ function Copyright(props) {
   );
 }
 
-// TODO remove, this demo shouldn't need to reset the theme.
-
 const defaultTheme = createTheme();
 
-export default function SignInSide() {
+export default function SignInSide({ onLogin }) {
+  const [errorMessage, setErrorMessage] = React.useState('');
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     try {
-      const response = await axios.get('http://127.0.0.1:8000/api/pessoa/');
-      console.log(response.data);
+      const response = await axios.get('http://127.0.0.1:8000/api/pessoa/').then((response)=>{
+        console.log(response.data);
+        if (response.data === true){
+          onLogin();
+        }else{
+          setErrorMessage('Usuário ou senha incorreta. Por favor, tente novamente.');
+        }
+      })
     } catch (error) {
       console.error("Erro ao fazer a requisição:", error);
     }
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
   };
+
+  React.useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => {
+        setErrorMessage('');
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -106,6 +117,7 @@ export default function SignInSide() {
                 control={<Checkbox value="remember" color="primary" />}
                 label="Lembre-se de mim"
               />
+              {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
               <Button
                 type="submit"
                 fullWidth
@@ -134,3 +146,7 @@ export default function SignInSide() {
     </ThemeProvider>
   );
 }
+
+SignInSide.propTypes = {
+  onLogin: PropTypes.func.isRequired,
+};
