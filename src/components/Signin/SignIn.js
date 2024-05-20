@@ -32,13 +32,13 @@ const defaultTheme = createTheme();
 
 export default function SignInSide({ onLogin }) {
   const [errorMessage, setErrorMessage] = React.useState('');
-  const [email, setEmail] = React.useState('');
-  const handleEmailChange = (event) => {
-    setEmail(event.target.value);
+  const [username, setUserName] = React.useState('');
+  const handleUserNameChange = (event) => {
+    setUserName(event.target.value);
   };
-  const [senha, setSenha] = React.useState('');
-  const handleSenhaChange = (event) => {
-    setSenha(event.target.value);
+  const [password, setPassword] = React.useState('');
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
   };
 
 
@@ -46,7 +46,7 @@ export default function SignInSide({ onLogin }) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/login/', {email, senha}).then((response)=>{
+      const response = await axios.post('http://127.0.0.1:8000/api/login/', {username, password}).then((response)=>{
         console.log(response.data);
         if (response.data === true){
           onLogin();
@@ -107,12 +107,12 @@ export default function SignInSide({ onLogin }) {
                 margin="normal"
                 required
                 fullWidth
-                id="email"
-                label="Endereço de e-mail"
-                name="email"
-                autoComplete="email"
+                id="user"
+                label="Usuário"
+                name="user"
+                autoComplete="user"
                 autoFocus
-                onChange={handleEmailChange}
+                onChange={handleUserNameChange}
               />
               <TextField
                 margin="normal"
@@ -123,7 +123,7 @@ export default function SignInSide({ onLogin }) {
                 type="password"
                 id="password"
                 autoComplete="current-password"
-                onChange={handleSenhaChange}
+                onChange={handlePasswordChange}
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
