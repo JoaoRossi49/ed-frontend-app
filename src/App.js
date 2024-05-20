@@ -138,7 +138,6 @@ export default function App() {
   // Função de callback para atualizar o estado de autenticação
   const handleLogin = () => {
     setIsAuthenticated(true);
-    console.log('Logado')
   };
 
   // Renderizar SignInSide se não estiver autenticado

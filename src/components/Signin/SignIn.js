@@ -48,7 +48,7 @@ export default function SignInSide({ onLogin }) {
     try {
       const response = await axios.post('http://127.0.0.1:8000/api/login/', {username, password}).then((response)=>{
         console.log(response.data);
-        if (response.data === true){
+        if (response.data.authenticated === true){
           onLogin();
         }else{
           setErrorMessage('Usuário ou senha incorreta. Por favor, tente novamente.');
