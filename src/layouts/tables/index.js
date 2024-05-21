@@ -34,6 +34,10 @@ import { IconButton } from "@mui/material";
 
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
+const handleAddAluno = (event) => {
+  console.log('Add aluno')
+};
+
 function Tables() {
   const { columns, rows } = authorsTableData();
   const { columns: pColumns, rows: pRows } = projectsTableData();
@@ -59,7 +63,9 @@ function Tables() {
                 <MDTypography variant="h6" color="white">
                   Últimos alunos matriculados
                 </MDTypography>
-                <AddCircleIcon style={{ color: "white", cursor: "pointer" }}/>
+                <IconButton size="small" disableRipple onClick={handleAddAluno}>
+                  <AddCircleIcon style={{ color: "white", cursor: "pointer" }}/>
+                </IconButton>
               </MDBox>
               </MDBox>
               <MDBox pt={3}>
