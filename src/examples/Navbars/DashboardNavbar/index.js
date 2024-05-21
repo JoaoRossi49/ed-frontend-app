@@ -53,6 +53,11 @@ import {
   setOpenConfigurator,
 } from "context";
 
+import PersonIcon from '@mui/icons-material/Person';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import LogoutIcon from '@mui/icons-material/Logout';
+import HomeIcon from '@mui/icons-material/Home';
+
 function DashboardNavbar({ absolute, light, isMini }) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
@@ -131,7 +136,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
     >
       <Toolbar sx={(theme) => navbarContainer(theme)}>
         <MDBox color="inherit" mb={{ xs: 1, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
-          <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} />
+          <Breadcrumbs title={route[route.length - 1]} route={route} light={light} />
         </MDBox>
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
@@ -141,7 +146,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
             <MDBox color={light ? "white" : "inherit"}>
               <Link to="/authentication/sign-in/basic">
                 <IconButton sx={navbarIconButton} size="small" disableRipple>
-                  <Icon sx={iconsStyle}>account_circle</Icon>
+                  <PersonIcon sx={iconsStyle}>account_circle</PersonIcon>
                 </IconButton>
               </Link>
               <IconButton
@@ -160,21 +165,21 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 disableRipple
                 color="inherit"
                 sx={navbarIconButton}
-                onClick={handleConfiguratorOpen}
+                aria-controls="notification-menu"
+                aria-haspopup="true"
+                variant="contained"
+                onClick={handleOpenMenu}
               >
-                <Icon sx={iconsStyle}>settings</Icon>
+                <NotificationsIcon sx={iconsStyle}>notifications</NotificationsIcon>
               </IconButton>
               <IconButton
                 size="small"
                 disableRipple
                 color="inherit"
                 sx={navbarIconButton}
-                aria-controls="notification-menu"
-                aria-haspopup="true"
-                variant="contained"
-                onClick={handleOpenMenu}
+                onClick={handleConfiguratorOpen}
               >
-                <Icon sx={iconsStyle}>notifications</Icon>
+                <LogoutIcon sx={iconsStyle}>settings</LogoutIcon>
               </IconButton>
               {renderMenu()}
             </MDBox>

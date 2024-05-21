@@ -30,6 +30,9 @@ import DataTable from "examples/Tables/DataTable";
 // Data
 import authorsTableData from "layouts/tables/data/authorsTableData";
 import projectsTableData from "layouts/tables/data/projectsTableData";
+import { IconButton } from "@mui/material";
+
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 function Tables() {
   const { columns, rows } = authorsTableData();
@@ -52,9 +55,12 @@ function Tables() {
                 borderRadius="lg"
                 coloredShadow="info"
               >
+              <MDBox display="flex" justifyContent="space-between" alignItems="center">
                 <MDTypography variant="h6" color="white">
-                  Authors Table
+                  Últimos alunos matriculados
                 </MDTypography>
+                <AddCircleIcon style={{ color: "white", cursor: "pointer" }}/>
+              </MDBox>
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
