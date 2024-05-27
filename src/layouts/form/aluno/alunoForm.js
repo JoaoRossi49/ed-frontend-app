@@ -30,8 +30,15 @@ import DataTable from "examples/Tables/DataTable";
 // Data
 import authorsTableData from "layouts/tables/data/authorsTableData";
 import projectsTableData from "layouts/tables/data/projectsTableData";
+import { IconButton } from "@mui/material";
 
-function Tables() {
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+
+const handleAddAluno = (event) => {
+  console.log('Add aluno')
+};
+
+function AlunoForm() {
   const { columns, rows } = authorsTableData();
   const { columns: pColumns, rows: pRows } = projectsTableData();
 
@@ -56,6 +63,9 @@ function Tables() {
                 <MDTypography variant="h6" color="white">
                   Últimos alunos matriculados
                 </MDTypography>
+                <IconButton size="small" disableRipple onClick={handleAddAluno}>
+                  <AddCircleIcon style={{ color: "white", cursor: "pointer" }}/>
+                </IconButton>
               </MDBox>
               </MDBox>
               <MDBox pt={3}>
@@ -103,4 +113,4 @@ function Tables() {
   );
 }
 
-export default Tables;
+export default AlunoForm;
