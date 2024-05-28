@@ -45,13 +45,12 @@ import Profile from "./layouts/profile";
 import SignIn from "./layouts/authentication/sign-in";
 import SignUp from "./layouts/authentication/sign-up";
 import SignInSide from "components/Signin/SignIn";
-import AlunoForm from "layouts/form/aluno/alunoForm";
+import Matricula from "layouts/form/aluno/matricula";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import SchoolIcon from '@mui/icons-material/School';
-import { Dropdown } from "react-bootstrap";
 
 
 
@@ -69,19 +68,16 @@ const routes = [
     name: "Alunos",
     key: "alunos",
     icon: <SchoolIcon fontSize="small"></SchoolIcon>,
-    Dropdown: true,
-    collapse: [
-      {
-      name: "alunosList",
-      route: "/alunos",
-      component: <Tables/>
-      },
-      {
-        name: "newAluno",
-        route: "/alunos/add",
-        component: <AlunoForm />,
-      },
-    ],
+    route: "/aluno",
+    component: <Tables />,
+  },
+  {
+    type: "collapse",
+    name: "Matricular",
+    key: "matricular",
+    icon: <SchoolIcon fontSize="small"></SchoolIcon>,
+    route: "/aluno/add",
+    component: <Matricula />,
   },
 /*  {
     type: "collapse",
