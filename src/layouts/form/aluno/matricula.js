@@ -29,56 +29,80 @@ function Matricula() {
     id: 1,
     endereco: {
       id: 1,
-      logradouro: "",
-      numero: "",
-      data_inclusao: CurrentDateWithTimezone,
-      complemento: "",
-      cidade: "",
-      estado: "",
-      pais: "",
+      logradouro: null,
+      numero: null,
+      data_inclusao: CurrentDateWithTimezone(),
+      complemento: null,
+      cidade: null,
+      estado: null,
+      pais: null,
       cep: null,
     },
     contato: [
       {
-        id: null,
+        id: 1,
         tipo_contato: "CELULAR",
         descricao: "",
         data_inclusao: CurrentDateWithTimezone(),
         data_alteracao: null,
       },
       {
-        id: null,
+        id: 1,
         tipo_contato: "TELEFONE",
         descricao: "",
         data_inclusao: CurrentDateWithTimezone(),
         data_alteracao: null,
       },
     ],
+    documento: [
+      {
+        id: 1,
+        nro_documento: "",
+        data_inclusao: CurrentDateWithTimezone(),
+        tipo_documento: "CPF"
+      },
+      {
+        id: 1,
+        nro_documento: "",
+        data_inclusao: CurrentDateWithTimezone(),
+        tipo_documento: "RG"
+      },
+    ],
     nome: "",
     nome_social: null,
     data_nascimento: "",
-    data_inclusao: CurrentDateWithTimezone,
+    data_inclusao: CurrentDateWithTimezone(),
   });
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    const [section, key] = name.split('.');
-
-    if (section === "endereco" || section === "contato") {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        [section]: {
-          ...prevFormData[section],
-          [key]: value,
-        },
-      }));
-    } else {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        [name]: value,
-      }));
-    }
+    const [section, index, key] = name.split('.');
+  
+    setFormData((prevFormData) => {
+      if (section === "contato" || section === "documento") {
+        const newArray = [...prevFormData[section]];
+        newArray[parseInt(index, 10)][key] = value;
+        return {
+          ...prevFormData,
+          [section]: newArray,
+        };
+      } else if (section === "endereco") {
+        return {
+          ...prevFormData,
+          endereco: {
+            ...prevFormData.endereco,
+            [key]: value,
+          },
+        };
+      } else {
+        return {
+          ...prevFormData,
+          [name]: value,
+        };
+      }
+    });
   };
+  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -115,32 +139,34 @@ function Matricula() {
                     </MDTypography>
                   </MDBox>
                 </MDBox>
-                <TextField
-                  style={{ margin: "10px" }}
-                  required
-                  id="nome"
-                  name="nome"
-                  label="Nome do aluno"
-                  value={formData.nome}
-                  onChange={handleChange}
-                />
-                <TextField
-                  style={{ margin: "10px" }}
-                  id="nome_social"
-                  name="nome_social"
-                  label="Nome social"
-                  value={formData.nome_social}
-                  onChange={handleChange}
-                />
-                <TextField
-                  style={{ margin: "10px" }}
-                  required
-                  id="data_nascimento"
-                  name="data_nascimento"
-                  label="Data de nascimento"
-                  value={formData.data_nascimento}
-                  onChange={handleChange}
-                />
+                <div>
+                  <TextField
+                    style={{ margin: "10px", width: "27vw" }}
+                    required
+                    id="nome"
+                    name="nome"
+                    label="Nome do aluno"
+                    value={formData.nome}
+                    onChange={handleChange}
+                  />
+                  <TextField
+                    style={{ margin: "10px", width: "26vw" }}
+                    id="nome_social"
+                    name="nome_social"
+                    label="Nome social"
+                    value={formData.nome_social}
+                    onChange={handleChange}
+                  />
+                  <TextField
+                    style={{ margin: "10px" }}
+                    required
+                    id="data_nascimento"
+                    name="data_nascimento"
+                    label="Data de nascimento"
+                    value={formData.data_nascimento}
+                    onChange={handleChange}
+                  />
+                </div>
                 <MDBox
                   mx={1}
                   mt={-2}
@@ -160,7 +186,7 @@ function Matricula() {
                 </MDBox>
                 <div>
                   <TextField
-                    style={{ margin: "10px", width: "35vw" }}
+                    style={{ margin: "10px", width: "41vw" }}
                     required
                     id="logradouro"
                     name="endereco.logradouro"
@@ -188,7 +214,7 @@ function Matricula() {
                 </div>
                 <div>
                   <TextField
-                    style={{ margin: "10px", width: "35vw" }}
+                    style={{ margin: "10px", width: "41vw" }}
                     required
                     id="cidade"
                     name="endereco.cidade"
@@ -223,7 +249,41 @@ function Matricula() {
                   value={formData.endereco.complemento}
                   onChange={handleChange}
                 />
-
+                <MDBox
+                  mx={1}
+                  mt={-2}
+                  py={1}
+                  px={1}
+                  variant="gradient"
+                  bgColor="info"
+                  borderRadius="lg"
+                  coloredShadow="info"
+                  style={{ margin: "10px" }}
+                >
+                  <MDBox display="flex" justifyContent="space-between" alignItems="center">
+                    <MDTypography variant="h6" color="white">
+                      Documentos
+                    </MDTypography>
+                  </MDBox>
+                </MDBox>
+                <TextField
+                  style={{ margin: "10px", width: "33.25vw" }}
+                  required
+                  id="nro_documento"
+                  name="documento.0.nro_documento"
+                  label="CPF"
+                  value={formData.documento[0].nro_documento}
+                  onChange={handleChange}
+                />
+                <TextField
+                  style={{ margin: "10px", width: "33.25vw" }}
+                  required
+                  id="nro_documento"
+                  name="documento.1.nro_documento"
+                  label="RG"
+                  value={formData.documento[1].nro_documento}
+                  onChange={handleChange}
+                />
                 <MDBox
                   mx={1}
                   mt={-2}
@@ -243,7 +303,7 @@ function Matricula() {
                 </MDBox>
                 <div>
                   <TextField
-                    style={{ margin: "10px", width: "35vw" }}
+                    style={{ margin: "10px", width: "33.25vw" }}
                     required
                     id="descricao"
                     name="contato.0.descricao"
@@ -252,7 +312,7 @@ function Matricula() {
                     onChange={handleChange}
                   />
                   <TextField
-                    style={{ margin: "10px", width: "35vw" }}
+                    style={{ margin: "10px", width: "33.25vw" }}
                     required
                     id="descricao"
                     name="contato.1.descricao"
@@ -261,15 +321,15 @@ function Matricula() {
                     onChange={handleChange}
                   />
                 </div>
-                <div style={{ display:"flex", width: "100%", justifyContent:"center"}}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  style={{ margin: "10px", width: "35vw", color: "#FFF"}}
-                >
-                  Enviar
-                </Button>
+                <div style={{ display: "flex", width: "100%", justifyContent: "center" }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    style={{ margin: "10px", width: "35vw", color: "#FFF" }}
+                  >
+                    Enviar
+                  </Button>
                 </div>
               </Card>
             </Grid>
