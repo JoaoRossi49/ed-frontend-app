@@ -60,12 +60,7 @@ function Footer({ company, links }) {
         fontSize={size.sm}
         px={1.5}
       >
-        &copy; {new Date().getFullYear()}, made with
-        <MDBox fontSize={size.md} color="text" mb={-0.5} mx={0.25}>
-          <Icon color="inherit" fontSize="inherit">
-            favorite
-          </Icon>
-        </MDBox>
+        &copy; {new Date().getFullYear()}, made with love
         by
         <Link href={href} target="_blank">
           <MDTypography variant="button" fontWeight="medium">

@@ -11,17 +11,17 @@ function Matricula() {
 
   const CurrentDateWithTimezone = () => {
     const currentDate = new Date();
-  
+
     const padZero = (num) => (num < 10 ? `0${num}` : num);
-  
+
     const timezoneOffset = -currentDate.getTimezoneOffset();
     const offsetSign = timezoneOffset >= 0 ? '+' : '-';
     const offsetHours = padZero(Math.floor(Math.abs(timezoneOffset) / 60));
     const offsetMinutes = padZero(Math.abs(timezoneOffset) % 60);
-  
+
     const formattedDate = currentDate.toISOString().split('.')[0];
     const formattedDateWithTimezone = `${formattedDate}${offsetSign}${offsetHours}:${offsetMinutes}`;
-  
+
     return formattedDateWithTimezone;
   };
 
@@ -42,6 +42,13 @@ function Matricula() {
       {
         id: null,
         tipo_contato: "CELULAR",
+        descricao: "",
+        data_inclusao: CurrentDateWithTimezone(),
+        data_alteracao: null,
+      },
+      {
+        id: null,
+        tipo_contato: "TELEFONE",
         descricao: "",
         data_inclusao: CurrentDateWithTimezone(),
         data_alteracao: null,
@@ -234,23 +241,36 @@ function Matricula() {
                     </MDTypography>
                   </MDBox>
                 </MDBox>
-                <TextField
-                  style={{ margin: "10px", width: "67.5vw" }}
-                  required
-                  id="descricao"
-                  name="contato.0.descricao"
-                  label="Celular"
-                  value={formData.contato[0].descricao}
-                  onChange={handleChange}
-                />
+                <div>
+                  <TextField
+                    style={{ margin: "10px", width: "35vw" }}
+                    required
+                    id="descricao"
+                    name="contato.0.descricao"
+                    label="Celular"
+                    value={formData.contato[0].descricao}
+                    onChange={handleChange}
+                  />
+                  <TextField
+                    style={{ margin: "10px", width: "35vw" }}
+                    required
+                    id="descricao"
+                    name="contato.1.descricao"
+                    label="Telefone fixo"
+                    value={formData.contato[1].descricao}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div style={{ display:"flex", width: "100%", justifyContent:"center"}}>
                 <Button
                   variant="contained"
                   color="primary"
                   type="submit"
-                  style={{ margin: "10px" }}
+                  style={{ margin: "10px", width: "35vw", color: "#FFF"}}
                 >
                   Enviar
                 </Button>
+                </div>
               </Card>
             </Grid>
           </Grid>
