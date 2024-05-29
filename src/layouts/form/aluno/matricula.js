@@ -8,13 +8,30 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 
 function Matricula() {
+
+  const CurrentDateWithTimezone = () => {
+    const currentDate = new Date();
+  
+    const padZero = (num) => (num < 10 ? `0${num}` : num);
+  
+    const timezoneOffset = -currentDate.getTimezoneOffset();
+    const offsetSign = timezoneOffset >= 0 ? '+' : '-';
+    const offsetHours = padZero(Math.floor(Math.abs(timezoneOffset) / 60));
+    const offsetMinutes = padZero(Math.abs(timezoneOffset) % 60);
+  
+    const formattedDate = currentDate.toISOString().split('.')[0];
+    const formattedDateWithTimezone = `${formattedDate}${offsetSign}${offsetHours}:${offsetMinutes}`;
+  
+    return formattedDateWithTimezone;
+  };
+
   const [formData, setFormData] = useState({
     id: 1,
     endereco: {
       id: 1,
       logradouro: "",
       numero: "",
-      data_inclusao: "2024-02-26T21:44:04.832837-03:00",  // Esta data é apenas um exemplo
+      data_inclusao: CurrentDateWithTimezone,
       complemento: "",
       cidade: "",
       estado: "",
@@ -23,17 +40,17 @@ function Matricula() {
     },
     contato: [
       {
-        id: 1,
-        tipo_contato: "T",  // Você pode ajustar conforme necessário
-        descricao: "123",
-        data_inclusao: "2024-02-26T21:44:04.733564-03:00",  // Esta data é apenas um exemplo
+        id: null,
+        tipo_contato: "CELULAR",
+        descricao: "",
+        data_inclusao: CurrentDateWithTimezone(),
         data_alteracao: null,
       },
     ],
     nome: "",
     nome_social: null,
     data_nascimento: "",
-    data_inclusao: "2024-02-08T21:00:00-03:00",  // Esta data é apenas um exemplo
+    data_inclusao: CurrentDateWithTimezone,
   });
 
   const handleChange = (event) => {
