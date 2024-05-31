@@ -8,7 +8,6 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 
 function Matricula() {
-
   const CurrentDateWithTimezone = () => {
     const currentDate = new Date();
 
@@ -29,14 +28,14 @@ function Matricula() {
     id: 1,
     endereco: {
       id: 1,
-      logradouro: null,
-      numero: null,
+      logradouro: '',
+      numero: '',
       data_inclusao: CurrentDateWithTimezone(),
-      complemento: null,
-      cidade: null,
-      estado: null,
-      pais: null,
-      cep: null,
+      complemento: '',
+      cidade: '',
+      estado: '',
+      pais: '',
+      cep: '',
     },
     contato: [
       {
@@ -69,40 +68,30 @@ function Matricula() {
       },
     ],
     nome: "",
-    nome_social: null,
+    nome_social: '',
     data_nascimento: "",
     data_inclusao: CurrentDateWithTimezone(),
   });
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    const [section, index, key] = name.split('.');
-  
+    const keys = name.split('.');
+
     setFormData((prevFormData) => {
-      if (section === "contato" || section === "documento") {
-        const newArray = [...prevFormData[section]];
-        newArray[parseInt(index, 10)][key] = value;
-        return {
-          ...prevFormData,
-          [section]: newArray,
-        };
-      } else if (section === "endereco") {
-        return {
-          ...prevFormData,
-          endereco: {
-            ...prevFormData.endereco,
-            [key]: value,
-          },
-        };
-      } else {
-        return {
-          ...prevFormData,
-          [name]: value,
-        };
-      }
+      let newFormData = { ...prevFormData };
+      let currentLevel = newFormData;
+
+      keys.forEach((key, index) => {
+        if (index === keys.length - 1) {
+          currentLevel[key] = value;
+        } else {
+          currentLevel = currentLevel[key];
+        }
+      });
+
+      return newFormData;
     });
   };
-  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
