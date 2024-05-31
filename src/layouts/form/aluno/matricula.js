@@ -6,6 +6,7 @@ import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
+import InputMask from "react-input-mask";
 
 function Matricula() {
   const CurrentDateWithTimezone = () => {
@@ -14,11 +15,11 @@ function Matricula() {
     const padZero = (num) => (num < 10 ? `0${num}` : num);
 
     const timezoneOffset = -currentDate.getTimezoneOffset();
-    const offsetSign = timezoneOffset >= 0 ? '+' : '-';
+    const offsetSign = timezoneOffset >= 0 ? "+" : "-";
     const offsetHours = padZero(Math.floor(Math.abs(timezoneOffset) / 60));
     const offsetMinutes = padZero(Math.abs(timezoneOffset) % 60);
 
-    const formattedDate = currentDate.toISOString().split('.')[0];
+    const formattedDate = currentDate.toISOString().split(".")[0];
     const formattedDateWithTimezone = `${formattedDate}${offsetSign}${offsetHours}:${offsetMinutes}`;
 
     return formattedDateWithTimezone;
@@ -28,14 +29,14 @@ function Matricula() {
     id: 1,
     endereco: {
       id: 1,
-      logradouro: '',
-      numero: '',
+      logradouro: "",
+      numero: "",
       data_inclusao: CurrentDateWithTimezone(),
-      complemento: '',
-      cidade: '',
-      estado: '',
-      pais: '',
-      cep: '',
+      complemento: "",
+      cidade: "",
+      estado: "",
+      pais: "",
+      cep: "",
     },
     contato: [
       {
@@ -58,24 +59,24 @@ function Matricula() {
         id: 1,
         nro_documento: "",
         data_inclusao: CurrentDateWithTimezone(),
-        tipo_documento: "CPF"
+        tipo_documento: "CPF",
       },
       {
         id: 1,
         nro_documento: "",
         data_inclusao: CurrentDateWithTimezone(),
-        tipo_documento: "RG"
+        tipo_documento: "RG",
       },
     ],
     nome: "",
-    nome_social: '',
+    nome_social: "",
     data_nascimento: "",
     data_inclusao: CurrentDateWithTimezone(),
   });
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    const keys = name.split('.');
+    const keys = name.split(".");
 
     setFormData((prevFormData) => {
       let newFormData = { ...prevFormData };
@@ -146,15 +147,23 @@ function Matricula() {
                     value={formData.nome_social}
                     onChange={handleChange}
                   />
-                  <TextField
-                    style={{ margin: "10px" }}
-                    required
-                    id="data_nascimento"
-                    name="data_nascimento"
-                    label="Data de nascimento"
+                  <InputMask
+                    mask="99/99/9999"
                     value={formData.data_nascimento}
                     onChange={handleChange}
-                  />
+                  >
+                    {() => (
+                      <TextField
+                        style={{ margin: "10px" }}
+                        required
+                        id="data_nascimento"
+                        name="data_nascimento"
+                        label="Data de nascimento"
+                        value={formData.data_nascimento}
+                        onChange={handleChange}
+                      />
+                    )}
+                  </InputMask>
                 </div>
                 <MDBox
                   mx={1}
@@ -192,14 +201,22 @@ function Matricula() {
                     value={formData.endereco.numero}
                     onChange={handleChange}
                   />
-                  <TextField
-                    style={{ margin: "10px" }}
-                    id="cep"
-                    name="endereco.cep"
-                    label="Cep"
+                  <InputMask
+                    mask="99999-999"
                     value={formData.endereco.cep}
                     onChange={handleChange}
-                  />
+                  >
+                    {() => (
+                      <TextField
+                        style={{ margin: "10px" }}
+                        id="cep"
+                        name="endereco.cep"
+                        label="Cep"
+                        value={formData.endereco.cep}
+                        onChange={handleChange}
+                      />
+                    )}
+                  </InputMask>
                 </div>
                 <div>
                   <TextField
@@ -255,24 +272,40 @@ function Matricula() {
                     </MDTypography>
                   </MDBox>
                 </MDBox>
-                <TextField
-                  style={{ margin: "10px", width: "33.25vw" }}
-                  required
-                  id="nro_documento"
-                  name="documento.0.nro_documento"
-                  label="CPF"
+                <InputMask
+                  mask="999.999.999.99"
                   value={formData.documento[0].nro_documento}
                   onChange={handleChange}
-                />
-                <TextField
-                  style={{ margin: "10px", width: "33.25vw" }}
-                  required
-                  id="nro_documento"
-                  name="documento.1.nro_documento"
-                  label="RG"
+                >
+                  {() => (
+                    <TextField
+                      style={{ margin: "10px", width: "33.25vw" }}
+                      required
+                      id="nro_documento"
+                      name="documento.0.nro_documento"
+                      label="CPF"
+                      value={formData.documento[0].nro_documento}
+                      onChange={handleChange}
+                    />
+                  )}
+                </InputMask>
+                <InputMask
+                  mask="99.999.999-9"
                   value={formData.documento[1].nro_documento}
                   onChange={handleChange}
-                />
+                >
+                  {() => (
+                    <TextField
+                      style={{ margin: "10px", width: "33.25vw" }}
+                      required
+                      id="nro_documento"
+                      name="documento.1.nro_documento"
+                      label="RG"
+                      value={formData.documento[1].nro_documento}
+                      onChange={handleChange}
+                    />
+                  )}
+                </InputMask>
                 <MDBox
                   mx={1}
                   mt={-2}
@@ -291,24 +324,40 @@ function Matricula() {
                   </MDBox>
                 </MDBox>
                 <div>
-                  <TextField
-                    style={{ margin: "10px", width: "33.25vw" }}
-                    required
-                    id="descricao"
-                    name="contato.0.descricao"
-                    label="Celular"
+                  <InputMask
+                    mask="(99) 99999-9999"
                     value={formData.contato[0].descricao}
                     onChange={handleChange}
-                  />
-                  <TextField
-                    style={{ margin: "10px", width: "33.25vw" }}
-                    required
-                    id="descricao"
-                    name="contato.1.descricao"
-                    label="Telefone fixo"
+                  >
+                    {() => (
+                      <TextField
+                        style={{ margin: "10px", width: "33.25vw" }}
+                        required
+                        id="descricao"
+                        name="contato.0.descricao"
+                        label="Celular"
+                        value={formData.contato[0].descricao}
+                        onChange={handleChange}
+                      />
+                    )}
+                  </InputMask>
+                  <InputMask
+                    mask="(99) 9999-9999"
                     value={formData.contato[1].descricao}
                     onChange={handleChange}
-                  />
+                  >
+                    {() => (
+                      <TextField
+                        style={{ margin: "10px", width: "33.25vw" }}
+                        required
+                        id="descricao"
+                        name="contato.1.descricao"
+                        label="Telefone fixo"
+                        value={formData.contato[1].descricao}
+                        onChange={handleChange}
+                      />
+                    )}
+                  </InputMask>
                 </div>
                 <div style={{ display: "flex", width: "100%", justifyContent: "center" }}>
                   <Button
