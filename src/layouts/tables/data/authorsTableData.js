@@ -30,6 +30,8 @@ import team4 from "assets/images/team-4.jpg";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
+import { useLocation, NavLink } from "react-router-dom";
+
 const Author = ({ image, name, email }) => (
   <MDBox display="flex" alignItems="center" lineHeight={1}>
     <MDAvatar src={image} name={name} size="sm" />
@@ -57,7 +59,7 @@ export default function Data() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/pessoa/');
+        const response = await axios.get("http://127.0.0.1:8000/api/pessoa/");
         const data = response.data;
         console.log(data);
 
@@ -71,22 +73,36 @@ export default function Data() {
               </MDBox>
             ),
             employed: (
-              <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+              <MDTypography
+                component="a"
+                href="#"
+                variant="caption"
+                color="text"
+                fontWeight="medium"
+              >
                 {item.data_inclusao}
               </MDTypography>
             ),
             action: (
-              <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-                Edit
-              </MDTypography>
+              <NavLink key={"matricular"} to={"/aluno/add"} state={{item}}>
+                <MDTypography
+                  component="a"
+                  href="#"
+                  variant="caption"
+                  color="text"
+                  fontWeight="medium"
+                >
+                  Edit
+                </MDTypography>
+              </NavLink>
             ),
           }));
           setRows(mappedRows);
         } else {
-          console.error('Data is not an array:', data);
+          console.error("Data is not an array:", data);
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
 

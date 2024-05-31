@@ -7,8 +7,15 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import InputMask from "react-input-mask";
+import { useLocation, NavLink } from "react-router-dom";
 
 function Matricula() {
+
+  const location = useLocation();
+  const { item } = location.state || {};
+
+  console.log(location.state)
+
   const CurrentDateWithTimezone = () => {
     const currentDate = new Date();
 
