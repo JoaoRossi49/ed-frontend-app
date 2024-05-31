@@ -61,7 +61,6 @@ export default function Data() {
       try {
         const response = await axios.get("http://127.0.0.1:8000/api/pessoa/");
         const data = response.data;
-        console.log(data);
 
         if (Array.isArray(data)) {
           const mappedRows = data.map((item) => ({
@@ -84,7 +83,7 @@ export default function Data() {
               </MDTypography>
             ),
             action: (
-              <NavLink key={"matricular"} to={"/aluno/add"} state={{item}}>
+              <NavLink key={"matricular"} to={"/aluno/add"} state={item}>
                 <MDTypography
                   component="a"
                   href="#"

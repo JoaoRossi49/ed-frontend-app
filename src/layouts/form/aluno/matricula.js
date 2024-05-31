@@ -11,11 +11,6 @@ import { useLocation, NavLink } from "react-router-dom";
 
 function Matricula() {
 
-  const location = useLocation();
-  const { item } = location.state || {};
-
-  console.log(location.state)
-
   const CurrentDateWithTimezone = () => {
     const currentDate = new Date();
 
@@ -32,6 +27,7 @@ function Matricula() {
     return formattedDateWithTimezone;
   };
 
+//#region definição de formdata
   const [formData, setFormData] = useState({
     id: 1,
     endereco: {
@@ -80,6 +76,66 @@ function Matricula() {
     data_nascimento: "",
     data_inclusao: CurrentDateWithTimezone(),
   });
+  //#endregion
+
+//#region verificação de state
+  const location = useLocation();
+  const item  = location.state;
+
+  React.useEffect(() => {
+    if (item) {
+      setFormData({
+        id: item.id,
+        endereco: {
+          id: item.endereco.id,
+          logradouro: item.endereco?.logradouro ?? null,
+          numero: item.endereco?.numero ?? null,
+          data_inclusao: item.endereco.data_inclusao ?? null,
+          complemento: item.endereco?.complemento ?? null,
+          cidade: item.endereco?.cidade  ?? null,
+          estado: item.endereco?.estado ?? null,
+          pais: item.endereco?.pais ?? null,
+          cep: item.endereco?.cep ?? null,
+        },
+        contato: [
+          {
+            id: item.contato[0]?.id ?? null,
+            tipo_contato: item.contato[0]?.tipo_contato ?? null,
+            descricao: item.contato[0]?.descricao ?? null,
+            data_inclusao: item.contato[0]?.data_inclusao ?? null,
+            data_alteracao: CurrentDateWithTimezone(),
+          },
+          {
+            id: item.contato[1]?.id ?? null,
+            tipo_contato: item.contato[1]?.tipo_contato ?? null,
+            descricao: item.contato[1]?.descricao ?? null,
+            data_inclusao: item.contato[1]?.data_inclusao ?? null,
+            data_alteracao: CurrentDateWithTimezone(),
+          },
+        ],
+        documento: [
+          {
+            id: item.documento[0]?.id ?? null,
+            nro_documento: item.documento[0]?.nro_documento ?? null,
+            data_inclusao: item.documento[0]?.data_inclusao ?? null,
+            tipo_documento: item.documento[0]?.tipo_documento ?? null,
+          },
+          {
+            id: item.documento[1]?.id ?? null,
+            nro_documento: item.documento[1]?.nro_documento ?? null,
+            data_inclusao: item.documento[1]?.data_inclusao ?? null,
+            tipo_documento: item.documento[1]?.tipo_documento ?? null,
+          },
+        ],
+        nome: item.nome ?? null,
+        nome_social: item.nome_social ?? null,
+        data_nascimento: item.data_nascimento ?? null,
+        data_inclusao: item.data_inclusao ?? null,
+      });
+    }
+  }, [item]);
+  
+//#endregion
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -104,8 +160,13 @@ function Matricula() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/pessoa/", formData);
-      console.log(response.data);
+      if(item){
+        const responsePut = await axios.put(`http://127.0.0.1:8000/api/pessoa/${item.id}/`, formData);
+        console.log(responsePut.data.status)
+      }else{
+        const response = await axios.post("http://127.0.0.1:8000/api/pessoa/", formData);
+        console.log(response.data.status)
+      }
     } catch (error) {
       console.error("Erro ao enviar os dados!", error);
     }
