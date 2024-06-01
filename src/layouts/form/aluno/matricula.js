@@ -3,14 +3,19 @@ import axios from "axios";
 import { Grid, Card, Box, TextField, Button } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
+import MDSnackbar from "components/MDSnackbar";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import InputMask from "react-input-mask";
 import { useLocation, useNavigate, NavLink } from "react-router-dom";
 
-function Matricula() {
+import ReportGmailerrorredIcon from '@mui/icons-material/ReportGmailerrorred';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+
+function Matricula() {  
   const navigate = useNavigate();
+
   const CurrentDateWithTimezone = () => {
     const currentDate = new Date();
 
@@ -26,6 +31,40 @@ function Matricula() {
 
     return formattedDateWithTimezone;
   };
+//#region notificações
+const [errorSB, setErrorSB] = useState(false);
+const openErrorSB = () => setErrorSB(true);
+const closeErrorSB = () => setErrorSB(false);
+const renderErrorSB = (
+  <MDSnackbar
+    color="error"
+    icon= <ReportGmailerrorredIcon fontSize="small"></ReportGmailerrorredIcon>
+    title="Erro!"
+    content="Não foi possível salvar os dados preenchidos"
+    open={errorSB}
+    onClose={closeErrorSB}
+    close={closeErrorSB}
+    bgWhite
+  />
+);
+
+const [successSB, setSuccessSB] = useState(false);
+const openSuccessSB = () => setSuccessSB(true);
+const closeSuccessSB = () => setSuccessSB(false);
+const renderSuccessSB = (
+  <MDSnackbar
+    color="success"
+    icon=<CheckCircleOutlineIcon fontSize="small"></CheckCircleOutlineIcon>
+    title="Sucesso"
+    content="Dados salvos com sucesso!"
+    open={successSB}
+    onClose={closeSuccessSB}
+    close={closeSuccessSB}
+    bgWhite
+  />
+);
+//#endregion
+
 
 //#region definição de formdata
   const [formData, setFormData] = useState({
@@ -163,14 +202,17 @@ function Matricula() {
       if(item){
         const responsePut = await axios.put(`http://127.0.0.1:8000/api/pessoa/${item.id}/`, formData);
         console.log(responsePut.data.status)
-        navigate(-1);
+        openSuccessSB()
+        navigate("/alunos");
       }else{
         const response = await axios.post("http://127.0.0.1:8000/api/pessoa/", formData);
         console.log(response.data.status)
+        openSuccessSB()
         navigate("/alunos");
       }
     } catch (error) {
-      console.error("Erro ao enviar os dados!", error);
+      console.log('Caiu no catch')
+      openErrorSB()
     }
   };
 
@@ -440,6 +482,7 @@ function Matricula() {
                   </Button>
                 </div>
               </Card>
+              {renderErrorSB}
             </Grid>
           </Grid>
         </form>

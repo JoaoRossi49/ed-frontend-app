@@ -33,6 +33,8 @@ import MDSnackbarIconRoot from "components/MDSnackbar/MDSnackbarIconRoot";
 // Material Dashboard 2 React context
 import { useMaterialUIController } from "context";
 
+import CloseIcon from '@mui/icons-material/Close';
+
 function MDSnackbar({ color, icon, title, dateTime, content, close, bgWhite, ...rest }) {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
@@ -66,7 +68,7 @@ function MDSnackbar({ color, icon, title, dateTime, content, close, bgWhite, ...
       {...rest}
       action={
         <IconButton size="small" aria-label="close" color="inherit" onClick={close}>
-          <Icon fontSize="small">close</Icon>
+          <CloseIcon fontSize="small">close</CloseIcon>
         </IconButton>
       }
     >
@@ -107,7 +109,7 @@ function MDSnackbar({ color, icon, title, dateTime, content, close, bgWhite, ...
             <MDTypography variant="caption" color={dateTimeColor}>
               {dateTime}
             </MDTypography>
-            <Icon
+            <CloseIcon
               sx={{
                 color: ({ palette: { dark, white } }) =>
                   (bgWhite && !darkMode) || color === "light" ? dark.main : white.main,
@@ -119,7 +121,7 @@ function MDSnackbar({ color, icon, title, dateTime, content, close, bgWhite, ...
               onClick={close}
             >
               close
-            </Icon>
+            </CloseIcon>
           </MDBox>
         </MDBox>
         <Divider sx={{ margin: 0 }} light={dividerColor} />

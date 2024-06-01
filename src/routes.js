@@ -79,6 +79,14 @@ const routes = [
     route: "/aluno/add",
     component: <Matricula />,
   },
+  {
+    type: "collapse",
+    name: "Notifications",
+    key: "notifications",
+    icon: <Icon fontSize="small"></Icon>,
+    route: "/notifications",
+    component: <Notifications />,
+  },
 /*  {
     type: "collapse",
     name: "Billing",
