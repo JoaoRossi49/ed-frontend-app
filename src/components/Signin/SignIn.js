@@ -41,7 +41,6 @@ export default function SignInSide({ onLogin }) {
     setPassword(event.target.value);
   };
 
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -50,12 +49,10 @@ export default function SignInSide({ onLogin }) {
         console.log(response.data);
         if (response.status === 200){
           onLogin();
-        }else{
-          setErrorMessage('Usuário ou senha incorreta. Por favor, tente novamente.');
         }
       })
     } catch (error) {
-      console.error("Erro ao fazer a requisição:", error);
+      setErrorMessage(error.response.data.error)
     }
   };
 

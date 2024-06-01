@@ -211,7 +211,6 @@ const renderSuccessSB = (
         navigate("/alunos");
       }
     } catch (error) {
-      console.log('Caiu no catch')
       openErrorSB()
     }
   };
