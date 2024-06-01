@@ -7,10 +7,10 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import InputMask from "react-input-mask";
-import { useLocation, NavLink } from "react-router-dom";
+import { useLocation, useNavigate, NavLink } from "react-router-dom";
 
 function Matricula() {
-
+  const navigate = useNavigate();
   const CurrentDateWithTimezone = () => {
     const currentDate = new Date();
 
@@ -163,9 +163,11 @@ function Matricula() {
       if(item){
         const responsePut = await axios.put(`http://127.0.0.1:8000/api/pessoa/${item.id}/`, formData);
         console.log(responsePut.data.status)
+        navigate(-1);
       }else{
         const response = await axios.post("http://127.0.0.1:8000/api/pessoa/", formData);
         console.log(response.data.status)
+        navigate("/alunos");
       }
     } catch (error) {
       console.error("Erro ao enviar os dados!", error);
