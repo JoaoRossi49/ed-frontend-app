@@ -22,15 +22,15 @@ import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
 
 // Images
-import team2 from "assets/images/team-2.jpg";
-import team3 from "assets/images/team-3.jpg";
-import team4 from "assets/images/team-4.jpg";
+import user_default from "assets/images/user_default.jpg";
 
 // axios
 import axios from "axios";
 import { useEffect, useState } from "react";
 
 import { useLocation, NavLink } from "react-router-dom";
+
+import {Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 
 const Author = ({ image, name, email }) => (
   <MDBox display="flex" alignItems="center" lineHeight={1}>
@@ -55,7 +55,7 @@ const Job = ({ title, description }) => (
 
 export default function Data() {
   const [rows, setRows] = useState([]);
-
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -64,14 +64,14 @@ export default function Data() {
 
         if (Array.isArray(data)) {
           const mappedRows = data.map((item) => ({
-            author: <Author image={team2} name={item.nome} email={item.nome_social} />,
-            function: <Job title={item.data_nascimento} description={item.data_inclusao} />,
+            nome: <Author image={user_default} name={item.nome} email={item.nome_social} />,
+            turma: <Job title={item.data_nascimento} />,
             status: (
               <MDBox ml={-1}>
                 <MDBadge badgeContent={item.status} color="success" variant="gradient" size="sm" />
               </MDBox>
             ),
-            employed: (
+            data_inclusao: (
               <MDTypography
                 component="a"
                 href="#"
@@ -83,17 +83,17 @@ export default function Data() {
               </MDTypography>
             ),
             action: (
-              <NavLink key={"matricular"} to={"/aluno/add"} state={item}>
-                <MDTypography
-                  component="a"
-                  href="#"
-                  variant="caption"
-                  color="text"
-                  fontWeight="medium"
-                >
-                  Edit
-                </MDTypography>
-              </NavLink>
+                <NavLink key={"matricular"} to={"/aluno/add"} state={item}>
+                  <MDTypography
+                    component="a"
+                    href="#"
+                    variant="caption"
+                    color="text"
+                    fontWeight="medium"
+                  >
+                    Edit
+                  </MDTypography>
+                </NavLink>
             ),
           }));
           setRows(mappedRows);
@@ -110,10 +110,10 @@ export default function Data() {
 
   return {
     columns: [
-      { Header: "Aluno", accessor: "author", width: "45%", align: "left" },
-      { Header: "Turma", accessor: "function", align: "left" },
+      { Header: "Aluno", accessor: "nome", width: "45%", align: "left" },
+      { Header: "Turma", accessor: "turma", align: "left" },
       { Header: "Status", accessor: "status", align: "center" },
-      { Header: "Data da matrícula", accessor: "employed", align: "center" },
+      { Header: "Data da matrícula", accessor: "data_inclusao", align: "center" },
       { Header: "Ações", accessor: "action", align: "center" },
     ],
 

@@ -10,10 +10,10 @@ import Footer from "examples/Footer";
 import InputMask from "react-input-mask";
 import { useLocation, useNavigate, NavLink } from "react-router-dom";
 
-import ReportGmailerrorredIcon from '@mui/icons-material/ReportGmailerrorred';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import ReportGmailerrorredIcon from "@mui/icons-material/ReportGmailerrorred";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
-function Matricula() {  
+function Matricula() {
   const navigate = useNavigate();
 
   const CurrentDateWithTimezone = () => {
@@ -31,42 +31,41 @@ function Matricula() {
 
     return formattedDateWithTimezone;
   };
-//#region notificações
-const [errorSB, setErrorSB] = useState(false);
-const openErrorSB = () => setErrorSB(true);
-const closeErrorSB = () => setErrorSB(false);
-const renderErrorSB = (
-  <MDSnackbar
-    color="error"
-    icon= <ReportGmailerrorredIcon fontSize="small"></ReportGmailerrorredIcon>
-    title="Erro!"
-    content="Não foi possível salvar os dados preenchidos"
-    open={errorSB}
-    onClose={closeErrorSB}
-    close={closeErrorSB}
-    bgWhite
-  />
-);
+  //#region notificações
+  const [errorSB, setErrorSB] = useState(false);
+  const openErrorSB = () => setErrorSB(true);
+  const closeErrorSB = () => setErrorSB(false);
+  const renderErrorSB = (
+    <MDSnackbar
+      color="error"
+      icon=<ReportGmailerrorredIcon fontSize="small"></ReportGmailerrorredIcon>
+      title="Erro!"
+      content="Não foi possível salvar os dados preenchidos"
+      open={errorSB}
+      onClose={closeErrorSB}
+      close={closeErrorSB}
+      bgWhite
+    />
+  );
 
-const [successSB, setSuccessSB] = useState(false);
-const openSuccessSB = () => setSuccessSB(true);
-const closeSuccessSB = () => setSuccessSB(false);
-const renderSuccessSB = (
-  <MDSnackbar
-    color="success"
-    icon=<CheckCircleOutlineIcon fontSize="small"></CheckCircleOutlineIcon>
-    title="Sucesso"
-    content="Dados salvos com sucesso!"
-    open={successSB}
-    onClose={closeSuccessSB}
-    close={closeSuccessSB}
-    bgWhite
-  />
-);
-//#endregion
+  const [successSB, setSuccessSB] = useState(false);
+  const openSuccessSB = () => setSuccessSB(true);
+  const closeSuccessSB = () => setSuccessSB(false);
+  const renderSuccessSB = (
+    <MDSnackbar
+      color="success"
+      icon=<CheckCircleOutlineIcon fontSize="small"></CheckCircleOutlineIcon>
+      title="Sucesso"
+      content="Dados salvos com sucesso!"
+      open={successSB}
+      onClose={closeSuccessSB}
+      close={closeSuccessSB}
+      bgWhite
+    />
+  );
+  //#endregion
 
-
-//#region definição de formdata
+  //#region definição de formdata
   const [formData, setFormData] = useState({
     id: 1,
     endereco: {
@@ -117,12 +116,13 @@ const renderSuccessSB = (
   });
   //#endregion
 
-//#region verificação de state
+  //#region verificação de state
   const location = useLocation();
-  const item  = location.state;
+  const item = location.state;
 
   React.useEffect(() => {
     if (item) {
+      setExcluirIsVisible(true);
       setFormData({
         id: item.id,
         endereco: {
@@ -131,7 +131,7 @@ const renderSuccessSB = (
           numero: item.endereco?.numero ?? null,
           data_inclusao: item.endereco.data_inclusao ?? null,
           complemento: item.endereco?.complemento ?? null,
-          cidade: item.endereco?.cidade  ?? null,
+          cidade: item.endereco?.cidade ?? null,
           estado: item.endereco?.estado ?? null,
           pais: item.endereco?.pais ?? null,
           cep: item.endereco?.cep ?? null,
@@ -173,8 +173,8 @@ const renderSuccessSB = (
       });
     }
   }, [item]);
-  
-//#endregion
+
+  //#endregion
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -199,23 +199,36 @@ const renderSuccessSB = (
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      if(item){
-        const responsePut = await axios.put(`http://127.0.0.1:8000/api/pessoa/${item.id}/`, formData);
-        console.log(responsePut.data.status)
-        openSuccessSB()
+      if (item) {
+        const responsePut = await axios.put(
+          `http://127.0.0.1:8000/api/pessoa/${item.id}/`,
+          formData
+        );
+        console.log(responsePut.data.status);
+        openSuccessSB();
         navigate("/alunos");
-      }else{
+      } else {
         const response = await axios.post("http://127.0.0.1:8000/api/pessoa/", formData);
-        console.log(response.data.status)
-        openSuccessSB()
+        console.log(response.data.status);
+        openSuccessSB();
         navigate("/alunos");
       }
     } catch (error) {
-      console.log('Caiu no catch')
-      openErrorSB()
+      openErrorSB();
     }
   };
 
+  const [excluirIsVisible, setExcluirIsVisible] = useState(false);
+  const handleExcluir = async (deleteItemId) => {
+    try {
+      await axios.delete(`http://127.0.0.1:8000/api/pessoa/${deleteItemId}/`);
+      setConfirmDeleteDialogOpen(false);
+      setDeleteItemId(null);
+      fetchData();
+    } catch (error) {
+      console.error("Error deleting data:", error);
+    }
+  };
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -313,11 +326,7 @@ const renderSuccessSB = (
                     value={formData.endereco.numero}
                     onChange={handleChange}
                   />
-                  <InputMask
-                    mask="99999-999"
-                    value={formData.endereco.cep}
-                    onChange={handleChange}
-                  >
+                  <InputMask mask="99999-999" value={formData.endereco.cep} onChange={handleChange}>
                     {() => (
                       <TextField
                         style={{ margin: "10px" }}
@@ -478,8 +487,18 @@ const renderSuccessSB = (
                     type="submit"
                     style={{ margin: "10px", width: "35vw", color: "#FFF" }}
                   >
-                    Enviar
+                    Salvar
                   </Button>
+                  {excluirIsVisible && (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => handleExcluir(item.id)}
+                      style={{ margin: "10px", width: "35vw", color: "#FFF" }}
+                    >
+                      Excluir
+                    </Button>
+                  )}
                 </div>
               </Card>
               {renderErrorSB}
