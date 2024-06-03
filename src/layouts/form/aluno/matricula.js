@@ -206,12 +206,12 @@ function Matricula() {
         );
         console.log(responsePut.data.status);
         openSuccessSB();
-        navigate("/alunos");
+        navigate("/aluno");
       } else {
         const response = await axios.post("http://127.0.0.1:8000/api/pessoa/", formData);
         console.log(response.data.status);
         openSuccessSB();
-        navigate("/alunos");
+        navigate("/aluno");
       }
     } catch (error) {
       openErrorSB();
@@ -222,9 +222,7 @@ function Matricula() {
   const handleExcluir = async (deleteItemId) => {
     try {
       await axios.delete(`http://127.0.0.1:8000/api/pessoa/${deleteItemId}/`);
-      setConfirmDeleteDialogOpen(false);
-      setDeleteItemId(null);
-      fetchData();
+      navigate("/aluno");
     } catch (error) {
       console.error("Error deleting data:", error);
     }
