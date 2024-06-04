@@ -13,6 +13,8 @@ import { useLocation, useNavigate, NavLink } from "react-router-dom";
 import ReportGmailerrorredIcon from "@mui/icons-material/ReportGmailerrorred";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
+import api from "services/api.js";
+
 function Matricula() {
   const navigate = useNavigate();
 
@@ -200,15 +202,14 @@ function Matricula() {
     event.preventDefault();
     try {
       if (item) {
-        const responsePut = await axios.put(
-          `http://127.0.0.1:8000/api/pessoa/${item.id}/`,
+        const responsePut = await api.put(`/api/pessoa/${item.id}/`,
           formData
         );
         console.log(responsePut.data.status);
         openSuccessSB();
         navigate("/aluno");
       } else {
-        const response = await axios.post("http://127.0.0.1:8000/api/pessoa/", formData);
+        const response = await api.post("/api/pessoa/", formData);
         console.log(response.data.status);
         openSuccessSB();
         navigate("/aluno");
@@ -221,7 +222,7 @@ function Matricula() {
   const [excluirIsVisible, setExcluirIsVisible] = useState(false);
   const handleExcluir = async (deleteItemId) => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/pessoa/${deleteItemId}/`);
+      await api.delete(`/api/pessoa/${deleteItemId}/`);
       navigate("/aluno");
     } catch (error) {
       console.error("Error deleting data:", error);
