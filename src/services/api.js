@@ -8,11 +8,9 @@ const api = axios.create({
     config => {
       const token = localStorage.getItem('accessToken');
       if (token) {
-        console.log(token)
         config.headers['Authorization'] = `Bearer ${token}`;
       }
       else{
-        console.log('Não tem token')
       }
       return config;
     },
