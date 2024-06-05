@@ -24,13 +24,11 @@ import MDBadge from "components/MDBadge";
 // Images
 import user_default from "assets/images/user_default.jpg";
 
-// axios
-import axios from "axios";
 import { useEffect, useState } from "react";
 
-import { useLocation, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
-import {Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import api from 'services/api';
 
 const Author = ({ image, name, email }) => (
   <MDBox display="flex" alignItems="center" lineHeight={1}>
@@ -59,7 +57,7 @@ export default function Data() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/pessoa/");
+        const response = await api.get("/api/pessoa/");
         const data = response.data;
 
         if (Array.isArray(data)) {

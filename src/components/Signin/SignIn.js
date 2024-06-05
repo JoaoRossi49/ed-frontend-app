@@ -30,6 +30,10 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
+const api = axios.create({
+  baseURL: process.env.REACT_APP_API_URL,
+});
+
 export default function SignInSide({ onLogin }) {
   const [errorMessage, setErrorMessage] = React.useState('');
   const [username, setUserName] = React.useState('');
@@ -45,9 +49,12 @@ export default function SignInSide({ onLogin }) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/login/', {username, password}).then((response)=>{
+      const response = await api.post('/api/login/', {username, password}).then((response)=>{
         console.log(response.data);
         if (response.status === 200){
+          const { access, refresh } = response.data;
+          localStorage.setItem('accessToken', access);
+          localStorage.setItem('refreshToken', refresh);
           onLogin();
         }
       })
