@@ -81,7 +81,7 @@ export default function Data() {
               </MDTypography>
             ),
             action: (
-                <NavLink key={"matricular"} to={"/aluno/add"} state={item}>
+                <NavLink key={"matricular"} to={"/turma/add"} state={item}>
                   <MDTypography
                     component="a"
                     href="#"

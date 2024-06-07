@@ -52,6 +52,7 @@ import Icon from "@mui/material/Icon";
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import SchoolIcon from '@mui/icons-material/School';
 import Turmas from "layouts/turmas";
+import CadastroTurma from "layouts/form/turma/cadastroTurma";
 
 
 
@@ -87,6 +88,14 @@ const routes = [
     icon: <SchoolIcon fontSize="small"></SchoolIcon>,
     route: "/turmas",
     component: <Turmas />,
+  },
+  {
+    type: "collapse",
+    name: "Cadastrar Turma",
+    key: "cadastrar turma",
+    icon: <SchoolIcon fontSize="small"></SchoolIcon>,
+    route: "/turma/add",
+    component: <CadastroTurma />,
   },
 /*  {
     type: "collapse",
