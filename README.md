@@ -1,70 +1,135 @@
-# Getting Started with Create React App
+# GIE (Gestão de instituições de ensino) - Frontend application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Criação de sistema de informação que unifique processos, gerencie acesso de usuários e garanta níveis adequados de disponibilidade de dados e segurança de informação afim de melhorar os processos de instituições de ensino filantrópicas. Essa aplicação é complementada pela lógica e gerenciamento de dados providos pelo projeto django no repositório [ed-backend-app](https://github.com/JoaoRossi49/ed-backend-app).
 
-## Available Scripts
+## Índice
 
-In the project directory, you can run:
+- [Instalação](#instalação)
+- [Configuração](#configuração)
+- [Uso](#uso)
+- [Scripts Disponíveis](#scripts-disponíveis)
+- [Estrutura de Pastas](#estrutura-de-pastas)
+- [Contribuição](#contribuição)
+- [Licença](#licença)
+- [Autores](#autores)
 
-### `npm start`
+## Instalação
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Pré-requisitos
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- [Node.js](https://nodejs.org/) (versão  v18.18.0)
+- [npm](https://www.npmjs.com/) ou [yarn](https://yarnpkg.com/)
 
-### `npm test`
+### Clonando o Repositório
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+git clone https://github.com/JoaoRossi49/ed-frontend-app
+cd ed-frontend-app
+```
 
-### `npm run build`
+### Instalando Dependências
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Usando npm:
+```bash
+npm install
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Ou usando yarn:
+```bash
+yarn install
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Configuração
 
-### `npm run eject`
+### Arquivo de Ambiente
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Crie um arquivo `.env` na raiz do projeto e adicione suas variáveis de ambiente:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```
+DJANGO_URL=http://localhost:8000
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Uso
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Executando o Servidor de Desenvolvimento
 
-## Learn More
+Usando npm:
+```bash
+npm start
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Ou usando yarn:
+```bash
+yarn start
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+O projeto será executado em [http://localhost:3000](http://localhost:3000).
 
-### Code Splitting
+## Scripts Disponíveis
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+No diretório do projeto, você pode executar:
 
-### Analyzing the Bundle Size
+### `npm start` ou `yarn start`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Inicia o servidor de desenvolvimento.
 
-### Making a Progressive Web App
+### `npm build` ou `yarn build`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Cria uma versão de produção do aplicativo na pasta `build`.
 
-### Advanced Configuration
+## Estrutura de Pastas
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Uma visão geral da estrutura de pastas do projeto:
 
-### Deployment
+```plaintext
+ed-frontend-app/
+├── public/
+│   ├── index.html
+│   └── ...
+├── src/
+│   ├── assets/
+│   ├── components/
+│   ├── context/
+|   ├── examples/
+|   ├── layouts/
+|   ├── services/
+│   ├── App.js
+│   ├── index.js
+│   └── ...
+├── .env
+├── package.json
+└── README.md
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### `public/`
 
-### `npm run build` fails to minify
+Contém o arquivo HTML estático e outros arquivos públicos.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### `src/`
+
+Contém os arquivos do código-fonte do projeto.
+
+### `src/assets/`
+
+Contém arquivos de recursos como imagens e fontes.
+
+### `src/components/`
+
+Contém os componentes reutilizáveis da aplicação.
+
+### `src/App.js`
+
+Componente principal da aplicação.
+
+### `src/index.js`
+
+Ponto de entrada da aplicação.
+
+## Licença
+
+Este projeto utiliza como base o desenvolvimento feito em [material-dashboard-react](https://github.com/creativetimofficial/material-dashboard-react) por [Creative Tim](https://github.com/creativetimofficial) e está licenciado sob a licença MIT - veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+## Autores
+
+- **João Rossi** - [JoaoRossi49](https://github.com/JoaoRossi49)
+
