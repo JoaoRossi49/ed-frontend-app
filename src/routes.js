@@ -92,7 +92,7 @@ const routes = [
   {
     type: "collapse",
     name: "Cadastrar Turma",
-    key: "cadastrar turma",
+    key: "cadastrar_turma",
     icon: <SchoolIcon fontSize="small"></SchoolIcon>,
     route: "/turma/add",
     component: <CadastroTurma />,
