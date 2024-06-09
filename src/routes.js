@@ -66,6 +66,14 @@ const routes = [
     component: <Dashboard />,
   },
   {
+    type: "divider",
+    key: "dashboard",
+  },
+  {
+    type: "title",
+    title: "Alunos e matrículas",
+  },
+  {
     type: "collapse",
     name: "Alunos",
     key: "alunos",
@@ -80,6 +88,14 @@ const routes = [
     icon: <SchoolIcon fontSize="small"></SchoolIcon>,
     route: "/aluno/add",
     component: <Matricula />,
+  },
+  {
+    type: "divider",
+    key: "alunos",
+  },
+  {
+    type: "title",
+    title: "Gerência de turmas",
   },
   {
     type: "collapse",
