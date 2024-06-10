@@ -142,8 +142,8 @@ function CadastroTurma() {
   const [excluirIsVisible, setExcluirIsVisible] = useState(false);
   const handleExcluir = async (deleteItemId) => {
     try {
-      await api.delete(`/api/pessoa/${deleteItemId}/`);
-      navigate("/aluno");
+      await api.delete(`/api/estudante/turmas/${deleteItemId}/`);
+      navigate("/turmas");
     } catch (error) {
       console.error("Error deleting data:", error);
     }
