@@ -115,6 +115,7 @@ function Matricula() {
     nome_social: "",
     data_nascimento: "",
     data_inclusao: CurrentDateWithTimezone(),
+    turma: null,
   });
   //#endregion
 
@@ -172,6 +173,7 @@ function Matricula() {
         nome_social: item.nome_social ?? null,
         data_nascimento: item.data_nascimento ?? null,
         data_inclusao: item.data_inclusao ?? null,
+        turma: item.turma ?? null,
       });
     }
   }, [item]);
