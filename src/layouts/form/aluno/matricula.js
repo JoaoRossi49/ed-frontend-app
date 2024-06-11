@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Grid, Card, Box, TextField, Button } from "@mui/material";
+import { Grid, Card, Box, TextField, Button, Autocomplete } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDSnackbar from "components/MDSnackbar";
@@ -115,7 +115,10 @@ function Matricula() {
     nome_social: "",
     data_nascimento: "",
     data_inclusao: CurrentDateWithTimezone(),
-    turma: null,
+    turma: {
+      id: 1,
+      nome:"",
+    },
   });
   //#endregion
 
@@ -173,13 +176,39 @@ function Matricula() {
         nome_social: item.nome_social ?? null,
         data_nascimento: item.data_nascimento ?? null,
         data_inclusao: item.data_inclusao ?? null,
-        turma: item.turma ?? null,
+        turma: {
+          id: item.turma.id ?? null,
+          nome: item.turma.nome ?? null,
+        },
       });
     }
   }, [item]);
 
   //#endregion
 
+  //#region carregar turmas
+  const [options, setOptions] = useState([]);
+
+  React.useEffect(() => {
+    const fetchTurmas = async () => {
+      try {
+        const response = await api.get("/api/estudante/turmas/");
+        const formattedOptions = response.data.map((turma) => ({
+          label: turma.nome,
+          value: turma.id,
+        }));
+        setOptions(formattedOptions);
+        console.log(formattedOptions);
+      } catch (error) {
+        console.error("Erro ao buscar as turmas:", error);
+      }
+    };
+
+    fetchTurmas();
+  }, []);
+  //#endregion
+
+  //#region handles
   const handleChange = (event) => {
     const { name, value } = event.target;
     const keys = name.split(".");
@@ -196,6 +225,7 @@ function Matricula() {
         }
       });
 
+      console.log(newFormData);
       return newFormData;
     });
   };
@@ -204,9 +234,7 @@ function Matricula() {
     event.preventDefault();
     try {
       if (item) {
-        const responsePut = await api.put(`/api/pessoa/${item.id}/`,
-          formData
-        );
+        const responsePut = await api.put(`/api/pessoa/${item.id}/`, formData);
         console.log(responsePut.data.status);
         openSuccessSB();
         navigate("/aluno");
@@ -230,6 +258,7 @@ function Matricula() {
       console.error("Error deleting data:", error);
     }
   };
+  //#endregion
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -481,6 +510,42 @@ function Matricula() {
                     )}
                   </InputMask>
                 </div>
+                <MDBox
+                  mx={1}
+                  mt={-2}
+                  py={1}
+                  px={1}
+                  variant="gradient"
+                  bgColor="info"
+                  borderRadius="lg"
+                  coloredShadow="info"
+                  style={{ margin: "10px" }}
+                >
+                  <MDBox display="flex" justifyContent="space-between" alignItems="center">
+                    <MDTypography variant="h6" color="white">
+                      Turma
+                    </MDTypography>
+                  </MDBox>
+                </MDBox>
+                <Autocomplete
+                style={{ margin: "10px", width: "33.25vw" }}
+                  disablePortal
+                  id="turma-combo-box"
+                  options={options}
+                  value={formData.turma.nome}
+                  onChange={(event, newValue) => {
+                    handleChange({
+                      target: {
+                        name: 'turma',
+                        value: {
+                          id: newValue?.value?? null,
+                          nome: newValue?.label?? '',
+                        },
+                      },
+                    });
+                  }}
+                  renderInput={(params) => <TextField {...params} label="Turma" />}
+                />
                 <div style={{ display: "flex", width: "100%", justifyContent: "center" }}>
                   <Button
                     variant="contained"
