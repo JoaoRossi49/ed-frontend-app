@@ -115,10 +115,12 @@ function Matricula() {
     nome_social: "",
     data_nascimento: "",
     data_inclusao: CurrentDateWithTimezone(),
-    turma: {
-      id: 1,
-      nome:"",
-    },
+  });
+
+  const [matriculaFormData, setMatriculaFormData] = useState({
+    data_inclusao: CurrentDateWithTimezone(),
+    pessoa: null,
+    turma: null,
   });
   //#endregion
 
@@ -176,11 +178,12 @@ function Matricula() {
         nome_social: item.nome_social ?? null,
         data_nascimento: item.data_nascimento ?? null,
         data_inclusao: item.data_inclusao ?? null,
-        turma: {
-          id: item.turma.id ?? null,
-          nome: item.turma.nome ?? null,
-        },
       });
+      setMatriculaFormData({
+        data_inclusao: item.data_inclusao ?? null,
+        pessoa: item.id,
+        turma: item.turma ?? null,
+      })
     }
   }, [item]);
 
@@ -228,6 +231,14 @@ function Matricula() {
       console.log(newFormData);
       return newFormData;
     });
+  };
+
+  const handleChangeMatricula = (event, value) => {
+    console.log('O valor do value é:', value.value)
+    setMatriculaFormData((prevFormData) => ({
+      ...prevFormData,
+    }));
+    console.log(matriculaFormData);
   };
 
   const handleSubmit = async (event) => {
@@ -528,23 +539,13 @@ function Matricula() {
                   </MDBox>
                 </MDBox>
                 <Autocomplete
-                style={{ margin: "10px", width: "33.25vw" }}
-                  disablePortal
-                  id="turma-combo-box"
                   options={options}
-                  value={formData.turma.nome}
-                  onChange={(event, newValue) => {
-                    handleChange({
-                      target: {
-                        name: 'turma',
-                        value: {
-                          id: newValue?.value?? null,
-                          nome: newValue?.label?? '',
-                        },
-                      },
-                    });
-                  }}
-                  renderInput={(params) => <TextField {...params} label="Turma" />}
+                  getOptionLabel={(option) => option.label}
+                  onChange={handleChangeMatricula}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Turma" />
+                  )}
+                  value={matriculaFormData.turma}
                 />
                 <div style={{ display: "flex", width: "100%", justifyContent: "center" }}>
                   <Button
