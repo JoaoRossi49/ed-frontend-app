@@ -118,6 +118,7 @@ function Matricula() {
   });
 
   const [matriculaFormData, setMatriculaFormData] = useState({
+    id: null,
     data_inclusao: CurrentDateWithTimezone(),
     pessoa: null,
     turma: null,
@@ -132,57 +133,58 @@ function Matricula() {
     if (item) {
       setExcluirIsVisible(true);
       setFormData({
-        id: item.id,
+        id: item.pessoa.id,
         endereco: {
-          id: item.endereco.id,
-          logradouro: item.endereco?.logradouro ?? null,
-          numero: item.endereco?.numero ?? null,
-          data_inclusao: item.endereco.data_inclusao ?? null,
-          complemento: item.endereco?.complemento ?? null,
-          cidade: item.endereco?.cidade ?? null,
-          estado: item.endereco?.estado ?? null,
-          pais: item.endereco?.pais ?? null,
-          cep: item.endereco?.cep ?? null,
+          id: item.pessoa.endereco.id,
+          logradouro: item.pessoa.endereco?.logradouro ?? null,
+          numero: item.pessoa.endereco?.numero ?? null,
+          data_inclusao: item.pessoa.endereco.data_inclusao ?? null,
+          complemento: item.pessoa.endereco?.complemento ?? null,
+          cidade: item.pessoa.endereco?.cidade ?? null,
+          estado: item.pessoa.endereco?.estado ?? null,
+          pais: item.pessoa.endereco?.pais ?? null,
+          cep: item.pessoa.endereco?.cep ?? null,
         },
         contato: [
           {
-            id: item.contato[0]?.id ?? null,
-            tipo_contato: item.contato[0]?.tipo_contato ?? null,
-            descricao: item.contato[0]?.descricao ?? null,
-            data_inclusao: item.contato[0]?.data_inclusao ?? null,
+            id: item.pessoa.contato[0]?.id ?? null,
+            tipo_contato: item.pessoa.contato[0]?.tipo_contato ?? null,
+            descricao: item.pessoa.contato[0]?.descricao ?? null,
+            data_inclusao: item.pessoa.contato[0]?.data_inclusao ?? null,
             data_alteracao: CurrentDateWithTimezone(),
           },
           {
-            id: item.contato[1]?.id ?? null,
-            tipo_contato: item.contato[1]?.tipo_contato ?? null,
-            descricao: item.contato[1]?.descricao ?? null,
-            data_inclusao: item.contato[1]?.data_inclusao ?? null,
+            id: item.pessoa.contato[1]?.id ?? null,
+            tipo_contato: item.pessoa.contato[1]?.tipo_contato ?? null,
+            descricao: item.pessoa.contato[1]?.descricao ?? null,
+            data_inclusao: item.pessoa.contato[1]?.data_inclusao ?? null,
             data_alteracao: CurrentDateWithTimezone(),
           },
         ],
         documento: [
           {
-            id: item.documento[0]?.id ?? null,
-            nro_documento: item.documento[0]?.nro_documento ?? null,
-            data_inclusao: item.documento[0]?.data_inclusao ?? null,
-            tipo_documento: item.documento[0]?.tipo_documento ?? null,
+            id: item.pessoa.documento[0]?.id ?? null,
+            nro_documento: item.pessoa.documento[0]?.nro_documento ?? null,
+            data_inclusao: item.pessoa.documento[0]?.data_inclusao ?? null,
+            tipo_documento: item.pessoa.documento[0]?.tipo_documento ?? null,
           },
           {
-            id: item.documento[1]?.id ?? null,
-            nro_documento: item.documento[1]?.nro_documento ?? null,
-            data_inclusao: item.documento[1]?.data_inclusao ?? null,
-            tipo_documento: item.documento[1]?.tipo_documento ?? null,
+            id: item.pessoa.documento[1]?.id ?? null,
+            nro_documento: item.pessoa.documento[1]?.nro_documento ?? null,
+            data_inclusao: item.pessoa.documento[1]?.data_inclusao ?? null,
+            tipo_documento: item.pessoa.documento[1]?.tipo_documento ?? null,
           },
         ],
-        nome: item.nome ?? null,
-        nome_social: item.nome_social ?? null,
-        data_nascimento: item.data_nascimento ?? null,
-        data_inclusao: item.data_inclusao ?? null,
+        nome: item.pessoa.nome ?? null,
+        nome_social: item.pessoa.nome_social ?? null,
+        data_nascimento: item.pessoa.data_nascimento ?? null,
+        data_inclusao: item.pessoa.data_inclusao ?? null,
       });
       setMatriculaFormData({
-        data_inclusao: item.data_inclusao ?? null,
-        pessoa: item.id,
-        turma: item.turma ?? null,
+        id: item.matricula.id ?? null,
+        data_inclusao: item.matricula.data_inclusao ?? null,
+        pessoa: item.matricula.id,
+        turma: item.matricula.turma ?? null,
       })
     }
   }, [item]);
@@ -234,28 +236,38 @@ function Matricula() {
   };
 
   const handleChangeMatricula = (event, value) => {
-    console.log('O valor do value é:', value.value)
     setMatriculaFormData((prevFormData) => ({
       ...prevFormData,
+      turma: value.value, 
     }));
-    console.log(matriculaFormData);
+    console.log('Id da turma selecionada: ', value.value); 
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       if (item) {
-        const responsePut = await api.put(`/api/pessoa/${item.id}/`, formData);
-        console.log(responsePut.data.status);
+        //Alteração de pessoa existente
+        const responsePessoaPut = await api.put(`/api/pessoa/${item.id}/`, formData);
+        const responsematriculaPut = await api.put(`/api/estudante/matricula/${item.matricula.id}/`, matriculaFormData);
         openSuccessSB();
         navigate("/aluno");
+
       } else {
-        const response = await api.post("/api/pessoa/", formData);
-        console.log(response.data.status);
+        //Criação de nova pessoa
+        const responsePessoa = await api.post("/api/pessoa/", formData);
+        const responseMatricula = await api.post("/api/estudante/matricula/", matriculaFormData);
+        const formAlterarMatricula =     {
+          pessoa: responsePessoa.data.id
+          }
+        console.log(responseMatricula)
+        const responsematriculaPut = await api.put(`/api/estudante/matricula/${responseMatricula.data.id}/`, formAlterarMatricula);
         openSuccessSB();
         navigate("/aluno");
+
       }
     } catch (error) {
+      console.log(error)
       openErrorSB();
     }
   };
