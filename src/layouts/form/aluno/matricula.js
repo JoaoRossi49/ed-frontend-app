@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Grid, Card, Box, TextField, Button } from "@mui/material";
+import { Grid, Card, Box, TextField, Button, Autocomplete } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDSnackbar from "components/MDSnackbar";
@@ -116,6 +116,13 @@ function Matricula() {
     data_nascimento: "",
     data_inclusao: CurrentDateWithTimezone(),
   });
+
+  const [matriculaFormData, setMatriculaFormData] = useState({
+    id: null,
+    data_inclusao: CurrentDateWithTimezone(),
+    pessoa: null,
+    turma: null,
+  });
   //#endregion
 
   //#region verificação de state
@@ -126,58 +133,87 @@ function Matricula() {
     if (item) {
       setExcluirIsVisible(true);
       setFormData({
-        id: item.id,
+        id: item.pessoa.id,
         endereco: {
-          id: item.endereco.id,
-          logradouro: item.endereco?.logradouro ?? null,
-          numero: item.endereco?.numero ?? null,
-          data_inclusao: item.endereco.data_inclusao ?? null,
-          complemento: item.endereco?.complemento ?? null,
-          cidade: item.endereco?.cidade ?? null,
-          estado: item.endereco?.estado ?? null,
-          pais: item.endereco?.pais ?? null,
-          cep: item.endereco?.cep ?? null,
+          id: item.pessoa.endereco.id,
+          logradouro: item.pessoa.endereco?.logradouro ?? null,
+          numero: item.pessoa.endereco?.numero ?? null,
+          data_inclusao: item.pessoa.endereco.data_inclusao ?? null,
+          complemento: item.pessoa.endereco?.complemento ?? null,
+          cidade: item.pessoa.endereco?.cidade ?? null,
+          estado: item.pessoa.endereco?.estado ?? null,
+          pais: item.pessoa.endereco?.pais ?? null,
+          cep: item.pessoa.endereco?.cep ?? null,
         },
         contato: [
           {
-            id: item.contato[0]?.id ?? null,
-            tipo_contato: item.contato[0]?.tipo_contato ?? null,
-            descricao: item.contato[0]?.descricao ?? null,
-            data_inclusao: item.contato[0]?.data_inclusao ?? null,
+            id: item.pessoa.contato[0]?.id ?? null,
+            tipo_contato: item.pessoa.contato[0]?.tipo_contato ?? null,
+            descricao: item.pessoa.contato[0]?.descricao ?? null,
+            data_inclusao: item.pessoa.contato[0]?.data_inclusao ?? null,
             data_alteracao: CurrentDateWithTimezone(),
           },
           {
-            id: item.contato[1]?.id ?? null,
-            tipo_contato: item.contato[1]?.tipo_contato ?? null,
-            descricao: item.contato[1]?.descricao ?? null,
-            data_inclusao: item.contato[1]?.data_inclusao ?? null,
+            id: item.pessoa.contato[1]?.id ?? null,
+            tipo_contato: item.pessoa.contato[1]?.tipo_contato ?? null,
+            descricao: item.pessoa.contato[1]?.descricao ?? null,
+            data_inclusao: item.pessoa.contato[1]?.data_inclusao ?? null,
             data_alteracao: CurrentDateWithTimezone(),
           },
         ],
         documento: [
           {
-            id: item.documento[0]?.id ?? null,
-            nro_documento: item.documento[0]?.nro_documento ?? null,
-            data_inclusao: item.documento[0]?.data_inclusao ?? null,
-            tipo_documento: item.documento[0]?.tipo_documento ?? null,
+            id: item.pessoa.documento[0]?.id ?? null,
+            nro_documento: item.pessoa.documento[0]?.nro_documento ?? null,
+            data_inclusao: item.pessoa.documento[0]?.data_inclusao ?? null,
+            tipo_documento: item.pessoa.documento[0]?.tipo_documento ?? null,
           },
           {
-            id: item.documento[1]?.id ?? null,
-            nro_documento: item.documento[1]?.nro_documento ?? null,
-            data_inclusao: item.documento[1]?.data_inclusao ?? null,
-            tipo_documento: item.documento[1]?.tipo_documento ?? null,
+            id: item.pessoa.documento[1]?.id ?? null,
+            nro_documento: item.pessoa.documento[1]?.nro_documento ?? null,
+            data_inclusao: item.pessoa.documento[1]?.data_inclusao ?? null,
+            tipo_documento: item.pessoa.documento[1]?.tipo_documento ?? null,
           },
         ],
-        nome: item.nome ?? null,
-        nome_social: item.nome_social ?? null,
-        data_nascimento: item.data_nascimento ?? null,
-        data_inclusao: item.data_inclusao ?? null,
+        nome: item.pessoa.nome ?? null,
+        nome_social: item.pessoa.nome_social ?? null,
+        data_nascimento: item.pessoa.data_nascimento ?? null,
+        data_inclusao: item.pessoa.data_inclusao ?? null,
       });
+      setMatriculaFormData({
+        id: item.matricula.id ?? null,
+        data_inclusao: item.matricula.data_inclusao ?? null,
+        pessoa: item.pessoa.id,
+        turma: item.matricula.turma ?? null,
+      })
     }
   }, [item]);
 
   //#endregion
 
+  //#region carregar turmas
+  const [options, setOptions] = useState([]);
+
+  React.useEffect(() => {
+    const fetchTurmas = async () => {
+      try {
+        const response = await api.get("/api/estudante/turmas/");
+        const formattedOptions = response.data.map((turma) => ({
+          label: turma.nome,
+          value: turma.id,
+        }));
+        setOptions(formattedOptions);
+        console.log(formattedOptions);
+      } catch (error) {
+        console.error("Erro ao buscar as turmas:", error);
+      }
+    };
+
+    fetchTurmas();
+  }, []);
+  //#endregion
+
+  //#region handles
   const handleChange = (event) => {
     const { name, value } = event.target;
     const keys = name.split(".");
@@ -194,27 +230,43 @@ function Matricula() {
         }
       });
 
+      console.log(newFormData);
       return newFormData;
     });
+  };
+
+  const handleChangeMatricula = (event, value) => {
+    setMatriculaFormData((prevFormData) => ({
+      ...prevFormData,
+      turma: value.value, 
+    }));
+    console.log('Id da turma selecionada: ', value.value); 
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       if (item) {
-        const responsePut = await api.put(`/api/pessoa/${item.id}/`,
-          formData
-        );
-        console.log(responsePut.data.status);
+        //Alteração de pessoa existente
+        const responsePessoaPut = await api.put(`/api/pessoa/${item.pessoa.id}/`, formData);
+        const responsematriculaPut = await api.put(`/api/estudante/matricula/${item.matricula.id}/`, matriculaFormData);
         openSuccessSB();
         navigate("/aluno");
+
       } else {
-        const response = await api.post("/api/pessoa/", formData);
-        console.log(response.data.status);
+        //Criação de nova pessoa
+        const responsePessoa = await api.post("/api/pessoa/", formData);
+        const responseMatricula = await api.post("/api/estudante/matricula/", matriculaFormData);
+        const formAlterarMatricula =     {
+          pessoa: responsePessoa.data.id
+          }
+        const responsematriculaPut = await api.put(`/api/estudante/matricula/${responseMatricula.data.id}/`, formAlterarMatricula);
         openSuccessSB();
         navigate("/aluno");
+
       }
     } catch (error) {
+      console.log(error)
       openErrorSB();
     }
   };
@@ -228,6 +280,7 @@ function Matricula() {
       console.error("Error deleting data:", error);
     }
   };
+  //#endregion
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -479,6 +532,32 @@ function Matricula() {
                     )}
                   </InputMask>
                 </div>
+                <MDBox
+                  mx={1}
+                  mt={-2}
+                  py={1}
+                  px={1}
+                  variant="gradient"
+                  bgColor="info"
+                  borderRadius="lg"
+                  coloredShadow="info"
+                  style={{ margin: "10px" }}
+                >
+                  <MDBox display="flex" justifyContent="space-between" alignItems="center">
+                    <MDTypography variant="h6" color="white">
+                      Turma
+                    </MDTypography>
+                  </MDBox>
+                </MDBox>
+                <Autocomplete
+                  options={options}
+                  getOptionLabel={(option) => option.label}
+                  onChange={handleChangeMatricula}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Turma" />
+                  )}
+                  value={matriculaFormData.turma}
+                />
                 <div style={{ display: "flex", width: "100%", justifyContent: "center" }}>
                   <Button
                     variant="contained"
@@ -492,7 +571,7 @@ function Matricula() {
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={() => handleExcluir(item.id)}
+                      onClick={() => handleExcluir(item.pessoa.id)}
                       style={{ margin: "10px", width: "35vw", color: "#FFF" }}
                     >
                       Excluir

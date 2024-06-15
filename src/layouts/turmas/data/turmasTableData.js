@@ -22,7 +22,7 @@ import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
 
 // Images
-import user_default from "assets/images/user_default.jpg";
+import class_default from "assets/images/class_default.jpg";
 
 import { useEffect, useState } from "react";
 
@@ -30,7 +30,7 @@ import { NavLink } from "react-router-dom";
 
 import api from 'services/api';
 
-const Author = ({ image, name, email }) => (
+const Turma = ({ image, name, email }) => (
   <MDBox display="flex" alignItems="center" lineHeight={1}>
     <MDAvatar src={image} name={name} size="sm" />
     <MDBox ml={2} lineHeight={1}>
@@ -57,19 +57,19 @@ export default function Data() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.get("/api/pessoa/");
+        const response = await api.get("/api/estudante/turmas/");
         const data = response.data;
 
         if (Array.isArray(data)) {
           const mappedRows = data.map((item) => ({
-            nome: <Author image={user_default} name={item.nome} email={item.nome_social} />,
-            turma: <Job title={item.data_nascimento} />,
+            nome: <Turma image={class_default} name={item.nome} />,
+            turma: <Job title={item.descricao} />,
             status: (
               <MDBox ml={-1}>
                 <MDBadge badgeContent={item.status} color="success" variant="gradient" size="sm" />
               </MDBox>
             ),
-            data_inclusao: (
+            data_inicio: (
               <MDTypography
                 component="a"
                 href="#"
@@ -77,11 +77,11 @@ export default function Data() {
                 color="text"
                 fontWeight="medium"
               >
-                {item.data_inclusao}
+                {item.data_inicio}
               </MDTypography>
             ),
             action: (
-                <NavLink key={"matricular"} to={"/aluno/add"} state={item}>
+                <NavLink key={"cadastrar_turma"} to={"/turma/add"} state={item}>
                   <MDTypography
                     component="a"
                     href="#"
@@ -108,10 +108,8 @@ export default function Data() {
 
   return {
     columns: [
-      { Header: "Aluno", accessor: "nome", width: "45%", align: "left" },
-      { Header: "Turma", accessor: "turma", align: "left" },
-      { Header: "Status", accessor: "status", align: "center" },
-      { Header: "Data da matrícula", accessor: "data_inclusao", align: "center" },
+      { Header: "Nome da turma", accessor: "nome", width: "45%", align: "left" },
+      { Header: "Data de início", accessor: "data_inicio", width: "45%", align: "left" },
       { Header: "Ações", accessor: "action", align: "center" },
     ],
 

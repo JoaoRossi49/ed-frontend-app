@@ -37,7 +37,7 @@ Coded by www.creative-tim.com
 
 // Material Dashboard 2 React layouts
 import Dashboard from "./layouts/dashboard";
-import Tables from "./layouts/tables";
+import Alunos from "./layouts/alunos";
 import Billing from "./layouts/billing";
 import RTL from "./layouts/rtl";
 import Notifications from "./layouts/notifications";
@@ -51,6 +51,8 @@ import Matricula from "layouts/form/aluno/matricula";
 import Icon from "@mui/material/Icon";
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import SchoolIcon from '@mui/icons-material/School';
+import Turmas from "layouts/turmas";
+import CadastroTurma from "layouts/form/turma/cadastroTurma";
 
 
 
@@ -64,12 +66,20 @@ const routes = [
     component: <Dashboard />,
   },
   {
+    type: "divider",
+    key: "dashboard",
+  },
+  {
+    type: "title",
+    title: "Alunos e matrículas",
+  },
+  {
     type: "collapse",
     name: "Alunos",
     key: "alunos",
     icon: <SchoolIcon fontSize="small"></SchoolIcon>,
     route: "/aluno",
-    component: <Tables />,
+    component: <Alunos />,
   },
   {
     type: "collapse",
@@ -80,6 +90,30 @@ const routes = [
     component: <Matricula />,
   },
   {
+    type: "divider",
+    key: "alunos",
+  },
+  {
+    type: "title",
+    title: "Gerência de turmas",
+  },
+  {
+    type: "collapse",
+    name: "Turmas",
+    key: "turmas",
+    icon: <SchoolIcon fontSize="small"></SchoolIcon>,
+    route: "/turmas",
+    component: <Turmas />,
+  },
+  {
+    type: "collapse",
+    name: "Cadastrar turmas",
+    key: "cadastrar_turma",
+    icon: <SchoolIcon fontSize="small"></SchoolIcon>,
+    route: "/turma/add",
+    component: <CadastroTurma />,
+  },
+/*  {
     type: "collapse",
     name: "Notifications",
     key: "notifications",
@@ -87,7 +121,7 @@ const routes = [
     route: "/notifications",
     component: <Notifications />,
   },
-/*  {
+  {
     type: "collapse",
     name: "Billing",
     key: "billing",

@@ -42,6 +42,9 @@ import MDTypography from "components/MDTypography";
 // ReportsBarChart configurations
 import configs from "examples/Charts/BarCharts/ReportsBarChart/configs";
 
+//Icon
+import RefreshIcon from '@mui/icons-material/Refresh';
+
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 function ReportsBarChart({ color, title, description, date, chart }) {
@@ -77,7 +80,7 @@ function ReportsBarChart({ color, title, description, date, chart }) {
           <Divider />
           <MDBox display="flex" alignItems="center">
             <MDTypography variant="button" color="text" lineHeight={1} sx={{ mt: 0.15, mr: 0.5 }}>
-              <Icon>schedule</Icon>
+            <RefreshIcon></RefreshIcon>
             </MDTypography>
             <MDTypography variant="button" color="text" fontWeight="light">
               {date}
