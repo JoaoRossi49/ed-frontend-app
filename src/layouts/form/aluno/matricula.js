@@ -183,7 +183,7 @@ function Matricula() {
       setMatriculaFormData({
         id: item.matricula.id ?? null,
         data_inclusao: item.matricula.data_inclusao ?? null,
-        pessoa: item.pessoa.id,
+        pessoa: item.matricula.id,
         turma: item.matricula.turma ?? null,
       })
     }
@@ -248,7 +248,7 @@ function Matricula() {
     try {
       if (item) {
         //Alteração de pessoa existente
-        const responsePessoaPut = await api.put(`/api/pessoa/${item.pessoa.id}/`, formData);
+        const responsePessoaPut = await api.put(`/api/pessoa/${item.id}/`, formData);
         const responsematriculaPut = await api.put(`/api/estudante/matricula/${item.matricula.id}/`, matriculaFormData);
         openSuccessSB();
         navigate("/aluno");
@@ -260,6 +260,7 @@ function Matricula() {
         const formAlterarMatricula =     {
           pessoa: responsePessoa.data.id
           }
+        console.log(responseMatricula)
         const responsematriculaPut = await api.put(`/api/estudante/matricula/${responseMatricula.data.id}/`, formAlterarMatricula);
         openSuccessSB();
         navigate("/aluno");
@@ -571,7 +572,7 @@ function Matricula() {
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={() => handleExcluir(item.pessoa.id)}
+                      onClick={() => handleExcluir(item.id)}
                       style={{ margin: "10px", width: "35vw", color: "#FFF" }}
                     >
                       Excluir
