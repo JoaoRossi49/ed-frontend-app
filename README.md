@@ -34,8 +34,7 @@ Usando npm:
 ```bash
 npm install
 ```
-
-Ou usando yarn:
+Ou:
 ```bash
 yarn install
 ```
