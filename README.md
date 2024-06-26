@@ -57,7 +57,7 @@ Usando npm:
 npm start
 ```
 
-Ou usando yarn:
+Ou:
 ```bash
 yarn start
 ```
