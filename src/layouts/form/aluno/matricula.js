@@ -203,7 +203,6 @@ function Matricula() {
           value: turma.id,
         }));
         setOptions(formattedOptions);
-        console.log(formattedOptions);
       } catch (error) {
         console.error("Erro ao buscar as turmas:", error);
       }
@@ -229,8 +228,6 @@ function Matricula() {
           currentLevel = currentLevel[key];
         }
       });
-
-      console.log(newFormData);
       return newFormData;
     });
   };
@@ -240,7 +237,6 @@ function Matricula() {
       ...prevFormData,
       turma: value.value, 
     }));
-    console.log('Id da turma selecionada: ', value.value); 
   };
 
   const handleSubmit = async (event) => {
@@ -266,7 +262,6 @@ function Matricula() {
 
       }
     } catch (error) {
-      console.log(error)
       openErrorSB();
     }
   };
@@ -278,6 +273,37 @@ function Matricula() {
       navigate("/aluno");
     } catch (error) {
       console.error("Error deleting data:", error);
+    }
+  };
+
+  const handleBuscarCep = async () => {
+    const cleanedCep = formData.endereco.cep.replace(/[^0-9]/g, '');
+    console.log(cleanedCep)
+    
+    if (cleanedCep.length === 8) {
+      try {
+        const response = await axios.get(`https://viacep.com.br/ws/${cleanedCep}/json/`);
+        if (response.data.erro) {
+          openErrorSB();
+        } else {
+          setFormData((prevState) => ({
+            ...prevState,
+            endereco:{
+              id: 1,
+              logradouro: response.data.logradouro,
+              data_inclusao: CurrentDateWithTimezone(),
+              cidade: response.data.localidade,
+              estado: response.data.uf,
+              cep: formData.endereco.cep,
+              pais: "Brasil",
+            },
+          }));
+        }
+      } catch (error) {
+        openErrorSB();
+      }
+    } else {
+      openErrorSB();
     }
   };
   //#endregion
@@ -360,6 +386,18 @@ function Matricula() {
                   </MDBox>
                 </MDBox>
                 <div>
+                <InputMask mask="99999-999" value={formData.endereco.cep} onChange={handleChange} onBlur={handleBuscarCep}>
+                    {() => (
+                      <TextField
+                        style={{ margin: "10px" }}
+                        id="cep"
+                        name="endereco.cep"
+                        label="Cep"
+                        value={formData.endereco.cep}
+                        onChange={handleChange}
+                      />
+                    )}
+                  </InputMask>
                   <TextField
                     style={{ margin: "10px", width: "41vw" }}
                     required
@@ -378,18 +416,6 @@ function Matricula() {
                     value={formData.endereco.numero}
                     onChange={handleChange}
                   />
-                  <InputMask mask="99999-999" value={formData.endereco.cep} onChange={handleChange}>
-                    {() => (
-                      <TextField
-                        style={{ margin: "10px" }}
-                        id="cep"
-                        name="endereco.cep"
-                        label="Cep"
-                        value={formData.endereco.cep}
-                        onChange={handleChange}
-                      />
-                    )}
-                  </InputMask>
                 </div>
                 <div>
                   <TextField
