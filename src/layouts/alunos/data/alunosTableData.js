@@ -51,6 +51,11 @@ const Job = ({ title, description }) => (
   </MDBox>
 );
 
+const formatDate = (dateString) => {
+  const options = { year: "numeric", month: "long", day: "numeric"}
+  return new Date(dateString).toLocaleDateString(undefined, options)
+}
+
 export default function Data() {
   const [rows, setRows] = useState([]);
 
@@ -62,8 +67,6 @@ export default function Data() {
 
         const responseMatricula = await api.get("/api/estudante/matricula");
         const dataMatriculas = responseMatricula.data;
-        console.log('O dataMatricula é: ', dataMatriculas)
-        console.log('O dataPessoas é: ', dataPessoas)
 
         const mergeData = (dataPessoas, dataMatriculas) => {
           return dataPessoas.map(pessoa => {
@@ -74,10 +77,10 @@ export default function Data() {
                 matricula: {
                   id: matricula.id,
                   numero_matricula: matricula.numero_matricula,
-                  data_inclusao: matricula.data_inclusao,
+                  data_inclusao: formatDate(matricula.data_inclusao),
                   ativo: matricula.ativo,
                   data_inativacao: matricula.data_inativacao,
-                  turma: matricula.turma
+                  turma: matricula.turma_nome
                 }
               };
             } else {
@@ -88,12 +91,12 @@ export default function Data() {
 
         const mergedData = await mergeData(dataPessoas, dataMatriculas);
 
-        console.log('mergedData é: ', mergedData);
         if (Array.isArray(mergedData)) {
+
           const mappedRows = mergedData.map((item) => (
             {
-              nome: <Author image={user_default} name={item.pessoa.nome} email={item.matricula.numero_matricula} />,
-              turma: <Job title={item.pessoa.data_nascimento} />,
+              nome: <Author image={user_default} name={item.pessoa.nome} email={'Nº Matrícula: '+item.matricula.numero_matricula} />,
+              turma: <Job title={item.matricula.turma?item.matricula.turma:'Não matriculado'} />,
               status: (
                 <MDBox ml={-1}>
                   <MDBadge badgeContent={item.status} color="success" variant="gradient" size="sm" />
@@ -107,7 +110,7 @@ export default function Data() {
                   color="text"
                   fontWeight="medium"
                 >
-                  {item.pessoa.data_inclusao}
+                  {item.matricula.data_inclusao}
                 </MDTypography>
               ),
               action: (
