@@ -122,6 +122,7 @@ function Matricula() {
     data_inclusao: CurrentDateWithTimezone(),
     pessoa: null,
     turma: null,
+    turma_nome: 'Selecione uma turma',
   });
   //#endregion
 
@@ -185,7 +186,8 @@ function Matricula() {
         data_inclusao: item.matricula.data_inclusao ?? null,
         pessoa: item.pessoa.id,
         turma: item.matricula.turma ?? null,
-      })
+        turma_nome: item.matricula.turma_nome ?? 'Selecione uma turma',
+      });
     }
   }, [item]);
 
@@ -232,12 +234,9 @@ function Matricula() {
     });
   };
 
-  const handleChangeMatricula = (event, value) => {
-    setMatriculaFormData((prevFormData) => ({
-      ...prevFormData,
-      turma: value.value, 
-    }));
-  };
+  const handleChangeMatricula = (event, value) =>{
+     if (value) { setMatriculaFormData({ ...value, turma_nome: value.label, turma: value.value }
+     )} else { setMatriculaFormData(null); } };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -245,21 +244,25 @@ function Matricula() {
       if (item) {
         //Alteração de pessoa existente
         const responsePessoaPut = await api.put(`/api/pessoa/${item.pessoa.id}/`, formData);
-        const responsematriculaPut = await api.put(`/api/estudante/matricula/${item.matricula.id}/`, matriculaFormData);
+        const responsematriculaPut = await api.put(
+          `/api/estudante/matricula/${item.matricula.id}/`,
+          matriculaFormData
+        );
         openSuccessSB();
         navigate("/aluno");
-
       } else {
         //Criação de nova pessoa
         const responsePessoa = await api.post("/api/pessoa/", formData);
         const responseMatricula = await api.post("/api/estudante/matricula/", matriculaFormData);
-        const formAlterarMatricula =     {
-          pessoa: responsePessoa.data.id
-          }
-        const responsematriculaPut = await api.put(`/api/estudante/matricula/${responseMatricula.data.id}/`, formAlterarMatricula);
+        const formAlterarMatricula = {
+          pessoa: responsePessoa.data.id,
+        };
+        const responsematriculaPut = await api.put(
+          `/api/estudante/matricula/${responseMatricula.data.id}/`,
+          formAlterarMatricula
+        );
         openSuccessSB();
         navigate("/aluno");
-
       }
     } catch (error) {
       openErrorSB();
@@ -277,9 +280,9 @@ function Matricula() {
   };
 
   const handleBuscarCep = async () => {
-    const cleanedCep = formData.endereco.cep.replace(/[^0-9]/g, '');
-    console.log(cleanedCep)
-    
+    const cleanedCep = formData.endereco.cep.replace(/[^0-9]/g, "");
+    console.log(cleanedCep);
+
     if (cleanedCep.length === 8) {
       try {
         const response = await axios.get(`https://viacep.com.br/ws/${cleanedCep}/json/`);
@@ -288,7 +291,7 @@ function Matricula() {
         } else {
           setFormData((prevState) => ({
             ...prevState,
-            endereco:{
+            endereco: {
               id: 1,
               logradouro: response.data.logradouro,
               data_inclusao: CurrentDateWithTimezone(),
@@ -386,7 +389,12 @@ function Matricula() {
                   </MDBox>
                 </MDBox>
                 <div>
-                <InputMask mask="99999-999" value={formData.endereco.cep} onChange={handleChange} onBlur={handleBuscarCep}>
+                  <InputMask
+                    mask="99999-999"
+                    value={formData.endereco.cep}
+                    onChange={handleChange}
+                    onBlur={handleBuscarCep}
+                  >
                     {() => (
                       <TextField
                         style={{ margin: "10px" }}
@@ -576,13 +584,13 @@ function Matricula() {
                   </MDBox>
                 </MDBox>
                 <Autocomplete
+                  style={{ margin: "10px" }}
                   options={options}
                   getOptionLabel={(option) => option.label}
                   onChange={handleChangeMatricula}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Turma" />
-                  )}
-                  value={matriculaFormData.turma}
+                  renderInput={(params) => <TextField {...params} label="Turma" />}
+                  defaultValue={{ label: "", value: null }}
+                  value={matriculaFormData ? { label: matriculaFormData.turma_nome, value: matriculaFormData.turma } : null}
                 />
                 <div style={{ display: "flex", width: "100%", justifyContent: "center" }}>
                   <Button
