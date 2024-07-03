@@ -28,7 +28,7 @@ import { useEffect, useState } from "react";
 
 import { NavLink } from "react-router-dom";
 
-import api from 'services/api';
+import api from "services/api";
 
 const Author = ({ image, name, email }) => (
   <MDBox display="flex" alignItems="center" lineHeight={1}>
@@ -52,9 +52,9 @@ const Job = ({ title, description }) => (
 );
 
 const formatDate = (dateString) => {
-  const options = { year: "numeric", month: "long", day: "numeric"}
-  return new Date(dateString).toLocaleDateString(undefined, options)
-}
+  const options = { year: "numeric", month: "long", day: "numeric" };
+  return new Date(dateString).toLocaleDateString(undefined, options);
+};
 
 export default function Data() {
   const [rows, setRows] = useState([]);
@@ -69,40 +69,60 @@ export default function Data() {
         const dataMatriculas = responseMatricula.data;
 
         const mergeData = (dataPessoas, dataMatriculas) => {
-          return dataPessoas.map(pessoa => {
-            const matricula = dataMatriculas.find(m => m.pessoa === pessoa.id);
-            if (matricula) {
-              return {
-                pessoa: { ...pessoa },
-                matricula: {
-                  id: matricula.id,
-                  numero_matricula: matricula.numero_matricula,
-                  data_inclusao: formatDate(matricula.data_inclusao),
-                  ativo: matricula.ativo,
-                  data_inativacao: matricula.data_inativacao,
-                  turma: matricula.turma_nome
-                }
-              };
-            } else {
-              return null;
-            }
-          }).filter(item => item !== null);
+          return dataPessoas
+            .map((pessoa) => {
+              const matricula = dataMatriculas.find((m) => m.pessoa === pessoa.id);
+              if (matricula) {
+                return {
+                  pessoa: { ...pessoa },
+                  matricula: {
+                    id: matricula.id,
+                    numero_matricula: matricula.numero_matricula,
+                    data_inclusao: formatDate(matricula.data_inclusao),
+                    ativo: matricula.ativo,
+                    data_inativacao: matricula.data_inativacao,
+                    turma: matricula.turma_nome,
+                  },
+                };
+              } else {
+                return null;
+              }
+            })
+            .filter((item) => item !== null);
         };
 
         const mergedData = await mergeData(dataPessoas, dataMatriculas);
 
         if (Array.isArray(mergedData)) {
-
-          const mappedRows = mergedData.map((item) => (
-            {
-              nome: <Author image={user_default} name={item.pessoa.nome} email={'Nº Matrícula: '+item.matricula.numero_matricula} />,
-              turma: <Job title={item.matricula.turma?item.matricula.turma:'Não matriculado'} />,
-              status: (
-                <MDBox ml={-1}>
-                  <MDBadge badgeContent={item.status} color="success" variant="gradient" size="sm" />
-                </MDBox>
-              ),
-              data_inclusao: (
+          const mappedRows = mergedData.map((item) => ({
+            nome: (
+              <NavLink key={"matricular"} to={"/aluno/add"} state={item}>
+                <Author
+                  image={user_default}
+                  name={item.pessoa.nome}
+                  email={"Nº Matrícula: " + item.matricula.numero_matricula}
+                />
+              </NavLink>
+            ),
+            turma: <Job title={item.matricula.turma ? item.matricula.turma : "Não matriculado"} />,
+            status: (
+              <MDBox ml={-1}>
+                <MDBadge badgeContent={item.status} color="success" variant="gradient" size="sm" />
+              </MDBox>
+            ),
+            data_inclusao: (
+              <MDTypography
+                component="a"
+                href="#"
+                variant="caption"
+                color="text"
+                fontWeight="medium"
+              >
+                {item.matricula.data_inclusao}
+              </MDTypography>
+            ),
+            action: (
+              <NavLink key={"matricular"} to={"/aluno/add"} state={item}>
                 <MDTypography
                   component="a"
                   href="#"
@@ -110,44 +130,32 @@ export default function Data() {
                   color="text"
                   fontWeight="medium"
                 >
-                  {item.matricula.data_inclusao}
+                  Edit
                 </MDTypography>
-              ),
-              action: (
-                <NavLink key={"matricular"} to={"/aluno/add"} state={item}>
-                  <MDTypography
-                    component="a"
-                    href="#"
-                    variant="caption"
-                    color="text"
-                    fontWeight="medium"
-                  >
-                    Edit
-                  </MDTypography>
-                </NavLink>
-              ),
-            }));
+              </NavLink>
+            ),
+          }));
           setRows(mappedRows);
         } else {
           console.error("Data is not an array:", mergedData);
         }
       } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  return {
+    columns: [
+      { Header: "Aluno", accessor: "nome", width: "45%", align: "left" },
+      { Header: "Turma", accessor: "turma", align: "left" },
+      { Header: "Status", accessor: "status", align: "center" },
+      { Header: "Data da matrícula", accessor: "data_inclusao", align: "center" },
+      { Header: "Ações", accessor: "action", align: "center" },
+    ],
+
+    rows,
   };
-
-  fetchData();
-}, []);
-
-return {
-  columns: [
-    { Header: "Aluno", accessor: "nome", width: "45%", align: "left" },
-    { Header: "Turma", accessor: "turma", align: "left" },
-    { Header: "Status", accessor: "status", align: "center" },
-    { Header: "Data da matrícula", accessor: "data_inclusao", align: "center" },
-    { Header: "Ações", accessor: "action", align: "center" },
-  ],
-
-  rows,
-};
 }
