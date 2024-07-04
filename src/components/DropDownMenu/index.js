@@ -16,6 +16,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 //generate pdf
 import GeneratePDF from "../../layouts/impressoes/contrato";
 
+import { NavLink } from "react-router-dom";
+import MDTypography from "components/MDTypography";
+
 const StyledMenu = styled((props) => (
   <Menu
     elevation={0}
@@ -69,14 +72,6 @@ export default function DropDownMenu({item}) {
     setAnchorEl(null);
   };
 
-  const handleEdit = () => {
-    console.log('Editando o item: ', item.pessoa)
-  };
-
-  const handleImprimir = () => {
-    GeneratePDF(item={item})
-  }
-
   return (
     <div>
       <Button
@@ -100,22 +95,21 @@ export default function DropDownMenu({item}) {
         open={open}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleEdit} disableRipple>
-          <EditIcon />
-          Edit
-        </MenuItem>
-        <MenuItem onClick={handleImprimir} disableRipple>
+        <MenuItem disableRipple>
           <FileCopyIcon />
-          Duplicate
+          <GeneratePDF item={item} />
         </MenuItem>
-        <Divider sx={{ my: 0.5 }} />
-        <MenuItem onClick={handleClose} disableRipple>
-          <ArchiveIcon />
-          Archive
-        </MenuItem>
-        <MenuItem onClick={handleClose} disableRipple>
-          <MoreHorizIcon />
-          More
+        <MenuItem disableRipple>
+        <NavLink key={"matricular"} to={"/aluno/add"} state={item}>
+                <MDTypography
+                  component="a"
+                  variant="caption"
+                  color="text"
+                  fontWeight="medium"
+                >
+                  Editar
+                </MDTypography>
+              </NavLink>
         </MenuItem>
       </StyledMenu>
     </div>
