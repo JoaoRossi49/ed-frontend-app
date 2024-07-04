@@ -20,6 +20,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
+import DropdownMenu from "components/DropDownMenu";
 
 // Images
 import user_default from "assets/images/user_default.jpg";
@@ -68,6 +69,27 @@ export default function Data() {
         const responseMatricula = await api.get("/api/estudante/matricula");
         const dataMatriculas = responseMatricula.data;
 
+        const calculateAge = (birthDate) => {
+          const today = new Date();
+          const birthDateObj = new Date(birthDate);
+          let age = today.getFullYear() - birthDateObj.getFullYear();
+          const monthDifference = today.getMonth() - birthDateObj.getMonth();
+          
+          if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDateObj.getDate())) {
+            age--;
+          }
+          
+          return age;
+        };
+
+        const getBadgColor = (ativo) =>{
+          if(ativo == true){
+            return "success";
+          }else{
+            return "error";
+          }
+        }
+
         const mergeData = (dataPessoas, dataMatriculas) => {
           return dataPessoas
             .map((pessoa) => {
@@ -104,16 +126,20 @@ export default function Data() {
                 />
               </NavLink>
             ),
-            turma: <Job title={item.matricula.turma ? item.matricula.turma : "Não matriculado"} />,
-            status: (
-              <MDBox ml={-1}>
-                <MDBadge badgeContent={item.status} color="success" variant="gradient" size="sm" />
-              </MDBox>
-            ),
-            data_inclusao: (
+            idade: (
               <MDTypography
                 component="a"
-                href="#"
+                variant="caption"
+                color="text"
+                fontWeight="medium"
+              >
+                {calculateAge(item.pessoa.data_nascimento)}
+              </MDTypography>
+            ),
+            turma: <Job title={item.matricula.turma ? item.matricula.turma : "Não matriculado"} />,
+            data_matricula: (
+              <MDTypography
+                component="a"
                 variant="caption"
                 color="text"
                 fontWeight="medium"
@@ -121,11 +147,15 @@ export default function Data() {
                 {item.matricula.data_inclusao}
               </MDTypography>
             ),
+            status: (
+              <MDBox ml={-1}>
+                <MDBadge badgeContent={item.matricula.ativo} color={getBadgColor(item.matricula.ativo)} variant="gradient" size="sm" />
+              </MDBox>
+            ),
             action: (
               <NavLink key={"matricular"} to={"/aluno/add"} state={item}>
                 <MDTypography
                   component="a"
-                  href="#"
                   variant="caption"
                   color="text"
                   fontWeight="medium"
@@ -134,6 +164,7 @@ export default function Data() {
                 </MDTypography>
               </NavLink>
             ),
+            dropDownMenu: (<DropdownMenu item={item}/>),
           }));
           setRows(mappedRows);
         } else {
@@ -150,10 +181,11 @@ export default function Data() {
   return {
     columns: [
       { Header: "Aluno", accessor: "nome", width: "45%", align: "left" },
+      { Header: "Idade", accessor: "idade", align: "center" },
       { Header: "Turma", accessor: "turma", align: "left" },
+      { Header: "Data da matrícula", accessor: "data_matricula", align: "center" },
       { Header: "Status", accessor: "status", align: "center" },
-      { Header: "Data da matrícula", accessor: "data_inclusao", align: "center" },
-      { Header: "Ações", accessor: "action", align: "center" },
+      { Header: "Ações", accessor: "dropDownMenu", align: "center" },
     ],
 
     rows,
