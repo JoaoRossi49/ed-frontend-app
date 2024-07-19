@@ -52,7 +52,7 @@ function Alunos() {
               >
               <MDBox display="flex" justifyContent="space-between" alignItems="center">
                 <MDTypography variant="h6" color="white">
-                  Alunos matriculados
+                  Aprendizes matriculados
                 </MDTypography>
               </MDBox>
               </MDBox>
