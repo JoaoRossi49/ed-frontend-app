@@ -122,14 +122,16 @@ function Matricula() {
     id: null,
     data_inclusao: CurrentDateWithTimezone(),
     pessoa: null,
+    escolaridade: null,
+    escolaridade_nome: "",
     turma: null,
-    turma_nome: "Selecione uma turma",
+    turma_nome: "",
     cbo: null,
-    cbo_nome: "Selecione um CBO",
+    cbo_nome: "",
     curso: null,
-    curso_nome: "Selecione um curso",
+    curso_nome: "",
     empresa: null,
-    empresa_nome: "Selecione uma empresa",
+    empresa_nome: "",
   });
   //#endregion
 
@@ -139,6 +141,7 @@ function Matricula() {
 
   React.useEffect(() => {
     if (item) {
+      console.log('Item selecionado: ', item)
       setExcluirIsVisible(true);
       setFormData({
         id: item.pessoa.id,
@@ -194,7 +197,7 @@ function Matricula() {
         data_inclusao: item.matricula.data_inclusao ?? null,
         pessoa: item.pessoa.id,
         turma: item.matricula.turma ?? null,
-        turma_nome: item.matricula.turma_nome ?? "Selecione uma turma",
+        turma_nome: item.matricula.turma ?? "Selecione uma turma",
         cbo: item.matricula.cbo ?? null,
         cbo_nome: item.matricula.cbo ?? "Selecione um CBO",
         curso: item.matricula.curso ?? null,
@@ -202,7 +205,7 @@ function Matricula() {
         empresa: item.matricula.empresa ?? null,
         empresa_nome: item.matricula.empresa_nome ?? "Selecione um empresa",
         escolaridade: item.matricula.escolaridade ?? null,
-        escolaridade_nome: item.matricula.escolaridade_nome ?? "Selecione um grau de escolaridade",
+        escolaridade_nome: item.matricula.escolaridade ?? "Selecione um grau de escolaridade",
       });
     }
   }, [item]);
@@ -274,7 +277,7 @@ function Matricula() {
       try {
         const response = await api.get("/api/estudante/empresas/");
         const formattedOptions = response.data.map((empresa) => ({
-          label: empresa.descricao,
+          label: empresa.nome_fantasia,
           value: empresa.id,
         }));
         setempresaOptions(formattedOptions);
@@ -292,9 +295,9 @@ function Matricula() {
     const fetchEscolaridades = async () => {
       try {
         const response = await api.get("/api/estudante/escolaridades/");
-        const formattedOptions = response.data.map((curso) => ({
-          label: curso.descricao,
-          value: curso.id,
+        const formattedOptions = response.data.map((escolaridade) => ({
+          label: escolaridade.descricao,
+          value: escolaridade.id,
         }));
         setescolaridadeOptions(formattedOptions);
       } catch (error) {
@@ -326,12 +329,57 @@ function Matricula() {
     });
   };
 
-  const handleChangeMatricula = (event, value) => {
+ 
+  const handleChangeEscolaridade = (event, value) => {
     if (value) {
-      setMatriculaFormData({ ...value, turma_nome: value.label, turma: value.value });
-    } else {
-      setMatriculaFormData(null);
-    }
+        setMatriculaFormData((prevFormData) => ({
+          ...prevFormData,
+          escolaridade_nome: value.label,
+          escolaridade: value.value,
+        }));
+      }
+  }; 
+
+  const handleChangeTurma = (event, value) => {
+    if (value) {
+        setMatriculaFormData((prevFormData) => (
+          console.log('Formdata: ', prevFormData),
+          {
+          ...prevFormData,
+          turma_nome: value.label,
+          turma: value.value,
+        }));
+      }
+  };
+
+  const handleChangeCbo = (event, value) => {
+    if (value) {
+        setMatriculaFormData((prevFormData) => ({
+          ...prevFormData,
+          cbo_nome: value.label,
+          cbo: value.value,
+        }));
+      }
+  };
+
+  const handleChangeCurso = (event, value) => {
+    if (value) {
+        setMatriculaFormData((prevFormData) => ({
+          ...prevFormData,
+          curso_nome: value.label,
+          curso: value.value,
+        }));
+      }
+  };
+
+  const handleChangeEmpresa = (event, value) => {
+    if (value) {
+        setMatriculaFormData((prevFormData) => ({
+          ...prevFormData,
+          empresa_nome: value.label,
+          empresa: value.value,
+        }));
+      }
   };
 
   const handleSubmit = async (event) => {
@@ -476,14 +524,20 @@ function Matricula() {
                     value={formData.sexo}
                     onChange={handleChange}
                   />
-                  <TextField
-                    style={{ margin: "10px", width: "27vw" }}
-                    id="escolaridade"
-                    name="escolaridade"
-                    label="Escolaridade"
-                    value={formData.escolaridade}
-                    onChange={handleChange}
-                  />
+                <Autocomplete
+                  style={{ margin: "10px", width: "20vw" }}
+                  options={escolaridadeOptions}
+                  required
+                  getOptionLabel={(option) => option.label}
+                  onChange={(event, value) => handleChangeEscolaridade(event, value)}
+                  renderInput={(params) => <TextField {...params} label="Escolaridade" />}
+                  defaultValue={{ label: "", value: null }}
+                  value={
+                    formData
+                      ? { label: matriculaFormData.escolaridade_nome, value: matriculaFormData.escolaridade }
+                      : null
+                  }
+                />
                 </div>
                 <MDBox
                   mx={1}
@@ -699,11 +753,13 @@ function Matricula() {
                     </MDTypography>
                   </MDBox>
                 </MDBox>
+                <div>
                 <Autocomplete
-                  style={{ margin: "10px" }}
+                  style={{ margin: "10px", width: "20vw" }}
                   options={turmasOptions}
+                  required
                   getOptionLabel={(option) => option.label}
-                  onChange={handleChangeMatricula}
+                  onChange={(event, value) => handleChangeTurma(event, value)}
                   renderInput={(params) => <TextField {...params} label="Turma" />}
                   defaultValue={{ label: "", value: null }}
                   value={
@@ -713,18 +769,50 @@ function Matricula() {
                   }
                 />
                 <Autocomplete
-                  style={{ margin: "10px" }}
-                  options={options}
+                  style={{ margin: "10px", width: "20vw" }}
+                  options={cboOptions}
+                  required
                   getOptionLabel={(option) => option.label}
-                  onChange={handleChangeMatricula}
-                  renderInput={(params) => <TextField {...params} label="Turma" />}
+                  onChange={(event, value) => handleChangeCbo(event, value)}
+                  renderInput={(params) => <TextField {...params} label="CBO" />}
                   defaultValue={{ label: "", value: null }}
                   value={
                     matriculaFormData
-                      ? { label: matriculaFormData.turma_nome, value: matriculaFormData.turma }
+                      ? { label: matriculaFormData.cbo_nome, value: matriculaFormData.cbo }
                       : null
                   }
                 />
+                </div>
+                <div>
+                <Autocomplete
+                  style={{ margin: "10px", width: "20vw" }}
+                  options={cursoOptions}
+                  required
+                  getOptionLabel={(option) => option.label}
+                  onChange={(event, value) => handleChangeCurso(event, value)}
+                  renderInput={(params) => <TextField {...params} label="Curso" />}
+                  defaultValue={{ label: "", value: null }}
+                  value={
+                    matriculaFormData
+                      ? { label: matriculaFormData.curso_nome, value: matriculaFormData.curso }
+                      : null
+                  }
+                />
+                <Autocomplete
+                  style={{ margin: "10px", width: "20vw" }}
+                  options={empresaOptions}
+                  required
+                  getOptionLabel={(option) => option.label}
+                  onChange={(event, value) => handleChangeEmpresa(event, value)}
+                  renderInput={(params) => <TextField {...params} label="Empresa" />}
+                  defaultValue={{ label: "", value: null }}
+                  value={
+                    matriculaFormData
+                      ? { label: matriculaFormData.empresa_nome, value: matriculaFormData.empresa }
+                      : null
+                  }
+                />
+                </div>
                 <div style={{ display: "flex", width: "100%", justifyContent: "center" }}>
                   <Button
                     variant="contained"
