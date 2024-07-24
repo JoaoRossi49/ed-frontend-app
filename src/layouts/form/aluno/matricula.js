@@ -143,8 +143,7 @@ function Matricula() {
 
   React.useEffect(() => {
     if (item) {
-      console.log('não to louco: ', item)
-      setExcluirIsVisible(true);
+      setInativarIsVisible(true);
       setFormData({
         id: item.pessoa.id,
         endereco: {
@@ -211,7 +210,6 @@ function Matricula() {
         escolaridade_nome: item.matricula.escolaridade_nome ?? "Selecione um grau de escolaridade",
       });
     }
-    console.log('matricula carregada', matriculaFormData);
   }, [item]);
 
   //#endregion
@@ -410,12 +408,13 @@ function Matricula() {
     event.preventDefault();
     try {
       if (item) {
-        console.log(matriculaFormData);
-        //Alteração de pessoa existente
+        
         let foto_perfil = formData.foto_perfil;
-        formData.foto_perfil = null;
-        const responsePessoaPut = await api.put(`/api/pessoa/${item.pessoa.id}/`, formData);
+        delete formData.foto_perfil;
+
+        const responsePessoaPut = await api.patch(`/api/pessoa/${item.pessoa.id}/`, formData);
         updatePessoaImage(item.pessoa.id, foto_perfil)
+
         const responsematriculaPut = await api.put(
           `/api/estudante/matricula/${item.matricula.id}/`,
           matriculaFormData
@@ -440,15 +439,18 @@ function Matricula() {
         navigate("/aprendizes");
       }
     } catch (error) {
+      console.log(error);
       openErrorSB();
     }
   };
 
-  const [excluirIsVisible, setExcluirIsVisible] = useState(false);
-  const handleExcluir = async (deleteItemId) => {
+  const [inativarIsVisible, setInativarIsVisible] = useState(false);
+  const handleInativar = async (matriculaId) => {
     try {
-      await api.delete(`/api/pessoa/${deleteItemId}/`);
-      navigate("/aluno");
+      const formData = new FormData();
+      formData.append('ativo', false);
+      await api.patch(`/api/estudante/matricula/${matriculaId}/`, formData);
+      navigate("/aprendizes");
     } catch (error) {
       console.error("Error deleting data:", error);
     }
@@ -862,14 +864,14 @@ function Matricula() {
                   >
                     Salvar
                   </Button>
-                  {excluirIsVisible && (
+                  {inativarIsVisible && (
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={() => handleExcluir(item.pessoa.id)}
+                      onClick={() => handleInativar(item.matricula.id)}
                       style={{ margin: "10px", width: "35vw", color: "#FFF" }}
                     >
-                      Excluir
+                      Inativar
                     </Button>
                   )}
                 </div>

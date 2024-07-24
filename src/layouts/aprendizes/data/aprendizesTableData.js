@@ -95,7 +95,6 @@ export default function Data() {
             .map((pessoa) => {
               const matricula = dataMatriculas.find((m) => m.pessoa === pessoa.id);
               if (matricula) {
-                console.log('Matricula no table data: ', matricula)
                 return {
                   pessoa: { ...pessoa },
                   matricula: {
@@ -120,7 +119,12 @@ export default function Data() {
                 return null;
               }
             })
-            .filter((item) => item !== null);
+            .filter((item) => item !== null)
+            .sort((a, b) => {
+              if (a.pessoa.nome < b.pessoa.nome) return -1;
+              if (a.pessoa.nome > b.pessoa.nome) return 1;
+              return 0;
+            });
         };
 
         const mergedData = await mergeData(dataPessoas, dataMatriculas);
@@ -146,7 +150,7 @@ export default function Data() {
                 {calculateAge(item.pessoa.data_nascimento)}
               </MDTypography>
             ),
-            turma: <Job title={item.matricula.turma ? item.matricula.turma : "Não matriculado"} />,
+            turma: <Job title={item.matricula.turma_nome ? item.matricula.turma_nome : "Não matriculado"} />,
             data_matricula: (
               <MDTypography
                 component="a"
@@ -154,7 +158,7 @@ export default function Data() {
                 color="text"
                 fontWeight="medium"
               >
-                {formatDate(item.matricula.data_inclusao)}
+                {item.matricula.empresa_nome}
               </MDTypography>
             ),
             status: (
@@ -193,7 +197,7 @@ export default function Data() {
       { Header: "Aprendiz", accessor: "nome", width: "45%", align: "left" },
       { Header: "Idade", accessor: "idade", align: "center" },
       { Header: "Turma", accessor: "turma", align: "left" },
-      { Header: "Data da matrícula", accessor: "data_matricula", align: "center" },
+      { Header: "Empresa", accessor: "data_matricula", align: "center" },
       { Header: "Status", accessor: "status", align: "center" },
       { Header: "Ações", accessor: "dropDownMenu", align: "center" },
     ],
