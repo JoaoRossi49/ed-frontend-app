@@ -37,7 +37,7 @@ Coded by www.creative-tim.com
 
 // Material Dashboard 2 React layouts
 import Dashboard from "./layouts/dashboard";
-import Alunos from "./layouts/alunos";
+import Aprendizes from "./layouts/aprendizes";
 import SignInSide from "components/Signin/SignIn";
 import Matricula from "layouts/form/aluno/matricula";
 
@@ -65,27 +65,27 @@ const routes = [
   },
   {
     type: "title",
-    title: "Alunos e matrículas",
+    title: "Aprendizes e matrículas",
   },
   {
     type: "collapse",
-    name: "Alunos",
-    key: "alunos",
+    name: "Aprendizes",
+    key: "Aprendizes",
     icon: <SchoolIcon fontSize="small"></SchoolIcon>,
-    route: "/aluno",
-    component: <Alunos />,
+    route: "/aprendizes",
+    component: <Aprendizes />,
   },
   {
     type: "collapse",
     name: "Matricular",
     key: "matricular",
     icon: <SchoolIcon fontSize="small"></SchoolIcon>,
-    route: "/aluno/add",
+    route: "/aprendizes/add",
     component: <Matricula />,
   },
   {
     type: "divider",
-    key: "alunos",
+    key: "Aprendizes",
   },
   {
     type: "title",

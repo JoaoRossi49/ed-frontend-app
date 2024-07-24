@@ -28,10 +28,10 @@ import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 
 // Data
-import alunosTableData from "layouts/alunos/data/alunosTableData";
+import aprendizesTableData from "layouts/aprendizes/data/aprendizesTableData";
 
-function Alunos() {
-  const { columns, rows } = alunosTableData();
+function Aprendizes() {
+  const { columns, rows } = aprendizesTableData();
 
   return (
     <DashboardLayout>
@@ -74,4 +74,4 @@ function Alunos() {
   );
 }
 
-export default Alunos;
+export default Aprendizes;

@@ -33,7 +33,7 @@ import api from "services/api";
 
 const Author = ({ image, name, email }) => (
   <MDBox display="flex" alignItems="center" lineHeight={1}>
-    <MDAvatar src={image} name={name} size="sm" />
+    <MDAvatar src={image} name={name} size="lg" />
     <MDBox ml={2} lineHeight={1}>
       <MDTypography display="block" variant="button" fontWeight="medium">
         {name}
@@ -95,15 +95,25 @@ export default function Data() {
             .map((pessoa) => {
               const matricula = dataMatriculas.find((m) => m.pessoa === pessoa.id);
               if (matricula) {
+                console.log('Matricula no table data: ', matricula)
                 return {
                   pessoa: { ...pessoa },
                   matricula: {
                     id: matricula.id,
                     numero_matricula: matricula.numero_matricula,
-                    data_inclusao: formatDate(matricula.data_inclusao),
+                    data_inclusao: matricula.data_inclusao,
                     ativo: matricula.ativo,
                     data_inativacao: matricula.data_inativacao,
-                    turma: matricula.turma_nome,
+                    turma: matricula.turma,
+                    turma_nome: matricula.turma_nome,
+                    escolaridade: matricula.escolaridade,
+                    escolaridade_nome: matricula.escolaridade_nome,
+                    curso: matricula.curso,
+                    curso_nome: matricula.curso_nome,
+                    empresa: matricula.empresa,
+                    empresa_nome: matricula.empresa_nome,
+                    cbo: matricula.cbo,
+                    cbo_nome: matricula.cbo_nome
                   },
                 };
               } else {
@@ -118,9 +128,9 @@ export default function Data() {
         if (Array.isArray(mergedData)) {
           const mappedRows = mergedData.map((item) => ({
             nome: (
-              <NavLink key={"matricular"} to={"/aluno/add"} state={item}>
+              <NavLink key={"matricular"} to={"/aprendizes/add"} state={item}>
                 <Author
-                  image={user_default}
+                  image={item.pessoa.foto_perfil ?? user_default}
                   name={item.pessoa.nome}
                   email={"Nº Matrícula: " + item.matricula.numero_matricula}
                 />
@@ -144,7 +154,7 @@ export default function Data() {
                 color="text"
                 fontWeight="medium"
               >
-                {item.matricula.data_inclusao}
+                {formatDate(item.matricula.data_inclusao)}
               </MDTypography>
             ),
             status: (
@@ -153,7 +163,7 @@ export default function Data() {
               </MDBox>
             ),
             action: (
-              <NavLink key={"matricular"} to={"/aluno/add"} state={item}>
+              <NavLink key={"matricular"} to={"/aprendizes/add"} state={item}>
                 <MDTypography
                   component="a"
                   variant="caption"
@@ -180,7 +190,7 @@ export default function Data() {
 
   return {
     columns: [
-      { Header: "Aluno", accessor: "nome", width: "45%", align: "left" },
+      { Header: "Aprendiz", accessor: "nome", width: "45%", align: "left" },
       { Header: "Idade", accessor: "idade", align: "center" },
       { Header: "Turma", accessor: "turma", align: "left" },
       { Header: "Data da matrícula", accessor: "data_matricula", align: "center" },
