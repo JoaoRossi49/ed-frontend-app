@@ -35,8 +35,8 @@ const ImageUpload = ({ value, onChange }) => {
         id="image-upload"
       />
       <label htmlFor="image-upload">
-        <Button variant="contained" color="success">
-          Foto de perfil
+        <Button variant="contained" color="success" component="span">
+          FOTO DE PERFIL
         </Button>
       </label>
       {preview && (
