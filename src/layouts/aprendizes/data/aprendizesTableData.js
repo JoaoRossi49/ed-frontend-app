@@ -198,7 +198,7 @@ export default function Data() {
       { Header: "Idade", accessor: "idade", align: "center" },
       { Header: "Turma", accessor: "turma", align: "left" },
       { Header: "Empresa", accessor: "data_matricula", align: "center" },
-      { Header: "Status", accessor: "status", align: "center" },
+      //{ Header: "Status", accessor: "status", align: "center" },
       { Header: "Ações", accessor: "dropDownMenu", align: "center" },
     ],
 

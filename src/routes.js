@@ -47,6 +47,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import SchoolIcon from '@mui/icons-material/School';
 import Turmas from "layouts/turmas";
 import CadastroTurma from "layouts/form/turma/cadastroTurma";
+import CadastroAula from "layouts/form/aula/cadastroAula";
 
 
 
@@ -99,13 +100,32 @@ const routes = [
     route: "/turmas",
     component: <Turmas />,
   },
-  {
+/*
+  
     type: "collapse",
     name: "Cadastrar turmas",
     key: "cadastrar_turma",
-    icon: <SchoolIcon fontSize="small"></SchoolIcon>,
+    icon: <SchoolIcon fontSize="small"></SchoolIcon>,*/
+  {
     route: "/turma/add",
     component: <CadastroTurma />,
+  },
+
+  {
+    type: "divider",
+    key: "Aprendizes",
+  },
+  {
+    type: "title",
+    title: "Diário de aulas",
+  },
+  {
+    type: "collapse",
+    name: "Diário de aula",
+    key: "diario_aula",
+    icon: <SchoolIcon fontSize="small"></SchoolIcon>,
+    route: "/aula/add",
+    component: <CadastroAula />,
   },
 /*  {
     type: "collapse",
