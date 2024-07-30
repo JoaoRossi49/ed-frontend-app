@@ -45,6 +45,10 @@ import Matricula from "layouts/form/aluno/matricula";
 import Icon from "@mui/material/Icon";
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import SchoolIcon from '@mui/icons-material/School';
+import ListIcon from '@mui/icons-material/List';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import GroupsIcon from '@mui/icons-material/Groups';
+
 import Turmas from "layouts/turmas";
 import CadastroTurma from "layouts/form/turma/cadastroTurma";
 import CadastroAula from "layouts/form/aula/cadastroAula";
@@ -65,38 +69,26 @@ const routes = [
     key: "dashboard",
   },
   {
-    type: "title",
-    title: "Aprendizes e matrículas",
+    type: "collapse",
+    name: "Matricular",
+    key: "matricular",
+    icon: <AddCircleIcon fontSize="small"></AddCircleIcon>,
+    route: "/aprendizes/add",
+    component: <Matricula />,
   },
   {
     type: "collapse",
     name: "Aprendizes",
     key: "Aprendizes",
-    icon: <SchoolIcon fontSize="small"></SchoolIcon>,
+    icon: <ListIcon fontSize="small"></ListIcon>,
     route: "/aprendizes",
     component: <Aprendizes />,
   },
   {
     type: "collapse",
-    name: "Matricular",
-    key: "matricular",
-    icon: <SchoolIcon fontSize="small"></SchoolIcon>,
-    route: "/aprendizes/add",
-    component: <Matricula />,
-  },
-  {
-    type: "divider",
-    key: "Aprendizes",
-  },
-  {
-    type: "title",
-    title: "Gerência de turmas",
-  },
-  {
-    type: "collapse",
     name: "Turmas",
     key: "turmas",
-    icon: <SchoolIcon fontSize="small"></SchoolIcon>,
+    icon: <GroupsIcon fontSize="small"></GroupsIcon>,
     route: "/turmas",
     component: <Turmas />,
   },
@@ -110,15 +102,15 @@ const routes = [
     route: "/turma/add",
     component: <CadastroTurma />,
   },
-
+/*
   {
     type: "divider",
     key: "Aprendizes",
   },
   {
     type: "title",
-    title: "Diário de aulas",
-  },
+    title: "Aulas",
+  },*/
   {
     type: "collapse",
     name: "Diário de aula",
@@ -127,62 +119,6 @@ const routes = [
     route: "/aula/add",
     component: <CadastroAula />,
   },
-/*  {
-    type: "collapse",
-    name: "Notifications",
-    key: "notifications",
-    icon: <Icon fontSize="small"></Icon>,
-    route: "/notifications",
-    component: <Notifications />,
-  },
-  {
-    type: "collapse",
-    name: "Billing",
-    key: "billing",
-    icon: <Icon fontSize="small"></Icon>,
-    route: "/billing",
-    component: <Billing />,
-  },
-  {
-    type: "collapse",
-    name: "RTL",
-    key: "rtl",
-    icon: <Icon fontSize="small"></Icon>,
-    route: "/rtl",
-    component: <RTL />,
-  },
-  {
-    type: "collapse",
-    name: "Notifications",
-    key: "notifications",
-    icon: <Icon fontSize="small"></Icon>,
-    route: "/notifications",
-    component: <Notifications />,
-  },
-  {
-    type: "collapse",
-    name: "Profile",
-    key: "profile",
-    icon: <Icon fontSize="small"></Icon>,
-    route: "/profile",
-    component: <Profile />,
-  },
-  {
-    type: "collapse",
-    name: "Sign In",
-    key: "sign-in",
-    icon: <Icon fontSize="small"></Icon>,
-    route: "/authentication/sign-in",
-    component: <SignIn />,
-  },
-  {
-    type: "collapse",
-    name: "Sign Up",
-    key: "sign-up",
-    icon: <Icon fontSize="small"></Icon>,
-    route: "/authentication/sign-up",
-    component: <SignUp />,
-  },*/
 ];
 
 export default routes;
