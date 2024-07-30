@@ -15,9 +15,13 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 //generate pdf
 import GeneratePDF from "../../layouts/impressoes/contrato";
+import { saveAs } from 'file-saver';
 
 import { NavLink } from "react-router-dom";
 import MDTypography from "components/MDTypography";
+
+//api
+import api from '../../services/api';
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -72,6 +76,29 @@ export default function DropDownMenu({item}) {
     setAnchorEl(null);
   };
 
+  const gerarContrato = async () => {
+    try {
+      const response = await api.get(`/api/estudante/contrato/${item.matricula.numero_matricula}`, {
+        responseType: 'blob', // Configura o tipo de resposta para blob
+      });
+  
+      // Cria um URL para o Blob recebido
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'contrato.docx'); // Nome do arquivo a ser baixado
+  
+      // Adiciona o link ao DOM e clica nele para iniciar o download
+      document.body.appendChild(link);
+      link.click();
+  
+      // Remove o link do DOM após o download
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Erro ao obter o contrato', error);
+    }
+  };
+
   return (
     <div>
       <Button
@@ -98,6 +125,10 @@ export default function DropDownMenu({item}) {
         <MenuItem disableRipple>
           <FileCopyIcon />
           <GeneratePDF item={item} />
+        </MenuItem>
+        <MenuItem disableRipple>
+          <FileCopyIcon />
+          <Button onClick={gerarContrato} />
         </MenuItem>
         <MenuItem disableRipple>
         <NavLink key={"matricular"} to={"/aluno/add"} state={item}>
