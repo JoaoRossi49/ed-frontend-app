@@ -884,6 +884,42 @@ function Matricula() {
                     }
                   />
                 </div>
+                <div style={{ display: "flex", gap: "10px" }}>
+                <InputMask
+                    mask="99/99/9999"
+                    value={matriculaFormData.data_inicio_contrato}
+                    onChange={handleChangeMatricula}
+                  >
+                    {() => (
+                      <TextField
+                        style={{ margin: "10px", width: "20vw" }}
+                        required
+                        id="data_inicio_contrato"
+                        name="data_inicio_contrato"
+                        label="Início do contrato"
+                        value={matriculaFormData.data_inicio_contrato}
+                        onChange={handleChangeMatricula}
+                      />
+                    )}
+                  </InputMask>
+                  <InputMask
+                    mask="99/99/9999"
+                    value={matriculaFormData.data_terminio_contrato}
+                    onChange={handleChangeMatricula}
+                  >
+                    {() => (
+                      <TextField
+                        style={{ margin: "10px", width: "20vw" }}
+                        required
+                        id="data_terminio_contrato"
+                        name="data_terminio_contrato"
+                        label="Final do contrato"
+                        value={matriculaFormData.data_terminio_contrato}
+                        onChange={handleChangeMatricula}
+                      />
+                    )}
+                  </InputMask>
+                </div>
                 <MDBox
                   mx={1}
                   mt={-2}
@@ -933,21 +969,89 @@ function Matricula() {
                         : null
                     }
                   />
-                </div>
-                <div>
-                <InputMask
+                   <InputMask
                     mask="R$ 9999.99"
                     value={matriculaFormData.salario}
                     onChange={handleChangeMatricula}
                   >
                     {() => (
                       <TextField
-                        style={{ margin: "10px", width: "33.25vw" }}
+                        style={{ margin: "10px", width: "10vw" }}
                         required
                         id="salario"
                         name="salario"
                         label="Salário (R$)"
                         value={matriculaFormData.salario}
+                        onChange={handleChangeMatricula}
+                      />
+                    )}
+                  </InputMask>
+                </div>
+                <div style={{ display: "flex", gap: "10px" }}>
+                <InputMask
+                    mask="99/99/9999"
+                    value={matriculaFormData.data_inicio_empresa}
+                    onChange={handleChangeMatricula}
+                  >
+                    {() => (
+                      <TextField
+                        style={{ margin: "10px", width: "20vw" }}
+                        required
+                        id="data_inicio_empresa"
+                        name="data_inicio_empresa"
+                        label="Primeiro dia na empresa"
+                        value={matriculaFormData.data_inicio_empresa}
+                        onChange={handleChangeMatricula}
+                      />
+                    )}
+                  </InputMask>
+                  <InputMask
+                    mask="99/99/9999"
+                    value={matriculaFormData.data_terminio_empresa}
+                    onChange={handleChangeMatricula}
+                  >
+                    {() => (
+                      <TextField
+                        style={{ margin: "10px", width: "20vw" }}
+                        required
+                        id="data_terminio_empresa"
+                        name="data_terminio_empresa"
+                        label="Último dia na empresa"
+                        value={matriculaFormData.data_terminio_empresa}
+                        onChange={handleChangeMatricula}
+                      />
+                    )}
+                  </InputMask>
+                  <InputMask
+                    mask="99:99"
+                    value={matriculaFormData.hora_inicio_expediente}
+                    onChange={handleChangeMatricula}
+                  >
+                    {() => (
+                      <TextField
+                        style={{ margin: "10px", width: "10vw" }}
+                        required
+                        id="hora_inicio_expediente"
+                        name="hora_inicio_expediente"
+                        label="Horário de início do expediente"
+                        value={matriculaFormData.hora_inicio_expediente}
+                        onChange={handleChangeMatricula}
+                      />
+                    )}
+                  </InputMask>
+                  <InputMask
+                    mask="99:99"
+                    value={matriculaFormData.hora_fim_expediente}
+                    onChange={handleChangeMatricula}
+                  >
+                    {() => (
+                      <TextField
+                        style={{ margin: "10px", width: "10vw" }}
+                        required
+                        id="hora_fim_expediente"
+                        name="hora_fim_expediente"
+                        label="Horário de encerramento do expediente"
+                        value={matriculaFormData.hora_fim_expediente}
                         onChange={handleChangeMatricula}
                       />
                     )}
