@@ -159,6 +159,7 @@ function Matricula() {
 
   React.useEffect(() => {
     if (item) {
+      console.log('Item carregado: ', item)
       setInativarIsVisible(true);
       setFormData({
         id: item.pessoa.id,
@@ -219,10 +220,7 @@ function Matricula() {
       });
       setMatriculaFormData({
         id: item.matricula.id ?? null,
-        numero_matricula: item.matricula.numero_matricula ?? null,
         data_inclusao: item.matricula.data_inclusao ?? null,
-        ativo: item.matricula.ativo ?? null,
-        data_inativacao: item.matricula.data_inativacao ?? null,
         salario: item.matricula.salario ?? null,
         data_inicio_contrato: item.matricula.data_inicio_contrato ?? null,
         data_terminio_contrato: item.matricula.data_terminio_contrato ?? null,
@@ -352,6 +350,25 @@ function Matricula() {
     const keys = name.split(".");
 
     setFormData((prevFormData) => {
+      let newFormData = { ...prevFormData };
+      let currentLevel = newFormData;
+
+      keys.forEach((key, index) => {
+        if (index === keys.length - 1) {
+          currentLevel[key] = value;
+        } else {
+          currentLevel = currentLevel[key];
+        }
+      });
+      return newFormData;
+    });
+  };
+
+  const handleChangeMatricula = (event) => {
+    const { name, value } = event.target;
+    const keys = name.split(".");
+
+    setMatriculaFormData((prevFormData) => {
       let newFormData = { ...prevFormData };
       let currentLevel = newFormData;
 
@@ -833,7 +850,7 @@ function Matricula() {
                 >
                   <MDBox display="flex" justifyContent="space-between" alignItems="center">
                     <MDTypography variant="h6" color="white">
-                      Informações contratuais
+                      Treinamento teórico
                     </MDTypography>
                   </MDBox>
                 </MDBox>
@@ -854,22 +871,6 @@ function Matricula() {
                   />
                   <Autocomplete
                     style={{ margin: "10px", width: "20vw" }}
-                    options={cboOptions}
-                    required
-                    getOptionLabel={(option) => option.label}
-                    onChange={(event, value) => handleChangeCbo(event, value)}
-                    renderInput={(params) => <TextField {...params} label="CBO" />}
-                    defaultValue={{ label: "", value: null }}
-                    value={
-                      matriculaFormData
-                        ? { label: matriculaFormData.cbo_nome, value: matriculaFormData.cbo }
-                        : null
-                    }
-                  />
-                </div>
-                <div style={{ display: "flex", gap: "10px" }}>
-                  <Autocomplete
-                    style={{ margin: "10px", width: "20vw" }}
                     options={cursoOptions}
                     required
                     getOptionLabel={(option) => option.label}
@@ -882,7 +883,26 @@ function Matricula() {
                         : null
                     }
                   />
-                  <Autocomplete
+                </div>
+                <MDBox
+                  mx={1}
+                  mt={-2}
+                  py={1}
+                  px={1}
+                  variant="gradient"
+                  bgColor="info"
+                  borderRadius="lg"
+                  coloredShadow="info"
+                  style={{ margin: "10px" }}
+                >
+                  <MDBox display="flex" justifyContent="space-between" alignItems="center">
+                    <MDTypography variant="h6" color="white">
+                      Treinamento prático
+                    </MDTypography>
+                  </MDBox>
+                </MDBox>
+                <div style={{ display: "flex", gap: "10px" }}>
+                <Autocomplete
                     style={{ margin: "10px", width: "20vw" }}
                     options={empresaOptions}
                     required
@@ -899,6 +919,39 @@ function Matricula() {
                         : null
                     }
                   />
+                <Autocomplete
+                    style={{ margin: "10px", width: "20vw" }}
+                    options={cboOptions}
+                    required
+                    getOptionLabel={(option) => option.label}
+                    onChange={(event, value) => handleChangeCbo(event, value)}
+                    renderInput={(params) => <TextField {...params} label="CBO" />}
+                    defaultValue={{ label: "", value: null }}
+                    value={
+                      matriculaFormData
+                        ? { label: matriculaFormData.cbo_nome, value: matriculaFormData.cbo }
+                        : null
+                    }
+                  />
+                </div>
+                <div>
+                <InputMask
+                    mask="R$ 9999.99"
+                    value={matriculaFormData.salario}
+                    onChange={handleChangeMatricula}
+                  >
+                    {() => (
+                      <TextField
+                        style={{ margin: "10px", width: "33.25vw" }}
+                        required
+                        id="salario"
+                        name="salario"
+                        label="Salário (R$)"
+                        value={matriculaFormData.salario}
+                        onChange={handleChangeMatricula}
+                      />
+                    )}
+                  </InputMask>
                 </div>
                 <div style={{ display: "flex", width: "100%", justifyContent: "center" }}>
                   <Button

@@ -112,7 +112,16 @@ export default function Data() {
                     empresa: matricula.empresa,
                     empresa_nome: matricula.empresa_nome,
                     cbo: matricula.cbo,
-                    cbo_nome: matricula.cbo_nome
+                    cbo_nome: matricula.cbo_nome,
+                    salario: matricula.salario,
+                    data_inicio_contrato: matricula.data_inicio_contrato,
+                    data_terminio_contrato: matricula.data_terminio_contrato,
+                    data_inicio_empresa: matricula.data_inicio_empresa,
+                    data_terminio_empresa: matricula.data_terminio_empresa,
+                    hora_inicio_expediente: matricula.hora_inicio_expediente,
+                    hora_fim_expediente: matricula.hora_fim_expediente,
+                    dias_da_semana_empresa: matricula.dias_da_semana_empresa,
+                    dias_da_semana_curso: matricula.dias_da_semana_curso
                   },
                 };
               } else {
