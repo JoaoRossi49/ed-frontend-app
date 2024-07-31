@@ -97,6 +97,13 @@ function Matricula() {
         data_inclusao: CurrentDateWithTimezone(),
         data_alteracao: null,
       },
+      {
+        id: 1,
+        tipo_contato: "EMAIL",
+        descricao: "",
+        data_inclusao: CurrentDateWithTimezone(),
+        data_alteracao: null,
+      },
     ],
     documento: [
       {
@@ -122,18 +129,27 @@ function Matricula() {
 
   const [matriculaFormData, setMatriculaFormData] = useState({
     id: null,
+    escolaridade_nome: "",
+    turma_nome: "",
+    curso_nome: "",
+    empresa_nome: "",
+    cbo_nome: "",
     data_inclusao: CurrentDateWithTimezone(),
+    salario: null,
+    data_inicio_contrato: null,
+    data_terminio_contrato: null,
+    data_inicio_empresa: null,
+    data_terminio_empresa: null,
+    hora_inicio_expediente: null,
+    hora_fim_expediente: null,
     pessoa: null,
     escolaridade: null,
-    escolaridade_nome: "",
     turma: null,
-    turma_nome: "",
-    cbo: null,
-    cbo_nome: "",
     curso: null,
-    curso_nome: "",
     empresa: null,
-    empresa_nome: "",
+    cbo: null,
+    dias_da_semana_empresa: [],
+    dias_da_semana_curso: [],
   });
   //#endregion
 
@@ -172,6 +188,13 @@ function Matricula() {
             data_inclusao: item.pessoa.contato[1]?.data_inclusao ?? null,
             data_alteracao: CurrentDateWithTimezone(),
           },
+          {
+            id: item.pessoa.contato[2]?.id ?? null,
+            tipo_contato: item.pessoa.contato[2]?.tipo_contato ?? null,
+            descricao: item.pessoa.contato[2]?.descricao ?? null,
+            data_inclusao: item.pessoa.contato[2]?.data_inclusao ?? null,
+            data_alteracao: CurrentDateWithTimezone(),
+          },
         ],
         documento: [
           {
@@ -196,18 +219,30 @@ function Matricula() {
       });
       setMatriculaFormData({
         id: item.matricula.id ?? null,
+        numero_matricula: item.matricula.numero_matricula ?? null,
         data_inclusao: item.matricula.data_inclusao ?? null,
-        pessoa: item.pessoa.id,
+        ativo: item.matricula.ativo ?? null,
+        data_inativacao: item.matricula.data_inativacao ?? null,
+        salario: item.matricula.salario ?? null,
+        data_inicio_contrato: item.matricula.data_inicio_contrato ?? null,
+        data_terminio_contrato: item.matricula.data_terminio_contrato ?? null,
+        data_inicio_empresa: item.matricula.data_inicio_empresa ?? null,
+        data_terminio_empresa: item.matricula.data_terminio_empresa ?? null,
+        hora_inicio_expediente: item.matricula.hora_inicio_expediente ?? null,
+        hora_fim_expediente: item.matricula.hora_fim_expediente ?? null,
+        pessoa: item.pessoa.id ?? null,
+        escolaridade: item.matricula.escolaridade ?? null,
+        escolaridade_nome: item.matricula.escolaridade_nome ?? "Selecione um grau de escolaridade",
         turma: item.matricula.turma ?? null,
         turma_nome: item.matricula.turma_nome ?? "Selecione uma turma",
-        cbo: item.matricula.cbo ?? null,
-        cbo_nome: item.matricula.cbo_nome ?? "Selecione um CBO",
         curso: item.matricula.curso ?? null,
         curso_nome: item.matricula.curso_nome ?? "Selecione um curso",
         empresa: item.matricula.empresa ?? null,
         empresa_nome: item.matricula.empresa_nome ?? "Selecione um empresa",
-        escolaridade: item.matricula.escolaridade ?? null,
-        escolaridade_nome: item.matricula.escolaridade_nome ?? "Selecione um grau de escolaridade",
+        cbo: item.matricula.cbo ?? null,
+        cbo_nome: item.matricula.cbo_nome ?? "Selecione um CBO",
+        dias_da_semana_empresa: item.matricula.dias_da_semana_empresa ?? [],
+        dias_da_semana_curso: item.matricula.dias_da_semana_curso ?? [],
       });
     }
   }, [item]);
@@ -775,6 +810,16 @@ function Matricula() {
                     )}
                   </InputMask>
                 </div>
+                <TextField
+                  style={{ margin: "10px", width: "33.25vw" }}
+                  required
+                  id="email"
+                  name="contato.2.descricao"
+                  label="E-mail"
+                  type="email"
+                  value={formData.contato[2].descricao}
+                  onChange={handleChange}
+                />
                 <MDBox
                   mx={1}
                   mt={-2}
