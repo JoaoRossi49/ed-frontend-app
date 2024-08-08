@@ -37,7 +37,7 @@ Coded by www.creative-tim.com
 
 // Material Dashboard 2 React layouts
 import Dashboard from "./layouts/dashboard";
-import Alunos from "./layouts/alunos";
+import Aprendizes from "./layouts/aprendizes";
 import SignInSide from "components/Signin/SignIn";
 import Matricula from "layouts/form/aluno/matricula";
 
@@ -45,8 +45,13 @@ import Matricula from "layouts/form/aluno/matricula";
 import Icon from "@mui/material/Icon";
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import SchoolIcon from '@mui/icons-material/School';
+import ListIcon from '@mui/icons-material/List';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import GroupsIcon from '@mui/icons-material/Groups';
+
 import Turmas from "layouts/turmas";
 import CadastroTurma from "layouts/form/turma/cadastroTurma";
+import CadastroAula from "layouts/form/aula/cadastroAula";
 
 
 
@@ -64,105 +69,56 @@ const routes = [
     key: "dashboard",
   },
   {
-    type: "title",
-    title: "Alunos e matrículas",
-  },
-  {
-    type: "collapse",
-    name: "Alunos",
-    key: "alunos",
-    icon: <SchoolIcon fontSize="small"></SchoolIcon>,
-    route: "/aluno",
-    component: <Alunos />,
-  },
-  {
     type: "collapse",
     name: "Matricular",
     key: "matricular",
-    icon: <SchoolIcon fontSize="small"></SchoolIcon>,
-    route: "/aluno/add",
+    icon: <AddCircleIcon fontSize="small"></AddCircleIcon>,
+    route: "/aprendizes/add",
     component: <Matricula />,
   },
   {
-    type: "divider",
-    key: "alunos",
-  },
-  {
-    type: "title",
-    title: "Gerência de turmas",
+    type: "collapse",
+    name: "Aprendizes",
+    key: "Aprendizes",
+    icon: <ListIcon fontSize="small"></ListIcon>,
+    route: "/aprendizes",
+    component: <Aprendizes />,
   },
   {
     type: "collapse",
     name: "Turmas",
     key: "turmas",
-    icon: <SchoolIcon fontSize="small"></SchoolIcon>,
+    icon: <GroupsIcon fontSize="small"></GroupsIcon>,
     route: "/turmas",
     component: <Turmas />,
   },
-  {
+/*
+  
     type: "collapse",
     name: "Cadastrar turmas",
     key: "cadastrar_turma",
-    icon: <SchoolIcon fontSize="small"></SchoolIcon>,
+    icon: <SchoolIcon fontSize="small"></SchoolIcon>,*/
+  {
     route: "/turma/add",
     component: <CadastroTurma />,
   },
-/*  {
-    type: "collapse",
-    name: "Notifications",
-    key: "notifications",
-    icon: <Icon fontSize="small"></Icon>,
-    route: "/notifications",
-    component: <Notifications />,
+/*
+  {
+    type: "divider",
+    key: "Aprendizes",
   },
   {
-    type: "collapse",
-    name: "Billing",
-    key: "billing",
-    icon: <Icon fontSize="small"></Icon>,
-    route: "/billing",
-    component: <Billing />,
-  },
-  {
-    type: "collapse",
-    name: "RTL",
-    key: "rtl",
-    icon: <Icon fontSize="small"></Icon>,
-    route: "/rtl",
-    component: <RTL />,
-  },
-  {
-    type: "collapse",
-    name: "Notifications",
-    key: "notifications",
-    icon: <Icon fontSize="small"></Icon>,
-    route: "/notifications",
-    component: <Notifications />,
-  },
-  {
-    type: "collapse",
-    name: "Profile",
-    key: "profile",
-    icon: <Icon fontSize="small"></Icon>,
-    route: "/profile",
-    component: <Profile />,
-  },
-  {
-    type: "collapse",
-    name: "Sign In",
-    key: "sign-in",
-    icon: <Icon fontSize="small"></Icon>,
-    route: "/authentication/sign-in",
-    component: <SignIn />,
-  },
-  {
-    type: "collapse",
-    name: "Sign Up",
-    key: "sign-up",
-    icon: <Icon fontSize="small"></Icon>,
-    route: "/authentication/sign-up",
-    component: <SignUp />,
+    type: "title",
+    title: "Aulas",
   },*/
+  {
+    type: "collapse",
+    name: "Diário de aula",
+    key: "diario_aula",
+    icon: <SchoolIcon fontSize="small"></SchoolIcon>,
+    route: "/aula/add",
+    component: <CadastroAula />,
+  },
 ];
 
 export default routes;

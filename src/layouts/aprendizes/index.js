@@ -28,10 +28,10 @@ import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 
 // Data
-import alunosTableData from "layouts/alunos/data/alunosTableData";
+import aprendizesTableData from "layouts/aprendizes/data/aprendizesTableData";
 
-function Alunos() {
-  const { columns, rows } = alunosTableData();
+function Aprendizes() {
+  const { columns, rows } = aprendizesTableData();
 
   return (
     <DashboardLayout>
@@ -52,16 +52,16 @@ function Alunos() {
               >
               <MDBox display="flex" justifyContent="space-between" alignItems="center">
                 <MDTypography variant="h6" color="white">
-                  Alunos matriculados
+                  Aprendizes matriculados
                 </MDTypography>
               </MDBox>
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
                   table={{ columns, rows }}
-                  isSorted={false}
+                  isSorted={true}
                   entriesPerPage={false}
-                  showTotalEntries={false}
+                  showTotalEntries={true}
                   noEndBorder
                 />
               </MDBox>
@@ -74,4 +74,4 @@ function Alunos() {
   );
 }
 
-export default Alunos;
+export default Aprendizes;

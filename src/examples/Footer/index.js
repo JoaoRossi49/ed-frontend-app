@@ -67,6 +67,12 @@ function Footer({ company, links }) {
             &nbsp;{name}&nbsp;
           </MDTypography>
         </Link>
+        , customized by 
+        <Link href={"https://github.com/JoaoRossi49"} target="_blank">
+          <MDTypography variant="button" fontWeight="medium">
+            &nbsp;{"João Rossi"}&nbsp;
+          </MDTypography>
+        </Link>
         for a better web.
       </MDBox>
       <MDBox
@@ -97,8 +103,7 @@ Footer.defaultProps = {
   company: { href: "https://www.creative-tim.com/", name: "Creative Tim" },
   links: [
     { href: "https://www.creative-tim.com/", name: "Creative Tim" },
-    { href: "https://www.creative-tim.com/presentation", name: "About Us" },
-    { href: "https://www.creative-tim.com/blog", name: "Blog" },
+    { href: "https://github.com/JoaoRossi49", name: "João Rossi" },
     { href: "https://www.creative-tim.com/license", name: "License" },
   ],
 };

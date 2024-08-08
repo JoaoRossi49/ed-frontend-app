@@ -54,7 +54,7 @@ function Dashboard() {
               <ComplexStatisticsCard
                 color="dark"
                 icon=<PlusOneIcon/>
-                title="Cadastro de alunos"
+                title="Cadastro de Aprendizes"
                 count={127}
                 percentage={{
                   color: "success",
@@ -116,7 +116,7 @@ function Dashboard() {
                 <ReportsBarChart
                   color="info"
                   title="Média de presença total"
-                  description="Alunos presentes em aulas"
+                  description="Aprendizes presentes em aulas"
                   date="Atualizado 1 minuto atrás"
                   chart={reportsBarChartData}
                 />
