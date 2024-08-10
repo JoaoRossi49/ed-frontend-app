@@ -38,12 +38,13 @@ function Matricula() {
   const [errorSB, setErrorSB] = useState(false);
   const openErrorSB = () => setErrorSB(true);
   const closeErrorSB = () => setErrorSB(false);
+  const [contentErrorSB, setContentErrorSB] = useState("Erro!");
   const renderErrorSB = (
     <MDSnackbar
       color="error"
       icon=<ReportGmailerrorredIcon fontSize="small"></ReportGmailerrorredIcon>
       title="Erro!"
-      content="Não foi possível salvar os dados preenchidos"
+      content={contentErrorSB}
       open={errorSB}
       onClose={closeErrorSB}
       close={closeErrorSB}
@@ -159,7 +160,7 @@ function Matricula() {
 
   React.useEffect(() => {
     if (item) {
-      console.log('Item carregado: ', item)
+      console.log("Item carregado: ", item);
       setInativarIsVisible(true);
       setFormData({
         id: item.pessoa.id,
@@ -399,15 +400,11 @@ function Matricula() {
 
   const handleChangeTurma = (event, value) => {
     if (value) {
-      setMatriculaFormData(
-        (prevFormData) => (
-          {
-            ...prevFormData,
-            turma_nome: value.label,
-            turma: value.value,
-          }
-        )
-      );
+      setMatriculaFormData((prevFormData) => ({
+        ...prevFormData,
+        turma_nome: value.label,
+        turma: value.value,
+      }));
     }
   };
 
@@ -443,29 +440,27 @@ function Matricula() {
 
   const updatePessoaImage = async (id, imageFile) => {
     const formData = new FormData();
-    formData.append('foto_perfil', imageFile);
+    formData.append("foto_perfil", imageFile);
     try {
       const response = await api.patch(`/api/pessoa/${id}/`, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   };
-
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       if (item) {
-        
         let foto_perfil = formData.foto_perfil;
         delete formData.foto_perfil;
 
         const responsePessoaPut = await api.patch(`/api/pessoa/${item.pessoa.id}/`, formData);
-        updatePessoaImage(item.pessoa.id, foto_perfil)
+        updatePessoaImage(item.pessoa.id, foto_perfil);
 
         const responsematriculaPut = await api.put(
           `/api/estudante/matricula/${item.matricula.id}/`,
@@ -474,24 +469,26 @@ function Matricula() {
         openSuccessSB();
         navigate("/aprendizes");
       } else {
-        //Criação de nova pessoa
+        //Armazena foto de perfil em variável, a ser enviada posteriormente
         let foto_perfil = formData.foto_perfil;
         formData.foto_perfil = null;
-        const responsePessoa = await api.post("/api/pessoa/", formData);
-        const responseMatricula = await api.post("/api/estudante/matricula/", matriculaFormData);
-        const formAlterarMatricula = {
-          pessoa: responsePessoa.data.id,
-        };
-        const responsematriculaPut = await api.put(
-          `/api/estudante/matricula/${responseMatricula.data.id}/`,
-          formAlterarMatricula
-        );
-        updatePessoaImage(responsePessoa.data.id, foto_perfil)
+
+        //Cria registro de pessoa
+        let pessoa_id = null;
+        await api.post("/api/pessoa/", formData).then((responsePessoa) => {
+          pessoa_id = responsePessoa.data.id;
+          matriculaFormData.pessoa = pessoa_id
+          //Cria matrícula
+          api.post("/api/estudante/matricula/", matriculaFormData);
+        });
+        //Atualiza foto de perfil
+        updatePessoaImage(pessoa_id, foto_perfil);
         openSuccessSB();
         navigate("/aprendizes");
       }
     } catch (error) {
       console.log(error);
+      setContentErrorSB("Erro ao salvar dados: " + "\n" + error);
       openErrorSB();
     }
   };
@@ -500,7 +497,7 @@ function Matricula() {
   const handleInativar = async (matriculaId) => {
     try {
       const formData = new FormData();
-      formData.append('ativo', false);
+      formData.append("ativo", false);
       await api.patch(`/api/estudante/matricula/${matriculaId}/`, formData);
       navigate("/aprendizes");
     } catch (error) {
@@ -563,7 +560,7 @@ function Matricula() {
                     </MDTypography>
                   </MDBox>
                 </MDBox>
-                <div style={{ display: 'flex', gap: '10px' }}>
+                <div style={{ display: "flex", gap: "10px" }}>
                   <TextField
                     style={{ margin: "10px", width: "27vw" }}
                     required
@@ -581,13 +578,10 @@ function Matricula() {
                     value={formData.nome_social}
                     onChange={handleChange}
                   />
-                  <ImageUpload 
-                  value={formData.foto_perfil}
-                  onChange={handleChangeFotoPerfil}
-                  />
+                  <ImageUpload value={formData.foto_perfil} onChange={handleChangeFotoPerfil} />
                 </div>
                 <div style={{ display: "flex", gap: "10px" }}>
-                <InputMask
+                  <InputMask
                     mask="99/99/9999"
                     value={formData.data_nascimento}
                     onChange={handleChange}
@@ -628,7 +622,7 @@ function Matricula() {
                           }
                         : null
                     }
-                  />                  
+                  />
                 </div>
                 <MDBox
                   mx={1}
@@ -885,7 +879,7 @@ function Matricula() {
                   />
                 </div>
                 <div style={{ display: "flex", gap: "10px" }}>
-                <InputMask
+                  <InputMask
                     mask="99/99/9999"
                     value={matriculaFormData.data_inicio_contrato}
                     onChange={handleChangeMatricula}
@@ -938,7 +932,7 @@ function Matricula() {
                   </MDBox>
                 </MDBox>
                 <div style={{ display: "flex", gap: "10px" }}>
-                <Autocomplete
+                  <Autocomplete
                     style={{ margin: "10px", width: "20vw" }}
                     options={empresaOptions}
                     required
@@ -955,7 +949,7 @@ function Matricula() {
                         : null
                     }
                   />
-                <Autocomplete
+                  <Autocomplete
                     style={{ margin: "10px", width: "20vw" }}
                     options={cboOptions}
                     required
@@ -969,7 +963,7 @@ function Matricula() {
                         : null
                     }
                   />
-                   <InputMask
+                  <InputMask
                     mask="R$ 9999.99"
                     value={matriculaFormData.salario}
                     onChange={handleChangeMatricula}
@@ -988,7 +982,7 @@ function Matricula() {
                   </InputMask>
                 </div>
                 <div style={{ display: "flex", gap: "10px" }}>
-                <InputMask
+                  <InputMask
                     mask="99/99/9999"
                     value={matriculaFormData.data_inicio_empresa}
                     onChange={handleChangeMatricula}
