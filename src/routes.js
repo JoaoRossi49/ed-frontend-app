@@ -102,6 +102,10 @@ const routes = [
     route: "/turma/add",
     component: <CadastroTurma />,
   },
+  {
+    route: "/login",
+    component: <SignInSide />,
+  },
 /*
   {
     type: "divider",

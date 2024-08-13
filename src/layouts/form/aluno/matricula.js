@@ -487,7 +487,9 @@ function Matricula() {
         navigate("/aprendizes");
       }
     } catch (error) {
-      console.log(error);
+      if (error.response.status == 400 || error.response.status == 401){
+        navigate("/login")
+      }
       setContentErrorSB("Erro ao salvar dados: " + "\n" + error);
       openErrorSB();
     }
