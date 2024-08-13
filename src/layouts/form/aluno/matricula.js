@@ -1065,9 +1065,8 @@ function Matricula() {
                   {inativarIsVisible && (
                     <Button
                       variant="contained"
-                      color="primary"
                       onClick={() => handleInativar(item.matricula.id)}
-                      style={{ margin: "10px", width: "35vw", color: "#FFF" }}
+                      style={{ margin: "10px", width: "35vw", color: "#FFF", backgroundColor: "#80001A" }}
                     >
                       Inativar
                     </Button>

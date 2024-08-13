@@ -82,14 +82,6 @@ export default function Data() {
           return age;
         };
 
-        const getBadgColor = (ativo) =>{
-          if(ativo == true){
-            return "success";
-          }else{
-            return "error";
-          }
-        }
-
         const mergeData = (dataPessoas, dataMatriculas) => {
           return dataPessoas
             .map((pessoa) => {
@@ -128,7 +120,7 @@ export default function Data() {
                 return null;
               }
             })
-            .filter((item) => item !== null)
+            .filter((item) => item !== null && item.matricula.ativo == true)
             .sort((a, b) => {
               if (a.pessoa.nome < b.pessoa.nome) return -1;
               if (a.pessoa.nome > b.pessoa.nome) return 1;
@@ -170,11 +162,6 @@ export default function Data() {
                 {item.matricula.empresa_nome}
               </MDTypography>
             ),
-            status: (
-              <MDBox ml={-1}>
-                <MDBadge badgeContent={item.matricula.ativo} color={getBadgColor(item.matricula.ativo)} variant="gradient" size="sm" />
-              </MDBox>
-            ),
             action: (
               <NavLink key={"matricular"} to={"/aprendizes/add"} state={item}>
                 <MDTypography
@@ -207,7 +194,6 @@ export default function Data() {
       { Header: "Idade", accessor: "idade", align: "center" },
       { Header: "Turma", accessor: "turma", align: "left" },
       { Header: "Empresa", accessor: "data_matricula", align: "center" },
-      //{ Header: "Status", accessor: "status", align: "center" },
       { Header: "Ações", accessor: "dropDownMenu", align: "center" },
     ],
 
