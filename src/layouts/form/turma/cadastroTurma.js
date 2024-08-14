@@ -84,7 +84,8 @@ function CadastroTurma() {
 
   React.useEffect(() => {
     if (item) {
-      setExcluirIsVisible(true);
+      //Por enquanto, excluir uma turma não será possível
+      //setExcluirIsVisible(true);
       setFormData({
         id: item.id,
         nome: item.nome ?? null,

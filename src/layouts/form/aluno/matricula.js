@@ -343,6 +343,18 @@ function Matricula() {
 
     fetchEscolaridades();
   }, []);
+
+
+  const sexoOptions = [
+    {
+      label: "Masculino",
+      value: "M",
+    },
+    {
+      label: "Feminino",
+      value: "F",
+    }
+  ]
   //#endregion
 
   //#region handles
@@ -394,6 +406,15 @@ function Matricula() {
         ...prevFormData,
         escolaridade_nome: value.label,
         escolaridade: value.value,
+      }));
+    }
+  };
+
+  const handleChangeSexo = (event, value) => {
+    if (value) {
+      setMatriculaFormData((prevFormData) => ({
+        ...prevFormData,
+        sexo: value.value,
       }));
     }
   };
@@ -600,13 +621,22 @@ function Matricula() {
                       />
                     )}
                   </InputMask>
-                  <TextField
+                  <Autocomplete
                     style={{ margin: "10px", width: "8vw" }}
-                    id="sexo"
-                    name="sexo"
-                    label="Sexo"
-                    value={formData.sexo}
-                    onChange={handleChange}
+                    options={sexoOptions}
+                    required
+                    getOptionLabel={(option) => option.label}
+                    onChange={handleChangeSexo}
+                    renderInput={(params) => <TextField {...params} label="sexo" />}
+                    defaultValue={{ label: "", value: null }}
+                    value={
+                      formData
+                        ? {
+                            label: formData.sexo,
+                            value: formData.sexo,
+                          }
+                        : null
+                    }
                   />
                   <Autocomplete
                     style={{ margin: "10px", width: "20vw" }}
