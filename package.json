@@ -16,6 +16,8 @@
     "axios": "^1.6.7",
     "chart.js": "4.3.0",
     "chroma-js": "2.4.2",
+    "date-fns": "^3.6.0",
+    "dayjs": "^1.11.12",
     "dotenv": "^16.4.5",
     "file-saver": "^2.0.5",
     "file-server": "^2.2.1",

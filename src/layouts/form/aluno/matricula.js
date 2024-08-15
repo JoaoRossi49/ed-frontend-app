@@ -9,6 +9,7 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import InputMask from "react-input-mask";
 import { useLocation, useNavigate, NavLink } from "react-router-dom";
+import { addMonths, format } from 'date-fns';
 
 import ReportGmailerrorredIcon from "@mui/icons-material/ReportGmailerrorred";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
@@ -140,6 +141,7 @@ function Matricula() {
     data_inicio_contrato: null,
     data_terminio_contrato: null,
     data_inicio_empresa: null,
+    quantidade_meses_contrato: null,
     data_terminio_empresa: null,
     hora_inicio_expediente: null,
     hora_fim_expediente: null,
@@ -227,6 +229,7 @@ function Matricula() {
         data_terminio_contrato: item.matricula.data_terminio_contrato ?? null,
         data_inicio_empresa: item.matricula.data_inicio_empresa ?? null,
         data_terminio_empresa: item.matricula.data_terminio_empresa ?? null,
+        quantidade_meses_contrato: item.matricula.quantidade_meses_contrato ?? null,
         hora_inicio_expediente: item.matricula.hora_inicio_expediente ?? null,
         hora_fim_expediente: item.matricula.hora_fim_expediente ?? null,
         pessoa: item.pessoa.id ?? null,
@@ -355,6 +358,17 @@ function Matricula() {
       value: "F",
     }
   ]
+
+  const tipoContrato = [
+    {
+      label: "15",
+      value: "15",
+    },
+    {
+      label: "23",
+      value: "23",
+    }
+  ]
   //#endregion
 
   //#region handles
@@ -392,6 +406,23 @@ function Matricula() {
           currentLevel = currentLevel[key];
         }
       });
+
+      if (keys.includes('data_inicio_contrato') || keys.includes('quantidade_meses_contrato')) {
+        const { data_inicio_contrato, quantidade_meses_contrato } = newFormData;
+
+        if (data_inicio_contrato && quantidade_meses_contrato) {
+          const [day, month, year] = data_inicio_contrato.split('/').map(Number);
+          const startDate = new Date(year, month - 1, day);
+          const monthsToAdd = parseInt(quantidade_meses_contrato, 10);
+
+          if (!isNaN(monthsToAdd)) {
+            const endDate = addMonths(startDate, monthsToAdd);
+            const formattedDate = format(endDate, 'dd/MM/yyyy');
+            newFormData.data_terminio_contrato = formattedDate;
+          }
+        }
+      }
+
       return newFormData;
     });
   };
@@ -557,6 +588,51 @@ function Matricula() {
       openErrorSB();
     }
   };
+
+  function parseDate(texto, qtdMeses) {
+    let dataDigitadaSplit = texto.split("/");
+  
+    let dia = dataDigitadaSplit[0];
+    let mes = dataDigitadaSplit[1];
+    let ano = dataDigitadaSplit[2];
+  
+    if (ano.length < 4 && parseInt(ano) < 50) {
+      ano = "20" + ano;
+    } else if (ano.length < 4 && parseInt(ano) >= 50) {
+      ano = "19" + ano;
+    }
+    ano = parseInt(ano);
+
+    mes = parseInt(mes) + parseInt(qtdMeses)
+
+    //Virada de ano
+    while (mes > 12){
+      ano += 1
+      mes -= 12 
+    }
+
+    //Adiciona 0 antes do mês
+    if (mes < 10) {
+      mes = '0' + mes
+    }
+  
+    return `${dia}/${mes}/${ano}`
+  }
+
+  const handleChangeQtdMesesCont = (event) => {
+    let qtdMeses = event.target.value
+
+    if (qtdMeses){
+    let dataInicio = matriculaFormData.data_inicio_contrato;
+    let dataTermino = parseDate(dataInicio, qtdMeses);
+    
+    setMatriculaFormData((prevState) => ({
+      ...prevState,
+      quantidade_meses_contrato: qtdMeses,
+      data_terminio_contrato: dataTermino
+    }));
+  }
+  }
   //#endregion
   return (
     <DashboardLayout>
@@ -928,6 +1004,15 @@ function Matricula() {
                       />
                     )}
                   </InputMask>
+                  <TextField
+                  style={{ margin: "10px", width: "20vw" }}
+                        required
+                        id="quantidade_meses_contrato"
+                        name="quantidade_meses_contrato"
+                        label="Quantidade de meses"
+                        value={matriculaFormData.quantidade_meses_contrato}
+                        onChange={handleChangeQtdMesesCont}>
+                  </TextField>
                   <InputMask
                     mask="99/99/9999"
                     value={matriculaFormData.data_terminio_contrato}
