@@ -9,7 +9,7 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import InputMask from "react-input-mask";
 import { useLocation, useNavigate, NavLink } from "react-router-dom";
-import { addMonths, format } from 'date-fns';
+import { addMonths, format } from "date-fns";
 
 import ReportGmailerrorredIcon from "@mui/icons-material/ReportGmailerrorred";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
@@ -347,7 +347,6 @@ function Matricula() {
     fetchEscolaridades();
   }, []);
 
-
   const sexoOptions = [
     {
       label: "Masculino",
@@ -356,8 +355,8 @@ function Matricula() {
     {
       label: "Feminino",
       value: "F",
-    }
-  ]
+    },
+  ];
 
   const tipoContrato = [
     {
@@ -367,8 +366,8 @@ function Matricula() {
     {
       label: "23",
       value: "23",
-    }
-  ]
+    },
+  ];
   //#endregion
 
   //#region handles
@@ -407,22 +406,6 @@ function Matricula() {
         }
       });
 
-      if (keys.includes('data_inicio_contrato') || keys.includes('quantidade_meses_contrato')) {
-        const { data_inicio_contrato, quantidade_meses_contrato } = newFormData;
-
-        if (data_inicio_contrato && quantidade_meses_contrato) {
-          const [day, month, year] = data_inicio_contrato.split('/').map(Number);
-          const startDate = new Date(year, month - 1, day);
-          const monthsToAdd = parseInt(quantidade_meses_contrato, 10);
-
-          if (!isNaN(monthsToAdd)) {
-            const endDate = addMonths(startDate, monthsToAdd);
-            const formattedDate = format(endDate, 'dd/MM/yyyy');
-            newFormData.data_terminio_contrato = formattedDate;
-          }
-        }
-      }
-
       return newFormData;
     });
   };
@@ -431,62 +414,28 @@ function Matricula() {
     setFormData({ ...formData, foto_perfil: file });
   };
 
-  const handleChangeEscolaridade = (event, value) => {
+  const handleChangeSelectMatricula = (fieldPrefix) => (event, value) => {
+    console.log(value.value, value.label);
     if (value) {
-      setMatriculaFormData((prevFormData) => ({
-        ...prevFormData,
-        escolaridade_nome: value.label,
-        escolaridade: value.value,
+      if (fieldPrefix == "sexo") {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          [fieldPrefix]: value.value,
+        }));
+      } if (fieldPrefix == "quantidade_meses_contrato"){
+        handleChangeQtdMesesCont(event)
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          [fieldPrefix]: value.value,
       }));
-    }
-  };
-
-  const handleChangeSexo = (event, value) => {
-    if (value) {
-      setMatriculaFormData((prevFormData) => ({
-        ...prevFormData,
-        sexo: value.value,
-      }));
-    }
-  };
-
-  const handleChangeTurma = (event, value) => {
-    if (value) {
-      setMatriculaFormData((prevFormData) => ({
-        ...prevFormData,
-        turma_nome: value.label,
-        turma: value.value,
-      }));
-    }
-  };
-
-  const handleChangeCbo = (event, value) => {
-    if (value) {
-      setMatriculaFormData((prevFormData) => ({
-        ...prevFormData,
-        cbo_nome: value.label,
-        cbo: value.value,
-      }));
-    }
-  };
-
-  const handleChangeCurso = (event, value) => {
-    if (value) {
-      setMatriculaFormData((prevFormData) => ({
-        ...prevFormData,
-        curso_nome: value.label,
-        curso: value.value,
-      }));
-    }
-  };
-
-  const handleChangeEmpresa = (event, value) => {
-    if (value) {
-      setMatriculaFormData((prevFormData) => ({
-        ...prevFormData,
-        empresa_nome: value.label,
-        empresa: value.value,
-      }));
+    } else {
+        setMatriculaFormData((prevFormData) => ({
+          ...prevFormData,
+          [`${fieldPrefix}_nome`]: value.label,
+          [fieldPrefix]: value.value,
+        }));
+      }
+      console.log(matriculaFormData);
     }
   };
 
@@ -529,7 +478,7 @@ function Matricula() {
         let pessoa_id = null;
         await api.post("/api/pessoa/", formData).then((responsePessoa) => {
           pessoa_id = responsePessoa.data.id;
-          matriculaFormData.pessoa = pessoa_id
+          matriculaFormData.pessoa = pessoa_id;
           //Cria matrícula
           api.post("/api/estudante/matricula/", matriculaFormData);
         });
@@ -539,8 +488,8 @@ function Matricula() {
         navigate("/aprendizes");
       }
     } catch (error) {
-      if (error.response.status == 400 || error.response.status == 401){
-        navigate("/login")
+      if (error.response.status == 400 || error.response.status == 401) {
+        navigate("/login");
       }
       setContentErrorSB("Erro ao salvar dados: " + "\n" + error);
       openErrorSB();
@@ -591,11 +540,11 @@ function Matricula() {
 
   function parseDate(texto, qtdMeses) {
     let dataDigitadaSplit = texto.split("/");
-  
+    
     let dia = dataDigitadaSplit[0];
     let mes = dataDigitadaSplit[1];
     let ano = dataDigitadaSplit[2];
-  
+
     if (ano.length < 4 && parseInt(ano) < 50) {
       ano = "20" + ano;
     } else if (ano.length < 4 && parseInt(ano) >= 50) {
@@ -603,36 +552,36 @@ function Matricula() {
     }
     ano = parseInt(ano);
 
-    mes = parseInt(mes) + parseInt(qtdMeses)
+    mes = parseInt(mes) + parseInt(qtdMeses);
 
     //Virada de ano
-    while (mes > 12){
-      ano += 1
-      mes -= 12 
+    while (mes > 12) {
+      ano += 1;
+      mes -= 12;
     }
 
     //Adiciona 0 antes do mês
     if (mes < 10) {
-      mes = '0' + mes
+      mes = "0" + mes;
     }
-  
-    return `${dia}/${mes}/${ano}`
+
+    return `${dia}/${mes}/${ano}`;
   }
 
   const handleChangeQtdMesesCont = (event) => {
-    let qtdMeses = event.target.value
+    let qtdMeses = event.target.value;
+    console.log(qtdMeses)
+    if (qtdMeses) {
+      let dataInicio = matriculaFormData.data_inicio_contrato;
+      let dataTermino = parseDate(dataInicio, qtdMeses);
 
-    if (qtdMeses){
-    let dataInicio = matriculaFormData.data_inicio_contrato;
-    let dataTermino = parseDate(dataInicio, qtdMeses);
-    
-    setMatriculaFormData((prevState) => ({
-      ...prevState,
-      quantidade_meses_contrato: qtdMeses,
-      data_terminio_contrato: dataTermino
-    }));
-  }
-  }
+      setMatriculaFormData((prevState) => ({
+        ...prevState,
+        quantidade_meses_contrato: qtdMeses,
+        data_terminio_contrato: dataTermino,
+      }));
+    }
+  };
   //#endregion
   return (
     <DashboardLayout>
@@ -698,17 +647,18 @@ function Matricula() {
                     )}
                   </InputMask>
                   <Autocomplete
-                    style={{ margin: "10px", width: "8vw" }}
+                    style={{ margin: "10px", width: "12vw" }}
                     options={sexoOptions}
                     required
                     getOptionLabel={(option) => option.label}
-                    onChange={handleChangeSexo}
+                    onChange={handleChangeSelectMatricula("sexo")}
                     renderInput={(params) => <TextField {...params} label="sexo" />}
                     defaultValue={{ label: "", value: null }}
                     value={
                       formData
                         ? {
-                            label: formData.sexo,
+                            label: sexoOptions.find((option) => option.value === formData.sexo)
+                              ?.label,
                             value: formData.sexo,
                           }
                         : null
@@ -719,7 +669,7 @@ function Matricula() {
                     options={escolaridadeOptions}
                     required
                     getOptionLabel={(option) => option.label}
-                    onChange={(event, value) => handleChangeEscolaridade(event, value)}
+                    onChange={handleChangeSelectMatricula("escolaridade")}
                     renderInput={(params) => <TextField {...params} label="Escolaridade" />}
                     defaultValue={{ label: "", value: null }}
                     value={
@@ -962,7 +912,7 @@ function Matricula() {
                     options={turmasOptions}
                     required
                     getOptionLabel={(option) => option.label}
-                    onChange={(event, value) => handleChangeTurma(event, value)}
+                    onChange={handleChangeSelectMatricula("turma")}
                     renderInput={(params) => <TextField {...params} label="Turma" />}
                     defaultValue={{ label: "", value: null }}
                     value={
@@ -976,7 +926,7 @@ function Matricula() {
                     options={cursoOptions}
                     required
                     getOptionLabel={(option) => option.label}
-                    onChange={(event, value) => handleChangeCurso(event, value)}
+                    onChange={handleChangeSelectMatricula("curso")}
                     renderInput={(params) => <TextField {...params} label="Curso" />}
                     defaultValue={{ label: "", value: null }}
                     value={
@@ -1004,15 +954,29 @@ function Matricula() {
                       />
                     )}
                   </InputMask>
+                  <Autocomplete
+                    style={{ margin: "10px", width: "20vw" }}
+                    options={tipoContrato}
+                    required
+                    getOptionLabel={(option) => option.label}
+                    onChange={handleChangeSelectMatricula("quantidade_meses_contrato")}
+                    renderInput={(params) => <TextField {...params} label="Quantidade de meses" />}
+                    defaultValue={{ label: "", value: null }}
+                    value={
+                      matriculaFormData
+                        ? { label: matriculaFormData.quantidade_meses_contrato, value: matriculaFormData.quantidade_meses_contrato }
+                        : null
+                    }
+                  />
                   <TextField
-                  style={{ margin: "10px", width: "20vw" }}
-                        required
-                        id="quantidade_meses_contrato"
-                        name="quantidade_meses_contrato"
-                        label="Quantidade de meses"
-                        value={matriculaFormData.quantidade_meses_contrato}
-                        onChange={handleChangeQtdMesesCont}>
-                  </TextField>
+                    style={{ margin: "10px", width: "20vw" }}
+                    required
+                    id="quantidade_meses_contrato"
+                    name="quantidade_meses_contrato"
+                    label="Quantidade de meses"
+                    value={matriculaFormData.quantidade_meses_contrato}
+                    onChange={handleChangeQtdMesesCont}
+                  ></TextField>
                   <InputMask
                     mask="99/99/9999"
                     value={matriculaFormData.data_terminio_contrato}
@@ -1054,7 +1018,7 @@ function Matricula() {
                     options={empresaOptions}
                     required
                     getOptionLabel={(option) => option.label}
-                    onChange={(event, value) => handleChangeEmpresa(event, value)}
+                    onChange={handleChangeSelectMatricula("empresa")}
                     renderInput={(params) => <TextField {...params} label="Empresa" />}
                     defaultValue={{ label: "", value: null }}
                     value={
@@ -1071,7 +1035,7 @@ function Matricula() {
                     options={cboOptions}
                     required
                     getOptionLabel={(option) => option.label}
-                    onChange={(event, value) => handleChangeCbo(event, value)}
+                    onChange={handleChangeSelectMatricula("cbo")}
                     renderInput={(params) => <TextField {...params} label="CBO" />}
                     defaultValue={{ label: "", value: null }}
                     value={
@@ -1181,7 +1145,12 @@ function Matricula() {
                     <Button
                       variant="contained"
                       onClick={() => handleInativar(item.matricula.id)}
-                      style={{ margin: "10px", width: "35vw", color: "#FFF", backgroundColor: "#80001A" }}
+                      style={{
+                        margin: "10px",
+                        width: "35vw",
+                        color: "#FFF",
+                        backgroundColor: "#80001A",
+                      }}
                     >
                       Inativar
                     </Button>

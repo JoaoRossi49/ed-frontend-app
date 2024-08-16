@@ -109,6 +109,7 @@ export default function Data() {
                     data_inicio_contrato: matricula.data_inicio_contrato,
                     data_terminio_contrato: matricula.data_terminio_contrato,
                     data_inicio_empresa: matricula.data_inicio_empresa,
+                    quantidade_meses_contrato: matricula.quantidade_meses_contrato,
                     data_terminio_empresa: matricula.data_terminio_empresa,
                     hora_inicio_expediente: matricula.hora_inicio_expediente,
                     hora_fim_expediente: matricula.hora_fim_expediente,
