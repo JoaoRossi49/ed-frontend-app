@@ -162,7 +162,6 @@ function Matricula() {
 
   React.useEffect(() => {
     if (item) {
-      console.log("Item carregado: ", item);
       setInativarIsVisible(true);
       setFormData({
         id: item.pessoa.id,
@@ -217,7 +216,7 @@ function Matricula() {
         nome: item.pessoa.nome ?? null,
         nome_social: item.pessoa.nome_social ?? null,
         foto_perfil: item.pessoa.foto_perfil ?? null,
-        sexo: item.pessoa.sexo ?? null,
+        sexo: item.pessoa.sexo ?? "",
         data_nascimento: item.pessoa.data_nascimento ?? null,
         data_inclusao: item.pessoa.data_inclusao ?? null,
       });
@@ -414,28 +413,27 @@ function Matricula() {
     setFormData({ ...formData, foto_perfil: file });
   };
 
-  const handleChangeSelectMatricula = (fieldPrefix) => (event, value) => {
-    console.log(value.value, value.label);
+  const handleChangeSelectMatricula = (fieldPrefix) => async (event, value) => {
     if (value) {
       if (fieldPrefix == "sexo") {
         setFormData((prevFormData) => ({
           ...prevFormData,
           [fieldPrefix]: value.value,
         }));
-      } if (fieldPrefix == "quantidade_meses_contrato"){
-        handleChangeQtdMesesCont(event)
-        setFormData((prevFormData) => ({
+      }
+      if (fieldPrefix == "quantidade_meses_contrato") {
+        await handleChangeQtdMesesCont(event);
+        setMatriculaFormData((prevFormData) => ({
           ...prevFormData,
           [fieldPrefix]: value.value,
-      }));
-    } else {
+        }));
+      } else {
         setMatriculaFormData((prevFormData) => ({
           ...prevFormData,
           [`${fieldPrefix}_nome`]: value.label,
           [fieldPrefix]: value.value,
         }));
       }
-      console.log(matriculaFormData);
     }
   };
 
@@ -538,9 +536,9 @@ function Matricula() {
     }
   };
 
-  function parseDate(texto, qtdMeses) {
-    let dataDigitadaSplit = texto.split("/");
-    
+  function parseDate(dataInicio, qtdMeses) {
+    let dataDigitadaSplit = dataInicio.split("/");
+
     let dia = dataDigitadaSplit[0];
     let mes = dataDigitadaSplit[1];
     let ano = dataDigitadaSplit[2];
@@ -568,13 +566,12 @@ function Matricula() {
     return `${dia}/${mes}/${ano}`;
   }
 
-  const handleChangeQtdMesesCont = (event) => {
-    let qtdMeses = event.target.value;
-    console.log(qtdMeses)
-    if (qtdMeses) {
-      let dataInicio = matriculaFormData.data_inicio_contrato;
-      let dataTermino = parseDate(dataInicio, qtdMeses);
+  const handleChangeQtdMesesCont = async (event) => {
+    let qtdMeses = event.target.innerText;
+    let dataInicio = matriculaFormData.data_inicio_contrato;
 
+    if (qtdMeses && dataInicio) {
+      let dataTermino = parseDate(dataInicio, qtdMeses);
       setMatriculaFormData((prevState) => ({
         ...prevState,
         quantidade_meses_contrato: qtdMeses,
@@ -653,13 +650,13 @@ function Matricula() {
                     getOptionLabel={(option) => option.label}
                     onChange={handleChangeSelectMatricula("sexo")}
                     renderInput={(params) => <TextField {...params} label="sexo" />}
-                    defaultValue={{ label: "", value: null }}
                     value={
                       formData
                         ? {
-                            label: sexoOptions.find((option) => option.value === formData.sexo)
-                              ?.label,
-                            value: formData.sexo,
+                            label:
+                              sexoOptions.find((option) => option.value === formData.sexo)?.label ??
+                              "",
+                            value: formData.sexo ?? "",
                           }
                         : null
                     }
@@ -671,7 +668,6 @@ function Matricula() {
                     getOptionLabel={(option) => option.label}
                     onChange={handleChangeSelectMatricula("escolaridade")}
                     renderInput={(params) => <TextField {...params} label="Escolaridade" />}
-                    defaultValue={{ label: "", value: null }}
                     value={
                       formData
                         ? {
@@ -914,7 +910,6 @@ function Matricula() {
                     getOptionLabel={(option) => option.label}
                     onChange={handleChangeSelectMatricula("turma")}
                     renderInput={(params) => <TextField {...params} label="Turma" />}
-                    defaultValue={{ label: "", value: null }}
                     value={
                       matriculaFormData
                         ? { label: matriculaFormData.turma_nome, value: matriculaFormData.turma }
@@ -928,7 +923,6 @@ function Matricula() {
                     getOptionLabel={(option) => option.label}
                     onChange={handleChangeSelectMatricula("curso")}
                     renderInput={(params) => <TextField {...params} label="Curso" />}
-                    defaultValue={{ label: "", value: null }}
                     value={
                       matriculaFormData
                         ? { label: matriculaFormData.curso_nome, value: matriculaFormData.curso }
@@ -961,39 +955,29 @@ function Matricula() {
                     getOptionLabel={(option) => option.label}
                     onChange={handleChangeSelectMatricula("quantidade_meses_contrato")}
                     renderInput={(params) => <TextField {...params} label="Quantidade de meses" />}
-                    defaultValue={{ label: "", value: null }}
                     value={
                       matriculaFormData
-                        ? { label: matriculaFormData.quantidade_meses_contrato, value: matriculaFormData.quantidade_meses_contrato }
+                        ? {
+                            label:
+                              tipoContrato.find(
+                                (option) =>
+                                  option.value === matriculaFormData.quantidade_meses_contrato
+                              )?.label ?? "",
+                            value: matriculaFormData.quantidade_meses_contrato ?? "",
+                          }
                         : null
                     }
                   />
-                  <TextField
-                    style={{ margin: "10px", width: "20vw" }}
-                    required
-                    id="quantidade_meses_contrato"
-                    name="quantidade_meses_contrato"
-                    label="Quantidade de meses"
-                    value={matriculaFormData.quantidade_meses_contrato}
-                    onChange={handleChangeQtdMesesCont}
-                  ></TextField>
-                  <InputMask
-                    mask="99/99/9999"
-                    value={matriculaFormData.data_terminio_contrato}
-                    onChange={handleChangeMatricula}
-                  >
-                    {() => (
                       <TextField
                         style={{ margin: "10px", width: "20vw" }}
-                        required
+                        disabled
                         id="data_terminio_contrato"
                         name="data_terminio_contrato"
                         label="Final do contrato"
+                        defaultValue="-"
                         value={matriculaFormData.data_terminio_contrato}
                         onChange={handleChangeMatricula}
                       />
-                    )}
-                  </InputMask>
                 </div>
                 <MDBox
                   mx={1}
@@ -1020,7 +1004,6 @@ function Matricula() {
                     getOptionLabel={(option) => option.label}
                     onChange={handleChangeSelectMatricula("empresa")}
                     renderInput={(params) => <TextField {...params} label="Empresa" />}
-                    defaultValue={{ label: "", value: null }}
                     value={
                       matriculaFormData
                         ? {
@@ -1037,7 +1020,6 @@ function Matricula() {
                     getOptionLabel={(option) => option.label}
                     onChange={handleChangeSelectMatricula("cbo")}
                     renderInput={(params) => <TextField {...params} label="CBO" />}
-                    defaultValue={{ label: "", value: null }}
                     value={
                       matriculaFormData
                         ? { label: matriculaFormData.cbo_nome, value: matriculaFormData.cbo }

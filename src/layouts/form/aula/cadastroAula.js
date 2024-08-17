@@ -125,12 +125,10 @@ function CadastroAula() {
         const responsePut = await api.put(`/api/estudante/turmas/${item.id}/`,
           formData
         );
-        console.log(responsePut.data.status);
         openSuccessSB();
         navigate("/turmas");
       } else {
         const response = await api.post("/api/estudante/turmas/", formData);
-        console.log(response.data.status);
         openSuccessSB();
         navigate("/turmas");
       }

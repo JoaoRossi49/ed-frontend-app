@@ -4,7 +4,6 @@ import axios from "axios";
 const api = axios.create({
   baseURL: process.env.REACT_APP_DJANGO_URL,
 });
-console.log('A base de url é: ', process.env.REACT_APP_DJANGO_URL)
 
 const refreshTokenUrl = `${api.defaults.baseURL}api/token/refresh/`;
 
@@ -22,8 +21,6 @@ api.interceptors.request.use(
           const response = await axios.post(refreshTokenUrl, {
             refresh: refreshToken,
           });
-          console.log('response de refresh é: ', response)
-          console.log('Novo token de acesso: ', response.data.access)
 
           const newToken = response.data.access;
           localStorage.setItem('accessToken', newToken);
