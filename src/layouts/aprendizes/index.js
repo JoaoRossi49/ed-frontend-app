@@ -12,7 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
-
+import React, { useState } from "react";
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -20,6 +20,7 @@ import Card from "@mui/material/Card";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
+import MDInput from "components/MDInput";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -31,7 +32,23 @@ import DataTable from "examples/Tables/DataTable";
 import aprendizesTableData from "layouts/aprendizes/data/aprendizesTableData";
 
 function Aprendizes() {
+  const [searchTerm, setSearchTerm] = React.useState("");
   const { columns, rows } = aprendizesTableData();
+  console.log("Rows: ", rows);
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredRows = rows.filter((row) => {
+    return Object.values(row).some((value) => {
+      try {
+        return value.props.state.pessoa.nome
+          .toString()
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase());
+      } catch {}
+    });
+  });
 
   return (
     <DashboardLayout>
@@ -50,15 +67,23 @@ function Aprendizes() {
                 borderRadius="lg"
                 coloredShadow="info"
               >
-              <MDBox display="flex" justifyContent="space-between" alignItems="center">
-                <MDTypography variant="h6" color="white">
-                  Aprendizes matriculados
-                </MDTypography>
-              </MDBox>
+                <MDBox display="flex" justifyContent="space-between" alignItems="center">
+                  <MDTypography variant="h6" color="white">
+                    Aprendizes matriculados
+                  </MDTypography>
+                  <MDBox ml={2}>
+                  </MDBox>
+                </MDBox>
               </MDBox>
               <MDBox pt={3}>
+              <MDInput
+                      style={{marginLeft: "2vw"}}
+                      label="Pesquisar"
+                      value={searchTerm}
+                      onChange={handleSearch}
+                    />
                 <DataTable
-                  table={{ columns, rows }}
+                  table={{ columns, rows: filteredRows }}
                   isSorted={true}
                   entriesPerPage={false}
                   showTotalEntries={true}
