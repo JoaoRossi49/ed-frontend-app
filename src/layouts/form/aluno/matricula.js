@@ -974,7 +974,7 @@ function Matricula() {
                         id="data_terminio_contrato"
                         name="data_terminio_contrato"
                         label="Final do contrato"
-                        defaultValue="-"
+                        defaultValue="--/--/----"
                         value={matriculaFormData.data_terminio_contrato}
                         onChange={handleChangeMatricula}
                       />
