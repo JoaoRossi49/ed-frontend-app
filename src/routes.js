@@ -50,6 +50,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import GroupsIcon from '@mui/icons-material/Groups';
 
 import Turmas from "layouts/turmas";
+import Aulas from "layouts/aulas";
 import CadastroTurma from "layouts/form/turma/cadastroTurma";
 import CadastroAula from "layouts/form/aula/cadastroAula";
 
@@ -108,6 +109,26 @@ const routes = [
     ]
   },
   {
+    type: 'submenu',
+    title: 'Aulas',
+    key: "aulas",
+    subRoutes: [
+      {    
+        name: "Aulas",
+        key: "aulas",
+        icon: <GroupsIcon fontSize="small"></GroupsIcon>,
+        route: "/aulas",
+      },
+      {
+        name: "Cadastrar aulas",
+        key: "cadastrar_aula",
+        icon: <SchoolIcon fontSize="small"></SchoolIcon>,
+        route: "/aula/add",
+      }
+
+    ]
+  },
+  {
     route: "/login",
     component: <SignInSide />,
   },
@@ -126,6 +147,14 @@ const routes = [
   {
     route: "/turma/add",
     component: <CadastroTurma />,
+  },
+  {
+    route:"/aulas",
+    component: <Aulas/>,
+  },
+  {
+    route:"/aulas/add",
+    component: <CadastroAula/>,
   },
 /*
   {
