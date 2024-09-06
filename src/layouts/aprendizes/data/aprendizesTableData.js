@@ -52,11 +52,6 @@ const Job = ({ title, description }) => (
   </MDBox>
 );
 
-const formatDate = (dateString) => {
-  const options = { year: "numeric", month: "long", day: "numeric" };
-  return new Date(dateString).toLocaleDateString(undefined, options);
-};
-
 export default function Data() {
   const [rows, setRows] = useState([]);
 

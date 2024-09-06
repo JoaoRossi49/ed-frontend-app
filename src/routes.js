@@ -123,7 +123,7 @@ const routes = [
         name: "Cadastrar aulas",
         key: "cadastrar_aula",
         icon: <SchoolIcon fontSize="small"></SchoolIcon>,
-        route: "/aula/add",
+        route: "/aulas/add",
       }
 
     ]
@@ -165,14 +165,6 @@ const routes = [
     type: "title",
     title: "Aulas",
   },*/
-  {
-    type: "collapse",
-    name: "Diário de aula",
-    key: "diario_aula",
-    icon: <SchoolIcon fontSize="small"></SchoolIcon>,
-    route: "/aula/add",
-    component: <CadastroAula />,
-  },
 ];
 
 export default routes;

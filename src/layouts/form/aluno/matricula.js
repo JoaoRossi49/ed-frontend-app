@@ -960,9 +960,9 @@ function Matricula() {
                             label:
                               tipoContrato.find(
                                 (option) =>
-                                  option.value === matriculaFormData.quantidade_meses_contrato
+                                  option.value === matriculaFormData.quantidade_meses_contrato + ''
                               )?.label ?? "",
-                            value: matriculaFormData.quantidade_meses_contrato ?? "",
+                            value: matriculaFormData.quantidade_meses_contrato + '' ?? "",
                           }
                         : null
                     }

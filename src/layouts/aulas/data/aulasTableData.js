@@ -28,7 +28,7 @@ import { useEffect, useState } from "react";
 
 import { NavLink } from "react-router-dom";
 
-import api from 'services/api';
+import api from "services/api";
 
 const Aula = ({ image, name, email }) => (
   <MDBox display="flex" alignItems="center" lineHeight={1}>
@@ -53,7 +53,7 @@ const Job = ({ title, description }) => (
 
 export default function Data() {
   const [rows, setRows] = useState([]);
-  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -62,22 +62,13 @@ export default function Data() {
 
         if (Array.isArray(data)) {
           const mappedRows = data.map((item) => ({
-            nome: <Aula image={class_default} name={item.tema} />,
+            nome: (
+              <NavLink key={"cadastrar_aula"} to={"/aulas/add"} state={item}>
+                <Aula image={class_default} name={item.tema} />
+              </NavLink>
+            ),
             turma: <Job title={item.turma_nome} />,
             data_aula: <Job title={item.data_aula} />,
-            action: (
-                <NavLink key={"cadastrar_turma"} to={"/turma/add"} state={item}>
-                  <MDTypography
-                    component="a"
-                    href="#"
-                    variant="caption"
-                    color="text"
-                    fontWeight="medium"
-                  >
-                    Edit
-                  </MDTypography>
-                </NavLink>
-            ),
           }));
           setRows(mappedRows);
         } else {
@@ -94,8 +85,8 @@ export default function Data() {
   return {
     columns: [
       { Header: "Tema da aula", accessor: "nome", width: "30%", align: "left" },
-      { Header: "Nome da turma", accessor: "turma", align: "center"},
-      { Header: "Data da aula", accessor: "data_aula", align: "center"},
+      { Header: "Nome da turma", accessor: "turma", align: "center" },
+      { Header: "Data da aula", accessor: "data_aula", align: "center" },
     ],
 
     rows,

@@ -8,12 +8,16 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import InputMask from "react-input-mask";
-import { useLocation, useNavigate, NavLink } from "react-router-dom";
+import { useLocation, useNavigate, NavLink, Form } from "react-router-dom";
+import DataTable from "examples/Tables/DataTable";
 
 import ReportGmailerrorredIcon from "@mui/icons-material/ReportGmailerrorred";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
 import api from "services/api.js";
+
+import aprendizesTableData from "../../../layouts/aprendizes/data/aprendizesTableData";
+import { useCallback } from "react";
 
 function CadastroAula() {
   const navigate = useNavigate();
@@ -59,11 +63,11 @@ function CadastroAula() {
     ocorrencias: null,
     data_aula: null,
     turma: null,
-    turma_nome: '',
+    turma_nome: "",
     educador: null,
-    educador_nome: '',
+    educador_nome: "",
     modulo: null,
-    modulo_nome: '',
+    modulo_nome: "",
   });
   //#endregion
 
@@ -74,17 +78,18 @@ function CadastroAula() {
   React.useEffect(() => {
     if (item) {
       setExcluirIsVisible(true);
+      setListaPresencaIsVisible(true);
       setFormData({
         tema: item.tema ?? null,
         conteudo: item.conteudo ?? null,
         ocorrencias: item.ocorrencias ?? null,
         data_aula: item.data_aula ?? null,
         turma: item.turma ?? null,
-        turma_nome: item.turma_nome ?? 'Selecione a turma',
+        turma_nome: item.turma_nome ?? "Selecione a turma",
         educador: item.educador ?? null,
-        educador_nome: item.educador_nome ?? 'Selecione o educador',
+        educador_nome: item.educador_nome ?? "Selecione o educador",
         modulo: item.modulo ?? null,
-        modulo_nome: item.modulo_nome ?? 'Selecione o módulo aplicado',
+        modulo_nome: item.modulo_nome ?? "Selecione o módulo aplicado",
       });
     }
   }, [item]);
@@ -129,6 +134,30 @@ function CadastroAula() {
 
     fetchModulos();
   }, []);
+  //#endregion
+
+  //#region datatable para registro de presença
+  const aprendizesTableDataCallback = useCallback(() => aprendizesTableData(), []);
+  const { columns, rows } = aprendizesTableDataCallback();
+  const [listaPresencaIsVisible, setListaPresencaIsVisible] = useState(false);
+
+const filteredRows = item
+  ? rows.filter((row) => {
+      return Object.values(row).some((value) => {
+        try {
+          return value.props.state.matricula.turma_nome
+            .toString()
+            .toLowerCase()
+            .includes(item.turma_nome.toLowerCase());
+        } catch {}
+      });
+    })
+  : [];
+
+// Verifique se o filteredRows é um array
+if (!Array.isArray(filteredRows)) {
+  filteredRows = [filteredRows];
+}
   //#endregion
 
   const handleChangeSelectAula = (fieldPrefix) => async (event, value) => {
@@ -187,6 +216,41 @@ function CadastroAula() {
       console.error("Error deleting data:", error);
     }
   };
+
+  //#endregion lista de presença
+  const ListaPresenca = () => {
+    console.log("ListaPresenca foi chamada, ", filteredRows)
+    return (
+      <div>
+        <MDBox
+          mx={1}
+          mt={-2}
+          py={1}
+          px={1}
+          variant="gradient"
+          bgColor="info"
+          borderRadius="lg"
+          coloredShadow="info"
+          style={{ margin: "10px" }}
+        >
+          <MDBox display="flex" justifyContent="space-between" alignItems="center">
+            <MDTypography variant="h6" color="white">
+              Registro de presença
+            </MDTypography>
+          </MDBox>
+        </MDBox>
+          <DataTable
+            table={{ columns, filteredRows }}
+            isSorted={true}
+            entriesPerPage={false}
+            showTotalEntries={true}
+            noEndBorder
+          />
+      </div>
+    );
+  };
+  //#endregion
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -306,10 +370,29 @@ function CadastroAula() {
                 >
                   <MDBox display="flex" justifyContent="space-between" alignItems="center">
                     <MDTypography variant="h6" color="white">
-                      Registro de presença
+                      Ocorrências
                     </MDTypography>
                   </MDBox>
                 </MDBox>
+                <textarea
+                  id="ocorrencias"
+                  value={formData.ocorrencias}
+                  onChange={handleChange}
+                  rows="4"
+                  cols="30"
+                  placeholder="Descreva ocorrências ..."
+                  style={{
+                    padding: "10px",
+                    fontSize: "16px",
+                    margin: "10px",
+                    borderRadius: "5px",
+                    border: "0.5px solid #ccc",
+                    outline: "none",
+                    resize: "vertical",
+                    fontFamily: "Arial",
+                  }}
+                />
+                {filteredRows.length > 0 && <ListaPresenca />}
                 <div style={{ display: "flex", width: "100%", justifyContent: "center" }}>
                   <Button
                     variant="contained"

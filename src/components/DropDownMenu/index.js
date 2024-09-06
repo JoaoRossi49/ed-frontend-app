@@ -74,15 +74,17 @@ export default function DropDownMenu({ item }) {
 
   const gerarContrato = async () => {
     try {
-      const response = await api.get(`/api/estudante/contrato/${item.matricula.numero_matricula}`, {
+      const response = await api.get(`/api/estudante/contrato/${item.matricula.numero_matricula}/`, {
         responseType: "blob", // Configura o tipo de resposta para blob
       });
+      // Define nome do contrato
+      const nomeArquivo = `contrato_${item.pessoa.nome}.docx`
 
       // Cria um URL para o Blob recebido
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "contrato.docx"); // Nome do arquivo a ser baixado
+      link.setAttribute("download", nomeArquivo); // Nome do arquivo a ser baixado
 
       // Adiciona o link ao DOM e clica nele para iniciar o download
       document.body.appendChild(link);

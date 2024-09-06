@@ -34,7 +34,6 @@ import aprendizesTableData from "layouts/aprendizes/data/aprendizesTableData";
 function Aprendizes() {
   const [searchTerm, setSearchTerm] = React.useState("");
   const { columns, rows } = aprendizesTableData();
-  console.log("Rows: ", rows);
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
