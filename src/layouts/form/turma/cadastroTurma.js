@@ -13,26 +13,18 @@ import { useLocation, useNavigate, NavLink } from "react-router-dom";
 import ReportGmailerrorredIcon from "@mui/icons-material/ReportGmailerrorred";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
+import {
+  OutlinedInput,
+  InputLabel,
+  MenuItem,
+  Select,
+  FormControl
+} from "@mui/material";
+
 import api from "services/api.js";
 
 function CadastroTurma() {
   const navigate = useNavigate();
-
-  const CurrentDateWithTimezone = () => {
-    const currentDate = new Date();
-
-    const padZero = (num) => (num < 10 ? `0${num}` : num);
-
-    const timezoneOffset = -currentDate.getTimezoneOffset();
-    const offsetSign = timezoneOffset >= 0 ? "+" : "-";
-    const offsetHours = padZero(Math.floor(Math.abs(timezoneOffset) / 60));
-    const offsetMinutes = padZero(Math.abs(timezoneOffset) % 60);
-
-    const formattedDate = currentDate.toISOString().split(".")[0];
-    const formattedDateWithTimezone = `${formattedDate}${offsetSign}${offsetHours}:${offsetMinutes}`;
-
-    return formattedDateWithTimezone;
-  };
   //#region notificações
   const [errorSB, setErrorSB] = useState(false);
   const openErrorSB = () => setErrorSB(true);
@@ -96,6 +88,37 @@ function CadastroTurma() {
     });
     }
   }, [item]);
+
+  const diasSemana = [
+    {
+      label: "Segunda-feira",
+      value: "1",
+    },
+    {
+      label: "Terça-feira",
+      value: "2",
+    },
+    {
+      label: "Quarta-feira",
+      value: "3",
+    },
+    {
+      label: "Quinta-feira",
+      value: "4",
+    },
+    {
+      label: "Sexta-feira",
+      value: "5",
+    },
+    {
+      label: "Sábado",
+      value: "6",
+    },
+    {
+      label: "Domingo",
+      value: "7",
+    }
+  ];
 
   //#endregion
 
@@ -208,6 +231,21 @@ function CadastroTurma() {
                     )}
                   </InputMask>
                 </div>
+                <FormControl sx={{ m: "2vh", width: "20vw" }}>
+      <InputLabel>Dias da semana</InputLabel>
+      <Select
+        multiple
+        value={item.nome}
+        onChange={console.log('Peido')}
+        input={<OutlinedInput label="Dias da semana" />}
+      >
+        {diasSemana.map((dia) => (
+          <MenuItem key={dia.value} value={dia.label}>
+            {dia.label}
+          </MenuItem>
+        ))}
+      </Select>
+      </FormControl>
                 <div style={{ display: "flex", width: "100%", justifyContent: "center" }}>
                   <Button
                     variant="contained"

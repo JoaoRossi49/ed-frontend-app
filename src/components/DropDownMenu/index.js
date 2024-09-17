@@ -5,20 +5,10 @@ import { styled, alpha } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import EditIcon from "@mui/icons-material/Edit";
-import Divider from "@mui/material/Divider";
-import ArchiveIcon from "@mui/icons-material/Archive";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import MenuIcon from "@mui/icons-material/Menu";
-
-//generate pdf
-import GeneratePDF from "../../layouts/impressoes/contrato";
-import { saveAs } from "file-saver";
-
-import { NavLink } from "react-router-dom";
-import MDTypography from "components/MDTypography";
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 //api
 import api from "../../services/api";
@@ -74,11 +64,14 @@ export default function DropDownMenu({ item }) {
 
   const gerarContrato = async () => {
     try {
-      const response = await api.get(`/api/estudante/contrato/${item.matricula.numero_matricula}/`, {
-        responseType: "blob", // Configura o tipo de resposta para blob
-      });
+      const response = await api.get(
+        `/api/estudante/contrato/${item.matricula.numero_matricula}/`,
+        {
+          responseType: "blob", // Configura o tipo de resposta para blob
+        }
+      );
       // Define nome do contrato
-      const nomeArquivo = `contrato_${item.pessoa.nome}.docx`
+      const nomeArquivo = `contrato_${item.pessoa.nome}.docx`;
 
       // Cria um URL para o Blob recebido
       const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -94,6 +87,22 @@ export default function DropDownMenu({ item }) {
       document.body.removeChild(link);
     } catch (error) {
       console.error("Erro ao obter o contrato", error);
+    }
+  };
+
+  const gerarCalendario = async () => {
+    try {
+      const response = await api.get(
+        `/api/estudante/calendario/${item.matricula.numero_matricula}/`
+      );
+      const calendarioHtml = await response.data;
+
+      // Abre uma nova guia e renderiza o HTML
+      const newTab = window.open();
+      newTab.document.write(calendarioHtml);
+      newTab.document.close();
+    } catch (error) {
+      console.error("Erro ao obter o calendario", error);
     }
   };
 
@@ -125,6 +134,14 @@ export default function DropDownMenu({ item }) {
             <div>
               <FileCopyIcon />
               <span>Contrato</span>
+            </div>
+          </Button>
+        </MenuItem>
+        <MenuItem>
+          <Button onClick={gerarCalendario}>
+            <div>
+              <CalendarMonthIcon />
+              <span>Calendário</span>
             </div>
           </Button>
         </MenuItem>

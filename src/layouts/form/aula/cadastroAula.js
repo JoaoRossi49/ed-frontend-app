@@ -172,22 +172,26 @@ if (!Array.isArray(filteredRows)) {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    const keys = name.split(".");
-
-    setFormData((prevFormData) => {
-      let newFormData = { ...prevFormData };
-      let currentLevel = newFormData;
-
-      keys.forEach((key, index) => {
-        if (index === keys.length - 1) {
-          currentLevel[key] = value;
-        } else {
-          currentLevel = currentLevel[key];
-        }
-      });
-
-      return newFormData;
-    });
+    if (name) {
+      const keys = name.split(".");
+      console.log("keys:", keys); // Add this logging statement
+      if (Array.isArray(keys) && keys.length > 0) {
+        setFormData((prevFormData) => {
+          let newFormData = { ...prevFormData };
+          let currentLevel = newFormData;
+  
+          keys.forEach((key, index) => {
+            if (index === keys.length - 1) {
+              currentLevel[key] = value;
+            } else {
+              currentLevel = currentLevel[key];
+            }
+          });
+  
+          return newFormData;
+        });
+      }
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -220,6 +224,9 @@ if (!Array.isArray(filteredRows)) {
   //#endregion lista de presença
   const ListaPresenca = () => {
     console.log("ListaPresenca foi chamada, ", filteredRows)
+    if (!Array.isArray(filteredRows)) {
+      return <div>No data to display</div>;
+    }
     return (
       <div>
         <MDBox

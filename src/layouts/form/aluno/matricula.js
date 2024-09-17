@@ -928,6 +928,8 @@ function Matricula() {
                         : null
                     }
                   />
+                      <div style={{ display: "flex", height: "10vh" }}>
+    </div>
                 </div>
                 <div style={{ display: "flex", gap: "10px" }}>
                   <InputMask

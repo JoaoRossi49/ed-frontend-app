@@ -75,12 +75,6 @@ const routes = [
     key: "matricular",
     subRoutes: [
       {
-        name: "Matricular",
-        key: "matricular",
-        icon: <AddCircleIcon fontSize="small"></AddCircleIcon>,
-        route: "/aprendizes/add",
-      },
-      {
         name: "Aprendizes ativos",
         key: "Aprendizes",
         icon: <ListIcon fontSize="small"></ListIcon>,
@@ -89,44 +83,20 @@ const routes = [
     ],
   },
   {
-    type: 'submenu',
-    title: 'Turmas',
+    type: "collapse",
+    name: "Turmas",
     key: "turmas",
-    subRoutes: [
-      {    
-        name: "Turmas",
-        key: "turmas",
-        icon: <GroupsIcon fontSize="small"></GroupsIcon>,
-        route: "/turmas",
-      },
-      {
-        name: "Cadastrar turmas",
-        key: "cadastrar_turma",
-        icon: <SchoolIcon fontSize="small"></SchoolIcon>,
-        route: "/turma/add",
-      }
-
-    ]
+    icon: <GroupsIcon fontSize="small"></GroupsIcon>,
+    route: "/turmas",
+    component: <Turmas />,
   },
   {
-    type: 'submenu',
-    title: 'Aulas',
+    type: "collapse",
+    name: "Aulas",
     key: "aulas",
-    subRoutes: [
-      {    
-        name: "Aulas",
-        key: "aulas",
-        icon: <GroupsIcon fontSize="small"></GroupsIcon>,
-        route: "/aulas",
-      },
-      {
-        name: "Cadastrar aulas",
-        key: "cadastrar_aula",
-        icon: <SchoolIcon fontSize="small"></SchoolIcon>,
-        route: "/aulas/add",
-      }
-
-    ]
+    icon: <SchoolIcon fontSize="small"></SchoolIcon>,
+    route: "/aulas",
+    component: <Aulas />,
   },
   {
     route: "/login",
@@ -141,16 +111,8 @@ const routes = [
     component: <Aprendizes />,
   },
   {
-    route: "/turmas",
-    component: <Turmas />,
-  },
-  {
-    route: "/turma/add",
+    route: "/turmas/add",
     component: <CadastroTurma />,
-  },
-  {
-    route:"/aulas",
-    component: <Aulas/>,
   },
   {
     route:"/aulas/add",

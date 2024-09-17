@@ -21,6 +21,8 @@ import Card from "@mui/material/Card";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
+import MDButton from "components/MDButton";
+import { NavLink } from "react-router-dom";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -30,6 +32,9 @@ import DataTable from "examples/Tables/DataTable";
 
 // Data
 import aprendizesTableData from "layouts/aprendizes/data/aprendizesTableData";
+
+// Icon
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 function Aprendizes() {
   const [searchTerm, setSearchTerm] = React.useState("");
@@ -70,17 +75,25 @@ function Aprendizes() {
                   <MDTypography variant="h6" color="white">
                     Aprendizes matriculados
                   </MDTypography>
-                  <MDBox ml={2}>
-                  </MDBox>
+                  <MDBox ml={2}></MDBox>
                 </MDBox>
               </MDBox>
               <MDBox pt={3}>
-              <MDInput
-                      style={{marginLeft: "2vw"}}
-                      label="Pesquisar"
-                      value={searchTerm}
-                      onChange={handleSearch}
-                    />
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <MDInput
+                    style={{ marginLeft: "2vw" }}
+                    label="Pesquisar"
+                    value={searchTerm}
+                    onChange={handleSearch}
+                  />
+                  <div style={{marginRight: "2vw"}}>
+                  <NavLink key={"cadastrar_aula"} to={"/aprendizes/add"}>
+                  <div>
+                  <MDButton>{<AddCircleIcon />}{"Nova Matrícula"}</MDButton>
+                  </div>                    
+                  </NavLink>
+                  </div>
+                </div>
                 <DataTable
                   table={{ columns, rows: filteredRows }}
                   isSorted={true}
