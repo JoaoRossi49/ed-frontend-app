@@ -7,19 +7,12 @@ import MDSnackbar from "components/MDSnackbar";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import InputMask from "react-input-mask";
-import { useLocation, useNavigate, NavLink } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import ReportGmailerrorredIcon from "@mui/icons-material/ReportGmailerrorred";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
-import {
-  OutlinedInput,
-  InputLabel,
-  MenuItem,
-  Select,
-  FormControl
-} from "@mui/material";
+import Switch from "@mui/material/Switch";
 
 import api from "services/api.js";
 
@@ -62,11 +55,13 @@ function CadastroTurma() {
   //#region definição de formdata
   const [formData, setFormData] = useState({
     id: 1,
-		nome: "",
-		descricao: "",
-		data_inclusao: null,
-		data_inicio: null,
-		data_fim: null
+    nome: "",
+    descricao: "",
+    data_inclusao: null,
+    data_inicio: null,
+    data_fim: null,
+    dias_da_semana_empresa: [],
+    dias_da_semana_curso: [],
   });
   //#endregion
 
@@ -84,43 +79,41 @@ function CadastroTurma() {
         descricao: item.descricao ?? null,
         data_inclusao: item.data_inclusao ?? null,
         data_inicio: item.data_inicio ?? null,
-        data_fim: item.data_fim ?? null
-    });
+        data_fim: item.data_fim ?? null,
+        dias_da_semana_empresa: item.dias_da_semana_empresa ?? [],
+        dias_da_semana_curso: item.dias_da_semana_curso ?? [],
+      });
+
+      console.log("Item carregado: ", item)
     }
   }, [item]);
 
-  const diasSemana = [
-    {
-      label: "Segunda-feira",
-      value: "1",
-    },
-    {
-      label: "Terça-feira",
-      value: "2",
-    },
-    {
-      label: "Quarta-feira",
-      value: "3",
-    },
-    {
-      label: "Quinta-feira",
-      value: "4",
-    },
-    {
-      label: "Sexta-feira",
-      value: "5",
-    },
-    {
-      label: "Sábado",
-      value: "6",
-    },
-    {
-      label: "Domingo",
-      value: "7",
-    }
-  ];
-
   //#endregion
+  const [diasSemanaSelecionados, setDiasSemanaSelecionados] = useState({
+    dias_da_semana_empresa: item.dias_da_semana_empresa ?? [],
+    dias_da_semana_curso: item.dias_da_semana_curso ?? [],
+  });
+  const handleRadioChange = (event) => {
+    const selecionado = parseInt(event.target.value, 10);
+    setDiasSemanaSelecionados((prevState) => {
+      const novosDiasCurso = prevState.dias_da_semana_curso.includes(selecionado)
+        ? prevState.dias_da_semana_curso.filter((dia) => dia !== selecionado)
+        : [...prevState.dias_da_semana_curso, selecionado];
+
+      const novosDiasEmpresa = [1, 2, 3, 4, 5].filter((dia) => !novosDiasCurso.includes(dia));
+
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        dias_da_semana_curso: novosDiasCurso,
+        dias_da_semana_empresa: novosDiasEmpresa,
+      }));
+
+      return {
+        dias_da_semana_empresa: novosDiasEmpresa,
+        dias_da_semana_curso: novosDiasCurso,
+      };
+    });
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -146,9 +139,7 @@ function CadastroTurma() {
     event.preventDefault();
     try {
       if (item) {
-        const responsePut = await api.put(`/api/estudante/turmas/${item.id}/`,
-          formData
-        );
+        const responsePut = await api.put(`/api/estudante/turmas/${item.id}/`, formData);
         openSuccessSB();
         navigate("/turmas");
       } else {
@@ -170,6 +161,7 @@ function CadastroTurma() {
       console.error("Error deleting data:", error);
     }
   };
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -195,7 +187,7 @@ function CadastroTurma() {
                     </MDTypography>
                   </MDBox>
                 </MDBox>
-                <div>
+                <div style={{ display: "flex", gap: "10px" }}>
                   <TextField
                     style={{ margin: "10px", width: "27vw" }}
                     required
@@ -213,39 +205,40 @@ function CadastroTurma() {
                     value={formData.descricao}
                     onChange={handleChange}
                   />
-                  <InputMask
-                    mask="99/99/9999"
-                    value={formData.data_inicio}
-                    onChange={handleChange}
-                  >
-                    {() => (
-                      <TextField
-                        style={{ margin: "10px" }}
-                        required
-                        id="data_inicio"
-                        name="data_inicio"
-                        label="Data de início"
-                        value={formData.data_inicio}
-                        onChange={handleChange}
-                      />
-                    )}
-                  </InputMask>
                 </div>
-                <FormControl sx={{ m: "2vh", width: "20vw" }}>
-      <InputLabel>Dias da semana</InputLabel>
-      <Select
-        multiple
-        value={item.nome}
-        onChange={console.log('Peido')}
-        input={<OutlinedInput label="Dias da semana" />}
-      >
-        {diasSemana.map((dia) => (
-          <MenuItem key={dia.value} value={dia.label}>
-            {dia.label}
-          </MenuItem>
-        ))}
-      </Select>
-      </FormControl>
+                <MDBox
+                  mx={1}
+                  mt={-2}
+                  py={1}
+                  px={1}
+                  variant="gradient"
+                  bgColor="info"
+                  borderRadius="lg"
+                  coloredShadow="info"
+                  style={{ margin: "10px" }}
+                >
+                  <MDBox display="flex" justifyContent="space-between" alignItems="center">
+                    <MDTypography variant="h6" color="white">
+                      Rotina de aprendizagem
+                    </MDTypography>
+                  </MDBox>
+                </MDBox>
+                <span style={{ fontSize: 14, opacity: 0.6, marginLeft: 20 }}>
+                  Selecione os dias da semana em que ocorrerão os encontros da turma
+                </span>
+                <form style={{ marginLeft: 20 }}>
+                  {[1, 2, 3, 4, 5].map((dia) => (
+                    <div key={dia}>
+                      <Switch
+                        name="dias_da_semana"
+                        value={dia}
+                        checked={diasSemanaSelecionados.dias_da_semana_curso.includes(dia)}
+                        onChange={handleRadioChange}
+                      />
+                      <label>{["Segunda", "Terça", "Quarta", "Quinta", "Sexta"][dia - 1]}</label>
+                    </div>
+                  ))}
+                </form>
                 <div style={{ display: "flex", width: "100%", justifyContent: "center" }}>
                   <Button
                     variant="contained"

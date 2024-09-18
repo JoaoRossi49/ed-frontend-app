@@ -62,37 +62,13 @@ export default function Data() {
 
         if (Array.isArray(data)) {
           const mappedRows = data.map((item) => ({
-            nome: <Turma image={class_default} name={item.nome} />,
-            turma: <Job title={item.descricao} />,
-            status: (
-              <MDBox ml={-1}>
-                <MDBadge badgeContent={item.status} color="success" variant="gradient" size="sm" />
-              </MDBox>
+            nome: (
+              <NavLink key={"cadastrar_turma"} to={"/turmas/add"} state={item}>
+            <Turma image={class_default} name={item.nome} />
+            </NavLink>
             ),
-            data_inicio: (
-              <MDTypography
-                component="a"
-                href="#"
-                variant="caption"
-                color="text"
-                fontWeight="medium"
-              >
-                {item.data_inicio}
-              </MDTypography>
-            ),
-            action: (
-                <NavLink key={"cadastrar_turma"} to={"/turma/add"} state={item}>
-                  <MDTypography
-                    component="a"
-                    href="#"
-                    variant="caption"
-                    color="text"
-                    fontWeight="medium"
-                  >
-                    Edit
-                  </MDTypography>
-                </NavLink>
-            ),
+            descricao: <Job title={item.descricao} />,
+            num_matriculas: <Job title={item.num_matriculas} />
           }));
           setRows(mappedRows);
         } else {
@@ -109,8 +85,8 @@ export default function Data() {
   return {
     columns: [
       { Header: "Nome da turma", accessor: "nome", width: "45%", align: "left" },
-      { Header: "Data de início", accessor: "data_inicio", width: "45%", align: "left" },
-      { Header: "Ações", accessor: "action", align: "center" },
+      { Header: "Descrição", accessor: "descricao", width: "45%", align: "left" },
+      { Header: "Matriculas ativas", accessor: "num_matriculas", width: "45%", align: "left" },
     ],
 
     rows,

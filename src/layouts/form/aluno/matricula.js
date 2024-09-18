@@ -257,7 +257,7 @@ function Matricula() {
       try {
         const response = await api.get("/api/estudante/turmas/");
         const formattedOptions = response.data.map((turma) => ({
-          label: turma.nome,
+          label: turma.nome + ' (' + turma.num_matriculas + ')',
           value: turma.id,
         }));
         setturmasOptions(formattedOptions);
