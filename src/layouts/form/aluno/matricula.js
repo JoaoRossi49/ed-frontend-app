@@ -295,7 +295,7 @@ function Matricula() {
       try {
         const response = await api.get("/api/estudante/cursos/");
         const formattedOptions = response.data.map((curso) => ({
-          label: curso.descricao,
+          label: curso.codigo + ' ' + curso.nome,
           value: curso.id,
         }));
         setcursoOptions(formattedOptions);

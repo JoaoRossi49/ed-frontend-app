@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { Grid, Card, Box, TextField, Button } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -8,6 +7,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import { useLocation, useNavigate } from "react-router-dom";
+import InputMask from "react-input-mask";
 
 import ReportGmailerrorredIcon from "@mui/icons-material/ReportGmailerrorred";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
@@ -62,6 +62,8 @@ function CadastroTurma() {
     data_fim: null,
     dias_da_semana_empresa: [],
     dias_da_semana_curso: [],
+    hora_inicio_encontro: null,
+    hora_fim_encontro: null,
   });
   //#endregion
 
@@ -82,16 +84,16 @@ function CadastroTurma() {
         data_fim: item.data_fim ?? null,
         dias_da_semana_empresa: item.dias_da_semana_empresa ?? [],
         dias_da_semana_curso: item.dias_da_semana_curso ?? [],
+        hora_inicio_encontro: item.hora_inicio_encontro ?? null,
+        hora_fim_encontro: item.hora_fim_encontro ?? null,
       });
-
-      console.log("Item carregado: ", item)
     }
   }, [item]);
 
   //#endregion
   const [diasSemanaSelecionados, setDiasSemanaSelecionados] = useState({
-    dias_da_semana_empresa: item.dias_da_semana_empresa ?? [],
-    dias_da_semana_curso: item.dias_da_semana_curso ?? [],
+    dias_da_semana_empresa: item?.dias_da_semana_empresa ?? [],
+    dias_da_semana_curso: item?.dias_da_semana_curso ?? [],
   });
   const handleRadioChange = (event) => {
     const selecionado = parseInt(event.target.value, 10);
@@ -223,10 +225,46 @@ function CadastroTurma() {
                     </MDTypography>
                   </MDBox>
                 </MDBox>
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <InputMask
+                    mask="99:99"
+                    value={formData.hora_inicio_encontro}
+                    onChange={handleChange}
+                  >
+                    {() => (
+                      <TextField
+                        style={{ margin: "10px", width: "18vw" }}
+                        required
+                        id="hora_inicio_encontro"
+                        name="hora_inicio_encontro"
+                        label="Horário de início do encontro"
+                        value={formData.hora_inicio_encontro}
+                        onChange={handleChange}
+                      />
+                    )}
+                  </InputMask>
+                  <InputMask
+                    mask="99:99"
+                    value={formData.hora_fim_encontro}
+                    onChange={handleChange}
+                  >
+                    {() => (
+                      <TextField
+                        style={{ margin: "10px", width: "18vw" }}
+                        required
+                        id="hora_fim_encontro"
+                        name="hora_fim_encontro"
+                        label="Horário do fim do encontro"
+                        value={formData.hora_fim_encontro}
+                        onChange={handleChange}
+                      />
+                    )}
+                  </InputMask>
+                </div>
                 <span style={{ fontSize: 14, opacity: 0.6, marginLeft: 20 }}>
                   Selecione os dias da semana em que ocorrerão os encontros da turma
                 </span>
-                <form style={{ marginLeft: 20 }}>
+                <form style={{ marginLeft: 20, fontSize: 16}}>
                   {[1, 2, 3, 4, 5].map((dia) => (
                     <div key={dia}>
                       <Switch
