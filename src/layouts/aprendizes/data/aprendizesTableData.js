@@ -64,7 +64,9 @@ export default function Data() {
         const responseMatricula = await api.get("/api/estudante/matricula");
         const dataMatriculas = responseMatricula.data;
 
-        const calculateAge = (birthDate) => {
+        const calculateAge = (birthDateStr) => {
+          const [day, month, year] = birthDateStr.split('/');
+          const birthDate = new Date(year, month - 1, day);
           const today = new Date();
           const birthDateObj = new Date(birthDate);
           let age = today.getFullYear() - birthDateObj.getFullYear();
