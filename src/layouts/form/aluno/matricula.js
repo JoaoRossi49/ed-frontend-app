@@ -864,7 +864,6 @@ function Matricula() {
                     {() => (
                       <TextField
                         style={{ margin: "10px", width: "33.25vw" }}
-                        required
                         id="descricao"
                         name="contato.1.descricao"
                         label="Telefone fixo"
