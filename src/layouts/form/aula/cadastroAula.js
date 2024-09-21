@@ -19,6 +19,8 @@ import api from "services/api.js";
 import aprendizesTableData from "../../../layouts/aprendizes/data/aprendizesTableData";
 import { useCallback } from "react";
 
+import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+
 function CadastroAula() {
   const navigate = useNavigate();
 
@@ -136,30 +138,6 @@ function CadastroAula() {
   }, []);
   //#endregion
 
-  //#region datatable para registro de presença
-  const aprendizesTableDataCallback = useCallback(() => aprendizesTableData(), []);
-  const { columns, rows } = aprendizesTableDataCallback();
-  const [listaPresencaIsVisible, setListaPresencaIsVisible] = useState(false);
-
-const filteredRows = item
-  ? rows.filter((row) => {
-      return Object.values(row).some((value) => {
-        try {
-          return value.props.state.matricula.turma_nome
-            .toString()
-            .toLowerCase()
-            .includes(item.turma_nome.toLowerCase());
-        } catch {}
-      });
-    })
-  : [];
-
-// Verifique se o filteredRows é um array
-if (!Array.isArray(filteredRows)) {
-  filteredRows = [filteredRows];
-}
-  //#endregion
-
   const handleChangeSelectAula = (fieldPrefix) => async (event, value) => {
     if (value) {
       setFormData((prevFormData) => ({
@@ -221,12 +199,18 @@ if (!Array.isArray(filteredRows)) {
     }
   };
 
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
   //#endregion lista de presença
   const ListaPresenca = () => {
-    console.log("ListaPresenca foi chamada, ", filteredRows)
-    if (!Array.isArray(filteredRows)) {
-      return <div>No data to display</div>;
-    }
     return (
       <div>
         <MDBox
@@ -399,7 +383,18 @@ if (!Array.isArray(filteredRows)) {
                     fontFamily: "Arial",
                   }}
                 />
-                {filteredRows.length > 0 && <ListaPresenca />}
+                    <Button variant="contained" color="primary" onClick={handleOpenDialog} style={{ margin: "10px", width: "35vw", color: "#FFF" }}>
+                    Ver lista de presença
+                  </Button>
+                  <Dialog open={openDialog} onClose={handleCloseDialog}>
+                    <DialogTitle>Registro de presença</DialogTitle>
+                    <DialogContent>
+                      <div>Olá!</div>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={handleCloseDialog}>Fechar</Button>
+                    </DialogActions>
+                  </Dialog>
                 <div style={{ display: "flex", width: "100%", justifyContent: "center" }}>
                   <Button
                     variant="contained"

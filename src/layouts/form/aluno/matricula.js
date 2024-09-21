@@ -94,7 +94,7 @@ function Matricula() {
       {
         id: 1,
         tipo_contato: "TELEFONE",
-        descricao: "",
+        descricao: "Não informado",
         data_inclusao: CurrentDateWithTimezone(),
         data_alteracao: null,
       },
@@ -186,7 +186,7 @@ function Matricula() {
           {
             id: item.pessoa.contato[1]?.id ?? null,
             tipo_contato: item.pessoa.contato[1]?.tipo_contato ?? null,
-            descricao: item.pessoa.contato[1]?.descricao ?? null,
+            descricao: item.pessoa.contato[1]?.descricao ?? "Não informado",
             data_inclusao: item.pessoa.contato[1]?.data_inclusao ?? null,
             data_alteracao: CurrentDateWithTimezone(),
           },

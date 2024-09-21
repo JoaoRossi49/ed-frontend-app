@@ -83,7 +83,9 @@ export default function SignInSide({ onLogin }) {
           md={7}
           sx={{
             backgroundImage: `url(${require('assets/images/lottus_background.png')})`,
-            backgroundPosition: 'rigth',
+                backgroundSize: 'cover',
+    backgroundPosition: 'right',
+    backgroundRepeat: 'no-repeat',
           }}
         />
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
@@ -96,7 +98,7 @@ export default function SignInSide({ onLogin }) {
               alignItems: 'center',
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: 'orange' }}>
+            <Avatar sx={{ m: 1, bgcolor: 'orange', marginTop: "13vh" }}>
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
@@ -125,10 +127,6 @@ export default function SignInSide({ onLogin }) {
                 autoComplete="current-password"
                 onChange={handlePasswordChange}
               />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Lembre-se de mim"
-              />
               {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
               <Button
                 type="submit"
@@ -138,18 +136,6 @@ export default function SignInSide({ onLogin }) {
               >
                 Entrar
               </Button>
-              <Grid container>
-                <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Esqueceu sua senha?
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link href="#" variant="body2">
-                    {"Não tem uma conta? Registre-se"}
-                  </Link>
-                </Grid>
-              </Grid>
               <Copyright sx={{ mt: 5 }} />
             </Box>
           </Box>
