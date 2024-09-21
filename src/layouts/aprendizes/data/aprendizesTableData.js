@@ -111,7 +111,8 @@ export default function Data() {
                     hora_inicio_expediente: matricula.hora_inicio_expediente,
                     hora_fim_expediente: matricula.hora_fim_expediente,
                     dias_da_semana_empresa: matricula.dias_da_semana_empresa,
-                    dias_da_semana_curso: matricula.dias_da_semana_curso
+                    dias_da_semana_curso: matricula.dias_da_semana_curso,
+                    atividades_praticas: matricula.atividades_praticas,
                   },
                 };
               } else {

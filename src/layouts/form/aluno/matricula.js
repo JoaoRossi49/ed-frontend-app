@@ -152,6 +152,7 @@ function Matricula() {
     cbo: null,
     dias_da_semana_empresa: [],
     dias_da_semana_curso: [],
+    atividades_praticas: null,
   });
   //#endregion
 
@@ -243,6 +244,7 @@ function Matricula() {
         cbo_nome: item.matricula.cbo_nome ?? "Selecione um CBO",
         dias_da_semana_empresa: item.matricula.dias_da_semana_empresa ?? [],
         dias_da_semana_curso: item.matricula.dias_da_semana_curso ?? [],
+        atividades_praticas: item.matricula.atividades_praticas ?? [],
       });
     }
   }, [item]);
@@ -1114,6 +1116,46 @@ function Matricula() {
                     )}
                   </InputMask>
                 </div>
+                <MDBox
+                  mx={1}
+                  mt={-2}
+                  py={1}
+                  px={1}
+                  variant="gradient"
+                  bgColor="info"
+                  borderRadius="lg"
+                  coloredShadow="info"
+                  style={{ margin: "10px" }}
+                >
+                  <MDBox display="flex" justifyContent="space-between" alignItems="center">
+                    <MDTypography variant="h6" color="white">
+                      Funções e responsabilidades
+                    </MDTypography>
+                  </MDBox>
+                </MDBox>
+                  <textarea
+                  id="atividades_praticas"
+                  defaultValue={matriculaFormData.atividades_praticas}
+                  onBlur={(event) => {
+                    setMatriculaFormData((prevState) => ({
+                      ...prevState,
+                      atividades_praticas: event.target.value,
+                    }));
+                  }}
+                  rows="8"
+                  cols="30"
+                  placeholder="Descreva as atividades práticas na empresa.."
+                  style={{
+                    padding: "10px",
+                    fontSize: "16px",
+                    margin: "10px",
+                    borderRadius: "5px",
+                    border: "0.5px solid #ccc",
+                    outline: "none",
+                    resize: "vertical",
+                    fontFamily: "Arial",
+                  }}
+                />
                 <div style={{ display: "flex", width: "100%", justifyContent: "center" }}>
                   <Button
                     variant="contained"
