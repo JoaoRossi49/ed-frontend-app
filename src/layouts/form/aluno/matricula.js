@@ -1135,6 +1135,7 @@ function Matricula() {
                 </MDBox>
                   <textarea
                   id="atividades_praticas"
+                  required
                   defaultValue={matriculaFormData.atividades_praticas}
                   onBlur={(event) => {
                     setMatriculaFormData((prevState) => ({
