@@ -9,7 +9,7 @@ lerna-debug.log*
 #node_modules
 ./node_modules
 
-# Diagnostic reports (https://nodejs.org/api/report.html)
+# Diagnostic reports (https://nodejs.orgreport.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # Runtime data
@@ -37,7 +37,7 @@ bower_components
 # node-waf configuration
 .lock-wscript
 
-# Compiled binary addons (https://nodejs.org/api/addons.html)
+# Compiled binary addons (https://nodejs.orgaddons.html)
 build/Release
 
 # Dependency directories
