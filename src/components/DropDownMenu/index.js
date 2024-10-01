@@ -70,7 +70,7 @@ export default function DropDownMenu({ item }) {
     try {
       const formData = new FormData();
       formData.append("ativo", true);
-      await api.patch(`/api/estudante/matricula/${item.matricula.id}/`, formData);
+      await api.patch(`estudante/matricula/${item.matricula.id}/`, formData);
       navigate("/aprendizes");
     } catch (error) {
       console.error("Erro ao reativar aprendiz:", error);
@@ -80,7 +80,7 @@ export default function DropDownMenu({ item }) {
   const gerarContrato = async () => {
     try {
       const response = await api.get(
-        `/api/estudante/contrato/${item.matricula.numero_matricula}/`,
+        `estudante/contrato/${item.matricula.numero_matricula}/`,
         {
           responseType: "blob", // Configura o tipo de resposta para blob
         }
@@ -108,7 +108,7 @@ export default function DropDownMenu({ item }) {
   const gerarCalendario = async () => {
     try {
       const response = await api.get(
-        `/api/estudante/calendario/${item.matricula.numero_matricula}/`
+        `estudante/calendario/${item.matricula.numero_matricula}/`
       );
       const calendarioHtml = await response.data;
 

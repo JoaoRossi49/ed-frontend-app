@@ -47,7 +47,7 @@ export default function SignInSide({ onLogin }) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     try {
-      const response = await api.post('/api/login/', {username, password}).then((response)=>{
+      const response = await api.post('login/', {username, password}).then((response)=>{
         if (response.status === 200){
           const { access, refresh } = response.data;
           localStorage.setItem('accessToken', access);

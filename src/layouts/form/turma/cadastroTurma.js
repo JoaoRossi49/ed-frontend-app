@@ -141,11 +141,11 @@ function CadastroTurma() {
     event.preventDefault();
     try {
       if (item) {
-        const responsePut = await api.put(`/api/estudante/turmas/${item.id}/`, formData);
+        const responsePut = await api.put(`estudante/turmas/${item.id}/`, formData);
         openSuccessSB();
         navigate("/turmas");
       } else {
-        const response = await api.post("/api/estudante/turmas/", formData);
+        const response = await api.post("estudante/turmas/", formData);
         openSuccessSB();
         navigate("/turmas");
       }
@@ -157,7 +157,7 @@ function CadastroTurma() {
   const [excluirIsVisible, setExcluirIsVisible] = useState(false);
   const handleExcluir = async (deleteItemId) => {
     try {
-      await api.delete(`/api/estudante/turmas/${deleteItemId}/`);
+      await api.delete(`estudante/turmas/${deleteItemId}/`);
       navigate("/turmas");
     } catch (error) {
       console.error("Error deleting data:", error);

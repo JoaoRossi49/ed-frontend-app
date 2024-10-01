@@ -58,12 +58,12 @@ export default function Data() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responsePessoa = await api.get("/api/pessoa/");
+        const responsePessoa = await api.get("pessoa/");
         const dataPessoas = responsePessoa.data;
 
         console.log("data pessoas: ", dataPessoas)
 
-        const responseMatricula = await api.get("/api/estudante/matricula-inativa/");
+        const responseMatricula = await api.get("estudante/matricula-inativa/");
         const dataMatriculas = responseMatricula.data;
 
         console.log("data Matriculas: ", dataMatriculas)
