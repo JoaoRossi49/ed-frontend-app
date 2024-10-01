@@ -501,7 +501,7 @@ function Matricula() {
       const formData = new FormData();
       formData.append("ativo", false);
       await api.patch(`/api/estudante/matricula/${matriculaId}/`, formData);
-      navigate("/aprendizes");
+      navigate("/aprendizes-inativos");
     } catch (error) {
       console.error("Error deleting data:", error);
     }

@@ -9,6 +9,9 @@ import FileCopyIcon from "@mui/icons-material/FileCopy";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import MenuIcon from "@mui/icons-material/Menu";
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import ReplayCircleFilledIcon from '@mui/icons-material/ReplayCircleFilled';
+
+import { useNavigate } from "react-router-dom";
 
 //api
 import api from "../../services/api";
@@ -53,6 +56,7 @@ const StyledMenu = styled((props) => (
 export default function DropDownMenu({ item }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const navigate = useNavigate();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -61,6 +65,17 @@ export default function DropDownMenu({ item }) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const reativar = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("ativo", true);
+      await api.patch(`/api/estudante/matricula/${item.matricula.id}/`, formData);
+      navigate("/aprendizes");
+    } catch (error) {
+      console.error("Erro ao reativar aprendiz:", error);
+    }
+  }
 
   const gerarContrato = async () => {
     try {
@@ -106,6 +121,7 @@ export default function DropDownMenu({ item }) {
     }
   };
 
+  if (item.matricula.ativo){
   return (
     <div>
       <Button
@@ -148,4 +164,38 @@ export default function DropDownMenu({ item }) {
       </StyledMenu>
     </div>
   );
+}else{
+  return (
+    <div>
+      <Button
+        id="demo-customized-button"
+        aria-controls={open ? "demo-customized-menu" : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? "true" : undefined}
+        variant="contained"
+        disableElevation
+        onClick={handleClick}
+        endIcon={<KeyboardArrowDownIcon color="white" />}
+      >
+        <MenuIcon color="white" />
+      </Button>
+      <StyledMenu
+        id="demo-customized-menu"
+        MenuListProps={{
+          "aria-labelledby": "demo-customized-button",
+        }}
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+      >
+        <MenuItem disableRipple>
+          <Button onClick={reativar}>
+              <ReplayCircleFilledIcon />
+              <span>Reativar</span>
+          </Button>
+        </MenuItem>
+      </StyledMenu>
+    </div>
+  );
+}
 }

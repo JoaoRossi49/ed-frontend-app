@@ -48,11 +48,13 @@ import SchoolIcon from '@mui/icons-material/School';
 import ListIcon from '@mui/icons-material/List';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import GroupsIcon from '@mui/icons-material/Groups';
+import PersonOffIcon from '@mui/icons-material/PersonOff';
 
 import Turmas from "layouts/turmas";
 import Aulas from "layouts/aulas";
 import CadastroTurma from "layouts/form/turma/cadastroTurma";
 import CadastroAula from "layouts/form/aula/cadastroAula";
+import AprendizesInativos from "layouts/aprendizes_inativos";
 
 
 
@@ -79,6 +81,12 @@ const routes = [
         key: "Aprendizes",
         icon: <ListIcon fontSize="small"></ListIcon>,
         route: "/aprendizes",
+      },
+      {
+        name: "Aprendizes inativos",
+        key: "AprendizesInativos",
+        icon: <PersonOffIcon fontSize="small"></PersonOffIcon>,
+        route: "/aprendizes-inativos",
       },
     ],
   },
@@ -109,6 +117,10 @@ const routes = [
   {
     route: "/aprendizes",
     component: <Aprendizes />,
+  },
+  {
+    route: "/aprendizes-inativos",
+    component: <AprendizesInativos />,
   },
   {
     route: "/turmas/add",
