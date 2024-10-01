@@ -1,6 +1,6 @@
 # GIE (Gestão de instituições de ensino) - Frontend application
 
-Criação de sistema de informação que unifique processos, gerencie acesso de usuários e garanta níveis adequados de disponibilidade de dados e segurança de informação afim de melhorar os processos de instituições de ensino filantrópicas. Essa aplicação é complementada pela lógica e gerenciamento de dados providos pelo projeto django no repositório [ed-backend-app](https://github.com/JoaoRossi49/ed-backend-app).
+Criação de sistema de informação que unifique processos, gerencie acesso de usuários e garanta níveis adequados de disponibilidade de dados e segurança de informação afim de melhorar os processos de instituições de ensino filantrópicas. Essa aplicação é complementada pela lógica e gerenciamento de dados providos pelo projeto django no repositório [ed-backend-app](https://github.com/JoaoRossi49/ed-backend-app)
 
 ## Índice
 
