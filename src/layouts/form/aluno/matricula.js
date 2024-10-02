@@ -477,6 +477,14 @@ function Matricula() {
         openSuccessSB();
         navigate("/aprendizes");
       } else {
+
+        //Caso o endereço não tenha sido preenchido
+        if (item.pessoa.endereco.logradouro == ""){
+          const newFormData = { ...formData };
+          delete newFormData.endereco;
+          formData = newFormData;
+        }
+        
         //Armazena foto de perfil em variável, a ser enviada posteriormente
         let foto_perfil = formData.foto_perfil;
         formData.foto_perfil = null;
