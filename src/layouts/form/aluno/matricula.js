@@ -456,6 +456,14 @@ function Matricula() {
     event.preventDefault();
     try {
       if (item) {
+        
+        //Caso o endereço não tenha sido preenchido
+        if (item.pessoa.endereco.logradouro == null){
+          const newFormData = { ...formData };
+          delete newFormData.endereco;
+          formData = newFormData;
+        }
+
         let foto_perfil = formData.foto_perfil;
         delete formData.foto_perfil;
 
