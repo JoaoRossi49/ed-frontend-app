@@ -80,7 +80,7 @@ export default function DropDownMenu({ item }) {
   const gerarContrato = async () => {
     try {
       const response = await api.get(
-        `estudante/contrato/${item.matricula.numero_matricula}/`,
+        `/api/estudante/contrato/${item.matricula.numero_matricula}/`,
         {
           responseType: "blob", // Configura o tipo de resposta para blob
         }
@@ -108,7 +108,7 @@ export default function DropDownMenu({ item }) {
   const gerarCalendario = async () => {
     try {
       const response = await api.get(
-        `estudante/calendario/${item.matricula.numero_matricula}/`
+        `/api/estudante/calendario/${item.matricula.numero_matricula}/`
       );
       const calendarioHtml = await response.data;
 
