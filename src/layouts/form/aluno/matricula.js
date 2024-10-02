@@ -257,7 +257,7 @@ function Matricula() {
   React.useEffect(() => {
     const fetchTurmas = async () => {
       try {
-        const response = await api.get("estudante/turmas/");
+        const response = await api.get("/api/estudante/turmas/");
         const formattedOptions = response.data.map((turma) => ({
           label: turma.nome + ' (' + turma.num_matriculas + ')',
           value: turma.id,
@@ -276,7 +276,7 @@ function Matricula() {
   React.useEffect(() => {
     const fetchCbo = async () => {
       try {
-        const response = await api.get("estudante/cbos/");
+        const response = await api.get("/api/estudante/cbos/");
         const formattedOptions = response.data.map((cbo) => ({
           label: cbo.descricao,
           value: cbo.id,
@@ -295,7 +295,7 @@ function Matricula() {
   React.useEffect(() => {
     const fetchCursos = async () => {
       try {
-        const response = await api.get("estudante/cursos/");
+        const response = await api.get("/api/estudante/cursos/");
         const formattedOptions = response.data.map((curso) => ({
           label: curso.codigo + ' ' + curso.nome,
           value: curso.id,
@@ -314,7 +314,7 @@ function Matricula() {
   React.useEffect(() => {
     const fetchEmpresas = async () => {
       try {
-        const response = await api.get("estudante/empresas/");
+        const response = await api.get("/api/estudante/empresas/");
         const formattedOptions = response.data.map((empresa) => ({
           label: empresa.nome_fantasia,
           value: empresa.id,
@@ -333,7 +333,7 @@ function Matricula() {
   React.useEffect(() => {
     const fetchEscolaridades = async () => {
       try {
-        const response = await api.get("estudante/escolaridades/");
+        const response = await api.get("/api/estudante/escolaridades/");
         const formattedOptions = response.data.map((escolaridade) => ({
           label: escolaridade.descricao,
           value: escolaridade.id,
@@ -442,7 +442,7 @@ function Matricula() {
     const formData = new FormData();
     formData.append("foto_perfil", imageFile);
     try {
-      const response = await api.patch(`pessoa/${id}/`, formData, {
+      const response = await api.patch(`/api/pessoa/${id}/`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -459,11 +459,11 @@ function Matricula() {
         let foto_perfil = formData.foto_perfil;
         delete formData.foto_perfil;
 
-        const responsePessoaPut = await api.patch(`pessoa/${item.pessoa.id}/`, formData);
+        const responsePessoaPut = await api.patch(`/api/pessoa/${item.pessoa.id}/`, formData);
         updatePessoaImage(item.pessoa.id, foto_perfil);
 
         const responsematriculaPut = await api.put(
-          `estudante/matricula/${item.matricula.id}/`,
+          `/api/estudante/matricula/${item.matricula.id}/`,
           matriculaFormData
         );
         openSuccessSB();
@@ -475,11 +475,11 @@ function Matricula() {
 
         //Cria registro de pessoa
         let pessoa_id = null;
-        await api.post("pessoa/", formData).then((responsePessoa) => {
+        await api.post("/api/pessoa/", formData).then((responsePessoa) => {
           pessoa_id = responsePessoa.data.id;
           matriculaFormData.pessoa = pessoa_id;
           //Cria matrícula
-          api.post("estudante/matricula/", matriculaFormData);
+          api.post("/api/estudante/matricula/", matriculaFormData);
         });
         //Atualiza foto de perfil
         updatePessoaImage(pessoa_id, foto_perfil);
@@ -500,7 +500,7 @@ function Matricula() {
     try {
       const formData = new FormData();
       formData.append("ativo", false);
-      await api.patch(`estudante/matricula/${matriculaId}/`, formData);
+      await api.patch(`/api/estudante/matricula/${matriculaId}/`, formData);
       navigate("/aprendizes-inativos");
     } catch (error) {
       console.error("Error deleting data:", error);
@@ -716,7 +716,6 @@ function Matricula() {
                   </InputMask>
                   <TextField
                     style={{ margin: "10px", width: "30vw" }}
-                    required
                     id="logradouro"
                     name="endereco.logradouro"
                     label="Logradouro"
@@ -725,7 +724,6 @@ function Matricula() {
                   />
                   <TextField
                     style={{ margin: "10px" }}
-                    required
                     id="numero"
                     name="endereco.numero"
                     label="Número"
@@ -736,7 +734,6 @@ function Matricula() {
                 <div>
                   <TextField
                     style={{ margin: "10px", width: "30vw" }}
-                    required
                     id="cidade"
                     name="endereco.cidade"
                     label="Cidade"
@@ -745,7 +742,6 @@ function Matricula() {
                   />
                   <TextField
                     style={{ margin: "10px" }}
-                    required
                     id="estado"
                     name="endereco.estado"
                     label="Estado"
@@ -754,7 +750,6 @@ function Matricula() {
                   />
                   <TextField
                     style={{ margin: "10px" }}
-                    required
                     id="pais"
                     name="endereco.pais"
                     label="País"

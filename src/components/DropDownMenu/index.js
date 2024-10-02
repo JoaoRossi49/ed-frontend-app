@@ -70,7 +70,7 @@ export default function DropDownMenu({ item }) {
     try {
       const formData = new FormData();
       formData.append("ativo", true);
-      await api.patch(`estudante/matricula/${item.matricula.id}/`, formData);
+      await api.patch(`/api/estudante/matricula/${item.matricula.id}/`, formData);
       navigate("/aprendizes");
     } catch (error) {
       console.error("Erro ao reativar aprendiz:", error);

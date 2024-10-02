@@ -141,11 +141,11 @@ function CadastroTurma() {
     event.preventDefault();
     try {
       if (item) {
-        const responsePut = await api.put(`estudante/turmas/${item.id}/`, formData);
+        const responsePut = await api.put(`/api/estudante/turmas/${item.id}/`, formData);
         openSuccessSB();
         navigate("/turmas");
       } else {
-        const response = await api.post("estudante/turmas/", formData);
+        const response = await api.post("/api/estudante/turmas/", formData);
         openSuccessSB();
         navigate("/turmas");
       }

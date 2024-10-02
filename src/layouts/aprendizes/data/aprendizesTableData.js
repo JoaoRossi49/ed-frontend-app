@@ -58,10 +58,10 @@ export default function Data() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responsePessoa = await api.get("pessoa/");
+        const responsePessoa = await api.get("/api/pessoa/");
         const dataPessoas = responsePessoa.data;
 
-        const responseMatricula = await api.get("estudante/matricula");
+        const responseMatricula = await api.get("/api/estudante/matricula");
         const dataMatriculas = responseMatricula.data;
 
         const calculateAge = (birthDateStr) => {
