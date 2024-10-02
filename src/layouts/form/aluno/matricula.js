@@ -456,14 +456,6 @@ function Matricula() {
     event.preventDefault();
     try {
       if (item) {
-        
-        //Caso o endereço não tenha sido preenchido
-        if (item.pessoa.endereco.logradouro == null){
-          const newFormData = { ...formData };
-          delete newFormData.endereco;
-          formData = newFormData;
-        }
-
         let foto_perfil = formData.foto_perfil;
         delete formData.foto_perfil;
 
@@ -477,14 +469,6 @@ function Matricula() {
         openSuccessSB();
         navigate("/aprendizes");
       } else {
-
-        //Caso o endereço não tenha sido preenchido
-        if (item.pessoa.endereco.logradouro == ""){
-          const newFormData = { ...formData };
-          delete newFormData.endereco;
-          formData = newFormData;
-        }
-        
         //Armazena foto de perfil em variável, a ser enviada posteriormente
         let foto_perfil = formData.foto_perfil;
         formData.foto_perfil = null;
@@ -732,6 +716,7 @@ function Matricula() {
                   </InputMask>
                   <TextField
                     style={{ margin: "10px", width: "30vw" }}
+                    required
                     id="logradouro"
                     name="endereco.logradouro"
                     label="Logradouro"
@@ -740,6 +725,7 @@ function Matricula() {
                   />
                   <TextField
                     style={{ margin: "10px" }}
+                    required
                     id="numero"
                     name="endereco.numero"
                     label="Número"
@@ -750,6 +736,7 @@ function Matricula() {
                 <div>
                   <TextField
                     style={{ margin: "10px", width: "30vw" }}
+                    required
                     id="cidade"
                     name="endereco.cidade"
                     label="Cidade"
@@ -758,6 +745,7 @@ function Matricula() {
                   />
                   <TextField
                     style={{ margin: "10px" }}
+                    required
                     id="estado"
                     name="endereco.estado"
                     label="Estado"
@@ -766,6 +754,7 @@ function Matricula() {
                   />
                   <TextField
                     style={{ margin: "10px" }}
+                    required
                     id="pais"
                     name="endereco.pais"
                     label="País"
