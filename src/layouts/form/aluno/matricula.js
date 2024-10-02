@@ -442,7 +442,7 @@ function Matricula() {
     const formData = new FormData();
     formData.append("foto_perfil", imageFile);
     try {
-      const response = await api.patch(`/api/pessoa/${id}/`, formData, {
+      const response = await api.patch(`/pessoa/${id}/`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -459,7 +459,7 @@ function Matricula() {
         let foto_perfil = formData.foto_perfil;
         delete formData.foto_perfil;
 
-        const responsePessoaPut = await api.patch(`/api/pessoa/${item.pessoa.id}/`, formData);
+        const responsePessoaPut = await api.patch(`/pessoa/${item.pessoa.id}/`, formData);
         updatePessoaImage(item.pessoa.id, foto_perfil);
 
         const responsematriculaPut = await api.put(
@@ -475,7 +475,7 @@ function Matricula() {
 
         //Cria registro de pessoa
         let pessoa_id = null;
-        await api.post("/api/pessoa/", formData).then((responsePessoa) => {
+        await api.post("/pessoa/", formData).then((responsePessoa) => {
           pessoa_id = responsePessoa.data.id;
           matriculaFormData.pessoa = pessoa_id;
           //Cria matrícula
