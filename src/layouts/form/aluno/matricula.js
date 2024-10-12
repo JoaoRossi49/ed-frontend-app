@@ -410,8 +410,12 @@ function Matricula() {
 
   //#region handles
   const handleChange = (event) => {
-    const { name, value } = event.target;
+    var { name, value } = event.target;
     const keys = name.split(".");
+
+    if (typeof value === 'string'){
+      value = value.toUpperCase();
+    }
 
     setFormData((prevFormData) => {
       let newFormData = { ...prevFormData };
@@ -558,12 +562,13 @@ function Matricula() {
             ...prevState,
             endereco: {
               id: 1,
-              logradouro: response.data.logradouro,
+              logradouro: response.data.logradouro.toUpperCase(),
               data_inclusao: CurrentDateWithTimezone(),
-              cidade: response.data.localidade,
-              estado: response.data.uf,
+              cidade: response.data.localidade.toUpperCase(),
+              estado: response.data.uf.toUpperCase(),
               cep: formData.endereco.cep,
-              pais: "Brasil",
+              numero: formData.endereco.numero,
+              pais: "BRASIL",
             },
           }));
         }

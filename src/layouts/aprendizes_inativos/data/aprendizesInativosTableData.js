@@ -139,7 +139,7 @@ export default function Data() {
             nome: (
                 <Author
                   image={item.pessoa.foto_perfil ?? user_default}
-                  name={item.pessoa.nome}
+                  name={(item.pessoa.nome_social ? item.pessoa.nome_social : item.pessoa.nome).toUpperCase()}
                   email={"Nº Matrícula: " + item.matricula.numero_matricula}
                 />
             ),
@@ -161,7 +161,7 @@ export default function Data() {
                 color="text"
                 fontWeight="medium"
               >
-                {item.matricula.empresa_nome}
+                {item.matricula.empresa_nome.toUpperCase()}
               </MDTypography>
             ),
             action: (

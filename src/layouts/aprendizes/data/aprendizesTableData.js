@@ -19,7 +19,6 @@ Coded by www.creative-tim.com
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
-import MDBadge from "components/MDBadge";
 import DropdownMenu from "components/DropDownMenu";
 
 // Images
@@ -135,7 +134,7 @@ export default function Data() {
               <NavLink key={"matricular"} to={"/aprendizes/add"} state={item}>
                 <Author
                   image={item.pessoa.foto_perfil ?? user_default}
-                  name={item.pessoa.nome}
+                  name={(item.pessoa.nome_social ? item.pessoa.nome_social : item.pessoa.nome).toUpperCase()}
                   email={"Nº Matrícula: " + item.matricula.numero_matricula}
                 />
               </NavLink>
@@ -150,7 +149,7 @@ export default function Data() {
                 {calculateAge(item.pessoa.data_nascimento)}
               </MDTypography>
             ),
-            turma: <Job title={item.matricula.turma_nome ? item.matricula.turma_nome : "Não matriculado"} />,
+            turma: <Job title={item.matricula.turma_nome ? item.matricula.turma_nome.toUpperCase() : "NÃO MATRICULADO(A)"} />,
             data_matricula: (
               <MDTypography
                 component="a"
@@ -158,7 +157,7 @@ export default function Data() {
                 color="text"
                 fontWeight="medium"
               >
-                {item.matricula.empresa_nome}
+                {item.matricula.empresa_nome.toUpperCase()}
               </MDTypography>
             ),
             action: (
