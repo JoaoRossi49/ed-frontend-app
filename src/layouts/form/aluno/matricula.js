@@ -19,6 +19,7 @@ import ImageUpload from "components/ImageUpload";
 function Matricula() {
   const navigate = useNavigate();
 
+  //#region Funções
   const CurrentDateWithTimezone = () => {
     const currentDate = new Date();
 
@@ -34,6 +35,43 @@ function Matricula() {
 
     return formattedDateWithTimezone;
   };
+
+  const validarCPF = (cpf) => {
+    // Remove caracteres não numéricos (pontos e traços)
+    cpf = cpf.replace(/[^\d]/g, '');
+    // Verifica se o CPF tem 11 dígitos
+    if (cpf.length !== 11) {
+        return false;
+    }
+    // Verifica se todos os dígitos são iguais (caso inválido)
+    if (/^(\d)\1+$/.test(cpf)) {
+        return false;
+    }
+    // Valida o primeiro dígito verificador
+    let soma = 0;
+    for (let i = 0; i < 9; i++) {
+        soma += parseInt(cpf.charAt(i)) * (10 - i);
+    }
+    let digitoVerificador1 = (soma * 10) % 11;
+    if (digitoVerificador1 === 10 || digitoVerificador1 === 11) {
+        digitoVerificador1 = 0;
+    }
+    // Valida o segundo dígito verificador
+    soma = 0;
+    for (let i = 0; i < 10; i++) {
+        soma += parseInt(cpf.charAt(i)) * (11 - i);
+    }
+    let digitoVerificador2 = (soma * 10) % 11;
+    if (digitoVerificador2 === 10 || digitoVerificador2 === 11) {
+        digitoVerificador2 = 0;
+    }
+    // Verifica se os dígitos verificadores estão corretos
+    return digitoVerificador1 === parseInt(cpf.charAt(9)) && 
+           digitoVerificador2 === parseInt(cpf.charAt(10));
+}
+
+  //#endregion
+
   //#region notificações
   const [errorSB, setErrorSB] = useState(false);
   const openErrorSB = () => setErrorSB(true);
@@ -454,6 +492,11 @@ function Matricula() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if(!validarCPF(formData.documento[0].nro_documento)){
+      setContentErrorSB("CPF inválido!");
+      openErrorSB()
+      return
+    }
     try {
       if (item) {
         let foto_perfil = formData.foto_perfil;
@@ -466,7 +509,6 @@ function Matricula() {
           `/api/estudante/matricula/${item.matricula.id}/`,
           matriculaFormData
         );
-        openSuccessSB();
         navigate("/aprendizes");
       } else {
         //Armazena foto de perfil em variável, a ser enviada posteriormente
@@ -483,13 +525,9 @@ function Matricula() {
         });
         //Atualiza foto de perfil
         updatePessoaImage(pessoa_id, foto_perfil);
-        openSuccessSB();
         navigate("/aprendizes");
       }
     } catch (error) {
-      if (error.response.status == 400 || error.response.status == 401) {
-        navigate("/login");
-      }
       setContentErrorSB("Erro ao salvar dados: " + "\n" + error);
       openErrorSB();
     }
