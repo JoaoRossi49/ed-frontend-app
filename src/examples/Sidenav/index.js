@@ -38,6 +38,7 @@ import SidenavCollapse from "examples/Sidenav/SidenavCollapse";
 // Custom styles for the Sidenav
 import SidenavRoot from "examples/Sidenav/SidenavRoot";
 import sidenavLogoLabel from "examples/Sidenav/styles/sidenav";
+import SidenavSubmenu from "components/SideNavSubMenu";
 
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -86,10 +87,21 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   }, [dispatch, location]);
 
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
-  const renderRoutes = routes.map(({ type, name, icon, title, noCollapse, key, href, route }) => {
+  const renderRoutes = routes.map(({ type, name, icon, title, noCollapse, key, href, route, subRoutes }) => {
     let returnValue;
-
-    if (type === "collapse") {
+    if (type === 'submenu') {
+      returnValue = (
+        <Link
+          href={href}
+          key={key}
+          target="_blank"
+          rel="noreferrer"
+          sx={{ textDecoration: "none" }}
+        >
+        <SidenavSubmenu key={key} title={title} routes={subRoutes} />
+        </Link>
+      );
+    } else if (type === "collapse") {
       returnValue = href ? (
         <Link
           href={href}

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Grid, Card, Box, TextField, Button } from "@mui/material";
+import { Grid, Card, Box, TextField, Button, Autocomplete } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDSnackbar from "components/MDSnackbar";
@@ -8,31 +8,22 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import InputMask from "react-input-mask";
-import { useLocation, useNavigate, NavLink } from "react-router-dom";
+import { useLocation, useNavigate, NavLink, Form } from "react-router-dom";
+import DataTable from "examples/Tables/DataTable";
 
 import ReportGmailerrorredIcon from "@mui/icons-material/ReportGmailerrorred";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
 import api from "services/api.js";
 
+import aprendizesTableData from "../../../layouts/aprendizes/data/aprendizesTableData";
+import { useCallback } from "react";
+
+import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+
 function CadastroAula() {
   const navigate = useNavigate();
 
-  const CurrentDateWithTimezone = () => {
-    const currentDate = new Date();
-
-    const padZero = (num) => (num < 10 ? `0${num}` : num);
-
-    const timezoneOffset = -currentDate.getTimezoneOffset();
-    const offsetSign = timezoneOffset >= 0 ? "+" : "-";
-    const offsetHours = padZero(Math.floor(Math.abs(timezoneOffset) / 60));
-    const offsetMinutes = padZero(Math.abs(timezoneOffset) % 60);
-
-    const formattedDate = currentDate.toISOString().split(".")[0];
-    const formattedDateWithTimezone = `${formattedDate}${offsetSign}${offsetHours}:${offsetMinutes}`;
-
-    return formattedDateWithTimezone;
-  };
   //#region notificações
   const [errorSB, setErrorSB] = useState(false);
   const openErrorSB = () => setErrorSB(true);
@@ -69,12 +60,16 @@ function CadastroAula() {
 
   //#region definição de formdata
   const [formData, setFormData] = useState({
-    id: 1,
-		nome: "",
-		descricao: "",
-		data_inclusao: null,
-		data_inicio: null,
-		data_fim: null
+    tema: null,
+    conteudo: null,
+    ocorrencias: null,
+    data_aula: null,
+    turma: null,
+    turma_nome: "",
+    educador: null,
+    educador_nome: "",
+    modulo: null,
+    modulo_nome: "",
   });
   //#endregion
 
@@ -85,54 +80,109 @@ function CadastroAula() {
   React.useEffect(() => {
     if (item) {
       setExcluirIsVisible(true);
+      setListaPresencaIsVisible(true);
       setFormData({
-        id: item.id,
-        nome: item.nome ?? null,
-        descricao: item.descricao ?? null,
-        data_inclusao: item.data_inclusao ?? null,
-        data_inicio: item.data_inicio ?? null,
-        data_fim: item.data_fim ?? null
-    });
+        tema: item.tema ?? null,
+        conteudo: item.conteudo ?? null,
+        ocorrencias: item.ocorrencias ?? null,
+        data_aula: item.data_aula ?? null,
+        turma: item.turma ?? null,
+        turma_nome: item.turma_nome ?? "Selecione a turma",
+        educador: item.educador ?? null,
+        educador_nome: item.educador_nome ?? "Selecione o educador",
+        modulo: item.modulo ?? null,
+        modulo_nome: item.modulo_nome ?? "Selecione o módulo aplicado",
+      });
     }
   }, [item]);
 
   //#endregion
 
+  //#region selects
+  const [turmasOptions, setturmasOptions] = useState([]);
+
+  React.useEffect(() => {
+    const fetchTurmas = async () => {
+      try {
+        const response = await api.get("estudante/turmas/");
+        const formattedOptions = response.data.map((turma) => ({
+          label: turma.nome,
+          value: turma.id,
+        }));
+        setturmasOptions(formattedOptions);
+      } catch (error) {
+        console.error("Erro ao buscar as turmas:", error);
+      }
+    };
+
+    fetchTurmas();
+  }, []);
+
+  const [modulosOptions, setmodulosOptions] = useState([]);
+
+  React.useEffect(() => {
+    const fetchModulos = async () => {
+      try {
+        const response = await api.get("estudante/modulos/");
+        const formattedOptions = response.data.map((modulo) => ({
+          label: modulo.nome,
+          value: modulo.id,
+        }));
+        setmodulosOptions(formattedOptions);
+      } catch (error) {
+        console.error("Erro ao buscar os módulos:", error);
+      }
+    };
+
+    fetchModulos();
+  }, []);
+  //#endregion
+
+  const handleChangeSelectAula = (fieldPrefix) => async (event, value) => {
+    if (value) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [`${fieldPrefix}_nome`]: value.label,
+        [fieldPrefix]: value.value,
+      }));
+    }
+  };
+
   const handleChange = (event) => {
     const { name, value } = event.target;
-    const keys = name.split(".");
-
-    setFormData((prevFormData) => {
-      let newFormData = { ...prevFormData };
-      let currentLevel = newFormData;
-
-      keys.forEach((key, index) => {
-        if (index === keys.length - 1) {
-          currentLevel[key] = value;
-        } else {
-          currentLevel = currentLevel[key];
-        }
-      });
-
-      return newFormData;
-    });
+    if (name) {
+      const keys = name.split(".");
+      console.log("keys:", keys); // Add this logging statement
+      if (Array.isArray(keys) && keys.length > 0) {
+        setFormData((prevFormData) => {
+          let newFormData = { ...prevFormData };
+          let currentLevel = newFormData;
+  
+          keys.forEach((key, index) => {
+            if (index === keys.length - 1) {
+              currentLevel[key] = value;
+            } else {
+              currentLevel = currentLevel[key];
+            }
+          });
+  
+          return newFormData;
+        });
+      }
+    }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       if (item) {
-        const responsePut = await api.put(`/api/estudante/turmas/${item.id}/`,
-          formData
-        );
-        console.log(responsePut.data.status);
+        const responsePut = await api.put(`estudante/aulas/${item.id}/`, formData);
         openSuccessSB();
-        navigate("/turmas");
+        navigate("/aulas");
       } else {
-        const response = await api.post("/api/estudante/turmas/", formData);
-        console.log(response.data.status);
+        const response = await api.post("estudante/aulas/", formData);
         openSuccessSB();
-        navigate("/turmas");
+        navigate("/aulas");
       }
     } catch (error) {
       openErrorSB();
@@ -142,12 +192,56 @@ function CadastroAula() {
   const [excluirIsVisible, setExcluirIsVisible] = useState(false);
   const handleExcluir = async (deleteItemId) => {
     try {
-      await api.delete(`/api/estudante/turmas/${deleteItemId}/`);
-      navigate("/turmas");
+      await api.delete(`estudante/aulas/${deleteItemId}/`);
+      navigate("/aulas");
     } catch (error) {
       console.error("Error deleting data:", error);
     }
   };
+
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  //#endregion lista de presença
+  const ListaPresenca = () => {
+    return (
+      <div>
+        <MDBox
+          mx={1}
+          mt={-2}
+          py={1}
+          px={1}
+          variant="gradient"
+          bgColor="info"
+          borderRadius="lg"
+          coloredShadow="info"
+          style={{ margin: "10px" }}
+        >
+          <MDBox display="flex" justifyContent="space-between" alignItems="center">
+            <MDTypography variant="h6" color="white">
+              Registro de presença
+            </MDTypography>
+          </MDBox>
+        </MDBox>
+          <DataTable
+            table={{ columns, filteredRows }}
+            isSorted={true}
+            entriesPerPage={false}
+            showTotalEntries={true}
+            noEndBorder
+          />
+      </div>
+    );
+  };
+  //#endregion
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -175,40 +269,132 @@ function CadastroAula() {
                 </MDBox>
                 <div>
                   <TextField
-                    style={{ margin: "10px", width: "27vw" }}
+                    style={{ margin: "10px", width: "38vw" }}
                     required
-                    id="nome"
-                    name="nome"
-                    label="Nome da turma"
-                    value={formData.nome}
+                    id="tema"
+                    name="tema"
+                    label="Tema discutido"
+                    value={formData.tema}
                     onChange={handleChange}
                   />
-                  <TextField
-                    style={{ margin: "10px", width: "26vw" }}
-                    id="descricao"
-                    name="descricao"
-                    label="Descrição da turma"
-                    value={formData.descricao}
-                    onChange={handleChange}
-                  />
-                  <InputMask
-                    mask="99/99/9999"
-                    value={formData.data_inicio}
-                    onChange={handleChange}
-                  >
+                  <InputMask mask="99/99/9999" value={formData.data_aula} onChange={handleChange}>
                     {() => (
                       <TextField
                         style={{ margin: "10px" }}
                         required
-                        id="data_inicio"
-                        name="data_inicio"
-                        label="Data de início"
-                        value={formData.data_inicio}
+                        id="data_aula"
+                        name="data_aula"
+                        label="Data da aula"
+                        value={formData.data_aula}
                         onChange={handleChange}
                       />
                     )}
                   </InputMask>
                 </div>
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <Autocomplete
+                    style={{ margin: "10px", width: "20vw" }}
+                    options={turmasOptions}
+                    required
+                    getOptionLabel={(option) => option.label}
+                    onChange={handleChangeSelectAula("turma")}
+                    renderInput={(params) => <TextField {...params} label="Turma" />}
+                    value={formData ? { label: formData.turma_nome, value: formData.turma } : null}
+                  />
+                  <Autocomplete
+                    style={{ margin: "10px", width: "20vw" }}
+                    options={modulosOptions}
+                    required
+                    getOptionLabel={(option) => option.label}
+                    onChange={handleChangeSelectAula("modulo")}
+                    renderInput={(params) => <TextField {...params} label="Módulo" />}
+                    value={
+                      formData ? { label: formData.modulo_nome, value: formData.modulo } : null
+                    }
+                  />
+                </div>
+                <MDBox
+                  mx={1}
+                  mt={-2}
+                  py={1}
+                  px={1}
+                  variant="gradient"
+                  bgColor="info"
+                  borderRadius="lg"
+                  coloredShadow="info"
+                  style={{ margin: "10px" }}
+                >
+                  <MDBox display="flex" justifyContent="space-between" alignItems="center">
+                    <MDTypography variant="h6" color="white">
+                      Conteúdo da aula
+                    </MDTypography>
+                  </MDBox>
+                </MDBox>
+                <textarea
+                  id="conteudo"
+                  value={formData.conteudo}
+                  onChange={handleChange}
+                  rows="8"
+                  cols="30"
+                  placeholder="Descreva o conteúdo aplicado na aula..."
+                  style={{
+                    padding: "10px",
+                    fontSize: "16px",
+                    margin: "10px",
+                    borderRadius: "5px",
+                    border: "0.5px solid #ccc",
+                    outline: "none",
+                    resize: "vertical",
+                    fontFamily: "Arial",
+                  }}
+                />
+                <MDBox
+                  mx={1}
+                  mt={-2}
+                  py={1}
+                  px={1}
+                  variant="gradient"
+                  bgColor="info"
+                  borderRadius="lg"
+                  coloredShadow="info"
+                  style={{ margin: "10px" }}
+                >
+                  <MDBox display="flex" justifyContent="space-between" alignItems="center">
+                    <MDTypography variant="h6" color="white">
+                      Ocorrências
+                    </MDTypography>
+                  </MDBox>
+                </MDBox>
+                <textarea
+                  id="ocorrencias"
+                  value={formData.ocorrencias}
+                  onChange={handleChange}
+                  rows="4"
+                  cols="30"
+                  placeholder="Descreva ocorrências ..."
+                  style={{
+                    padding: "10px",
+                    fontSize: "16px",
+                    margin: "10px",
+                    borderRadius: "5px",
+                    border: "0.5px solid #ccc",
+                    outline: "none",
+                    resize: "vertical",
+                    fontFamily: "Arial",
+                  }}
+                />
+                    <Button variant="contained" color="primary" onClick={handleOpenDialog} style={{ margin: "10px", width: "35vw", color: "#FFF" }}>
+                    Ver lista de presença
+                  </Button>
+                  <Dialog open={openDialog} onClose={handleCloseDialog}>
+                    <DialogTitle>Registro de presença</DialogTitle>
+                    <DialogContent>
+                      <div>Olá!</div>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={handleCloseDialog}>Fechar</Button>
+                    </DialogActions>
+                  </Dialog>
                 <div style={{ display: "flex", width: "100%", justifyContent: "center" }}>
                   <Button
                     variant="contained"

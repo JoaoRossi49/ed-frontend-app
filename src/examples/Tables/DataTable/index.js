@@ -236,7 +236,7 @@ function DataTable({
         {showTotalEntries && (
           <MDBox mb={{ xs: 3, sm: 0 }}>
             <MDTypography variant="button" color="secondary" fontWeight="regular">
-              Showing {entriesStart} to {entriesEnd} of {rows.length} entries
+              Mostrando de {entriesStart} a {entriesEnd} de {rows.length} registros
             </MDTypography>
           </MDBox>
         )}

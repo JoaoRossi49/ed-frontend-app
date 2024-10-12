@@ -54,11 +54,11 @@ function Dashboard() {
               <ComplexStatisticsCard
                 color="dark"
                 icon=<PlusOneIcon/>
-                title="Cadastro de Aprendizes"
-                count={127}
+                title="Aprendizes Ativos"
+                count={0}
                 percentage={{
                   color: "success",
-                  amount: "+55%",
+                  amount: "--%",
                   label: "que o mês passado",
                 }}
               />
@@ -69,10 +69,10 @@ function Dashboard() {
               <ComplexStatisticsCard
                 icon=<ClassIcon/>
                 title="Chamadas"
-                count="4"
+                count="0"
                 percentage={{
                   color: "success",
-                  amount: "+3%",
+                  amount: "--%",
                   label: "que semana passada",
                 }}
               />
@@ -84,10 +84,10 @@ function Dashboard() {
                 color="success"
                 icon=<HowToRegIcon/>
                 title="Presenças"
-                count="34"
+                count="0"
                 percentage={{
                   color: "error",
-                  amount: "-4%",
+                  amount: "--%",
                   label: "que ontem",
                 }}
               />
@@ -99,10 +99,10 @@ function Dashboard() {
                 color="primary"
                 icon=<PersonRemoveIcon/>
                 title="Faltas"
-                count="20"
+                count="0"
                 percentage={{
                   color: "success",
-                  amount: "+4%",
+                  amount: "--%",
                   label: "que ontem",
                 }}
               />
@@ -115,7 +115,7 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsBarChart
                   color="info"
-                  title="Média de presença total"
+                  title="Média de presença semanal"
                   description="Aprendizes presentes em aulas"
                   date="Atualizado 1 minuto atrás"
                   chart={reportsBarChartData}

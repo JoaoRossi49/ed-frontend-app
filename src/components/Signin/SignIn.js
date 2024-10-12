@@ -4,8 +4,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
@@ -13,7 +11,6 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import lottus_background from "assets/images/lottus_background.png";
 import axios from 'axios';
 
 function Copyright(props) {
@@ -51,7 +48,6 @@ export default function SignInSide({ onLogin }) {
     const data = new FormData(event.currentTarget);
     try {
       const response = await api.post('/api/login/', {username, password}).then((response)=>{
-        console.log(response.data);
         if (response.status === 200){
           const { access, refresh } = response.data;
           localStorage.setItem('accessToken', access);
@@ -84,7 +80,9 @@ export default function SignInSide({ onLogin }) {
           md={7}
           sx={{
             backgroundImage: `url(${require('assets/images/lottus_background.png')})`,
-            backgroundPosition: 'rigth',
+                backgroundSize: 'cover',
+    backgroundPosition: 'right',
+    backgroundRepeat: 'no-repeat',
           }}
         />
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
@@ -97,7 +95,7 @@ export default function SignInSide({ onLogin }) {
               alignItems: 'center',
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: 'orange' }}>
+            <Avatar sx={{ m: 1, bgcolor: 'orange', marginTop: "13vh" }}>
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
@@ -126,10 +124,6 @@ export default function SignInSide({ onLogin }) {
                 autoComplete="current-password"
                 onChange={handlePasswordChange}
               />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Lembre-se de mim"
-              />
               {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
               <Button
                 type="submit"
@@ -139,18 +133,6 @@ export default function SignInSide({ onLogin }) {
               >
                 Entrar
               </Button>
-              <Grid container>
-                <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Esqueceu sua senha?
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link href="#" variant="body2">
-                    {"Não tem uma conta? Registre-se"}
-                  </Link>
-                </Grid>
-              </Grid>
               <Copyright sx={{ mt: 5 }} />
             </Box>
           </Box>

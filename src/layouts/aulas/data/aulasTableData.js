@@ -22,15 +22,15 @@ import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
 
 // Images
-import class_default from "assets/images/class_default.jpg";
+import class_default from "assets/images/sala.png";
 
 import { useEffect, useState } from "react";
 
 import { NavLink } from "react-router-dom";
 
-import api from 'services/api';
+import api from "services/api";
 
-const Turma = ({ image, name, email }) => (
+const Aula = ({ image, name, email }) => (
   <MDBox display="flex" alignItems="center" lineHeight={1}>
     <MDAvatar src={image} name={name} size="sm" />
     <MDBox ml={2} lineHeight={1}>
@@ -53,22 +53,22 @@ const Job = ({ title, description }) => (
 
 export default function Data() {
   const [rows, setRows] = useState([]);
-  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.get("/api/estudante/turmas/");
+        const response = await api.get("/api/estudante/aulas/");
         const data = response.data;
 
         if (Array.isArray(data)) {
           const mappedRows = data.map((item) => ({
             nome: (
-              <NavLink key={"cadastrar_turma"} to={"/turmas/add"} state={item}>
-            <Turma image={class_default} name={item.nome} />
-            </NavLink>
+              <NavLink key={"cadastrar_aula"} to={"/aulas/add"} state={item}>
+                <Aula image={class_default} name={item.tema} />
+              </NavLink>
             ),
-            descricao: <Job title={item.descricao} />,
-            num_matriculas: <Job title={item.num_matriculas} />
+            turma: <Job title={item.turma_nome} />,
+            data_aula: <Job title={item.data_aula} />,
           }));
           setRows(mappedRows);
         } else {
@@ -84,9 +84,9 @@ export default function Data() {
 
   return {
     columns: [
-      { Header: "Nome da turma", accessor: "nome", width: "45%", align: "left" },
-      { Header: "Descrição", accessor: "descricao", width: "45%", align: "left" },
-      { Header: "Matriculas ativas", accessor: "num_matriculas", width: "45%", align: "left" },
+      { Header: "Tema da aula", accessor: "nome", width: "30%", align: "left" },
+      { Header: "Nome da turma", accessor: "turma", align: "center" },
+      { Header: "Data da aula", accessor: "data_aula", align: "center" },
     ],
 
     rows,

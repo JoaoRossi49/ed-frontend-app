@@ -33,15 +33,14 @@ import MDButton from "components/MDButton";
 import { NavLink } from "react-router-dom";
 
 // Data
-import turmasTableData from "layouts/turmas/data/turmasTableData";
+import aulasTableData from "layouts/aulas/data/aulasTableData";
 
 // Icon
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
-
-function Turmas() {
-const [searchTerm, setSearchTerm] = React.useState("");
-  const { columns, rows } = turmasTableData();
+function Aulas() {
+  const [searchTerm, setSearchTerm] = React.useState("");
+  const { columns, rows } = aulasTableData();
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -49,14 +48,13 @@ const [searchTerm, setSearchTerm] = React.useState("");
   const filteredRows = rows.filter((row) => {
     return Object.values(row).some((value) => {
       try {
-        return value.props.state.nome
+        return value.props.state.tema
           .toString()
           .toLowerCase()
           .includes(searchTerm.toLowerCase());
       } catch {}
     });
   });
-
 
   return (
     <DashboardLayout>
@@ -77,7 +75,7 @@ const [searchTerm, setSearchTerm] = React.useState("");
               >
               <MDBox display="flex" justifyContent="space-between" alignItems="center">
                 <MDTypography variant="h6" color="white">
-                  Turmas
+                  Diário de aula
                 </MDTypography>
               </MDBox>
               </MDBox>
@@ -90,9 +88,9 @@ const [searchTerm, setSearchTerm] = React.useState("");
                     onChange={handleSearch}
                   />
                   <div style={{marginRight: "2vw"}}>
-                  <NavLink key={"cadastrar_turma"} to={"/turmas/add"}>
+                  <NavLink key={"cadastrar_aula"} to={"/aulas/add"}>
                   <div>
-                  <MDButton>{<AddCircleIcon />}{"Nova turma"}</MDButton>
+                  <MDButton>{<AddCircleIcon />}{"Nova aula"}</MDButton>
                   </div>                    
                   </NavLink>
                   </div>
@@ -114,4 +112,4 @@ const [searchTerm, setSearchTerm] = React.useState("");
   );
 }
 
-export default Turmas;
+export default Aulas;

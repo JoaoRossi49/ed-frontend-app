@@ -38,12 +38,13 @@ function Matricula() {
   const [errorSB, setErrorSB] = useState(false);
   const openErrorSB = () => setErrorSB(true);
   const closeErrorSB = () => setErrorSB(false);
+  const [contentErrorSB, setContentErrorSB] = useState("Erro!");
   const renderErrorSB = (
     <MDSnackbar
       color="error"
       icon=<ReportGmailerrorredIcon fontSize="small"></ReportGmailerrorredIcon>
       title="Erro!"
-      content="Não foi possível salvar os dados preenchidos"
+      content={contentErrorSB}
       open={errorSB}
       onClose={closeErrorSB}
       close={closeErrorSB}
@@ -93,7 +94,7 @@ function Matricula() {
       {
         id: 1,
         tipo_contato: "TELEFONE",
-        descricao: "",
+        descricao: "Não informado",
         data_inclusao: CurrentDateWithTimezone(),
         data_alteracao: null,
       },
@@ -139,6 +140,7 @@ function Matricula() {
     data_inicio_contrato: null,
     data_terminio_contrato: null,
     data_inicio_empresa: null,
+    quantidade_meses_contrato: null,
     data_terminio_empresa: null,
     hora_inicio_expediente: null,
     hora_fim_expediente: null,
@@ -150,6 +152,7 @@ function Matricula() {
     cbo: null,
     dias_da_semana_empresa: [],
     dias_da_semana_curso: [],
+    atividades_praticas: null,
   });
   //#endregion
 
@@ -159,7 +162,6 @@ function Matricula() {
 
   React.useEffect(() => {
     if (item) {
-      console.log('Item carregado: ', item)
       setInativarIsVisible(true);
       setFormData({
         id: item.pessoa.id,
@@ -185,7 +187,7 @@ function Matricula() {
           {
             id: item.pessoa.contato[1]?.id ?? null,
             tipo_contato: item.pessoa.contato[1]?.tipo_contato ?? null,
-            descricao: item.pessoa.contato[1]?.descricao ?? null,
+            descricao: item.pessoa.contato[1]?.descricao ?? "Não informado",
             data_inclusao: item.pessoa.contato[1]?.data_inclusao ?? null,
             data_alteracao: CurrentDateWithTimezone(),
           },
@@ -214,7 +216,7 @@ function Matricula() {
         nome: item.pessoa.nome ?? null,
         nome_social: item.pessoa.nome_social ?? null,
         foto_perfil: item.pessoa.foto_perfil ?? null,
-        sexo: item.pessoa.sexo ?? null,
+        sexo: item.pessoa.sexo ?? "",
         data_nascimento: item.pessoa.data_nascimento ?? null,
         data_inclusao: item.pessoa.data_inclusao ?? null,
       });
@@ -226,6 +228,7 @@ function Matricula() {
         data_terminio_contrato: item.matricula.data_terminio_contrato ?? null,
         data_inicio_empresa: item.matricula.data_inicio_empresa ?? null,
         data_terminio_empresa: item.matricula.data_terminio_empresa ?? null,
+        quantidade_meses_contrato: item.matricula.quantidade_meses_contrato ?? null,
         hora_inicio_expediente: item.matricula.hora_inicio_expediente ?? null,
         hora_fim_expediente: item.matricula.hora_fim_expediente ?? null,
         pessoa: item.pessoa.id ?? null,
@@ -241,6 +244,7 @@ function Matricula() {
         cbo_nome: item.matricula.cbo_nome ?? "Selecione um CBO",
         dias_da_semana_empresa: item.matricula.dias_da_semana_empresa ?? [],
         dias_da_semana_curso: item.matricula.dias_da_semana_curso ?? [],
+        atividades_praticas: item.matricula.atividades_praticas ?? [],
       });
     }
   }, [item]);
@@ -255,7 +259,7 @@ function Matricula() {
       try {
         const response = await api.get("/api/estudante/turmas/");
         const formattedOptions = response.data.map((turma) => ({
-          label: turma.nome,
+          label: turma.nome + ' (' + turma.num_matriculas + ')',
           value: turma.id,
         }));
         setturmasOptions(formattedOptions);
@@ -293,7 +297,7 @@ function Matricula() {
       try {
         const response = await api.get("/api/estudante/cursos/");
         const formattedOptions = response.data.map((curso) => ({
-          label: curso.descricao,
+          label: curso.codigo + ' ' + curso.nome,
           value: curso.id,
         }));
         setcursoOptions(formattedOptions);
@@ -342,6 +346,28 @@ function Matricula() {
 
     fetchEscolaridades();
   }, []);
+
+  const sexoOptions = [
+    {
+      label: "Masculino",
+      value: "M",
+    },
+    {
+      label: "Feminino",
+      value: "F",
+    },
+  ];
+
+  const tipoContrato = [
+    {
+      label: "15",
+      value: "15",
+    },
+    {
+      label: "23",
+      value: "23",
+    },
+  ];
   //#endregion
 
   //#region handles
@@ -379,6 +405,7 @@ function Matricula() {
           currentLevel = currentLevel[key];
         }
       });
+
       return newFormData;
     });
   };
@@ -387,85 +414,53 @@ function Matricula() {
     setFormData({ ...formData, foto_perfil: file });
   };
 
-  const handleChangeEscolaridade = (event, value) => {
+  const handleChangeSelectMatricula = (fieldPrefix) => async (event, value) => {
     if (value) {
-      setMatriculaFormData((prevFormData) => ({
-        ...prevFormData,
-        escolaridade_nome: value.label,
-        escolaridade: value.value,
-      }));
-    }
-  };
-
-  const handleChangeTurma = (event, value) => {
-    if (value) {
-      setMatriculaFormData(
-        (prevFormData) => (
-          {
-            ...prevFormData,
-            turma_nome: value.label,
-            turma: value.value,
-          }
-        )
-      );
-    }
-  };
-
-  const handleChangeCbo = (event, value) => {
-    if (value) {
-      setMatriculaFormData((prevFormData) => ({
-        ...prevFormData,
-        cbo_nome: value.label,
-        cbo: value.value,
-      }));
-    }
-  };
-
-  const handleChangeCurso = (event, value) => {
-    if (value) {
-      setMatriculaFormData((prevFormData) => ({
-        ...prevFormData,
-        curso_nome: value.label,
-        curso: value.value,
-      }));
-    }
-  };
-
-  const handleChangeEmpresa = (event, value) => {
-    if (value) {
-      setMatriculaFormData((prevFormData) => ({
-        ...prevFormData,
-        empresa_nome: value.label,
-        empresa: value.value,
-      }));
+      if (fieldPrefix == "sexo") {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          [fieldPrefix]: value.value,
+        }));
+      }
+      if (fieldPrefix == "quantidade_meses_contrato") {
+        await handleChangeQtdMesesCont(event);
+        setMatriculaFormData((prevFormData) => ({
+          ...prevFormData,
+          [fieldPrefix]: value.value,
+        }));
+      } else {
+        setMatriculaFormData((prevFormData) => ({
+          ...prevFormData,
+          [`${fieldPrefix}_nome`]: value.label,
+          [fieldPrefix]: value.value,
+        }));
+      }
     }
   };
 
   const updatePessoaImage = async (id, imageFile) => {
     const formData = new FormData();
-    formData.append('foto_perfil', imageFile);
+    formData.append("foto_perfil", imageFile);
     try {
-      const response = await api.patch(`/api/pessoa/${id}/`, formData, {
+      const response = await api.patch(`/pessoa/${id}/`, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   };
-
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       if (item) {
-        
         let foto_perfil = formData.foto_perfil;
         delete formData.foto_perfil;
 
-        const responsePessoaPut = await api.patch(`/api/pessoa/${item.pessoa.id}/`, formData);
-        updatePessoaImage(item.pessoa.id, foto_perfil)
+        const responsePessoaPut = await api.patch(`/pessoa/${item.pessoa.id}/`, formData);
+        updatePessoaImage(item.pessoa.id, foto_perfil);
 
         const responsematriculaPut = await api.put(
           `/api/estudante/matricula/${item.matricula.id}/`,
@@ -474,24 +469,28 @@ function Matricula() {
         openSuccessSB();
         navigate("/aprendizes");
       } else {
-        //Criação de nova pessoa
+        //Armazena foto de perfil em variável, a ser enviada posteriormente
         let foto_perfil = formData.foto_perfil;
         formData.foto_perfil = null;
-        const responsePessoa = await api.post("/api/pessoa/", formData);
-        const responseMatricula = await api.post("/api/estudante/matricula/", matriculaFormData);
-        const formAlterarMatricula = {
-          pessoa: responsePessoa.data.id,
-        };
-        const responsematriculaPut = await api.put(
-          `/api/estudante/matricula/${responseMatricula.data.id}/`,
-          formAlterarMatricula
-        );
-        updatePessoaImage(responsePessoa.data.id, foto_perfil)
+
+        //Cria registro de pessoa
+        let pessoa_id = null;
+        await api.post("/pessoa/", formData).then((responsePessoa) => {
+          pessoa_id = responsePessoa.data.id;
+          matriculaFormData.pessoa = pessoa_id;
+          //Cria matrícula
+          api.post("/api/estudante/matricula/", matriculaFormData);
+        });
+        //Atualiza foto de perfil
+        updatePessoaImage(pessoa_id, foto_perfil);
         openSuccessSB();
         navigate("/aprendizes");
       }
     } catch (error) {
-      console.log(error);
+      if (error.response.status == 400 || error.response.status == 401) {
+        navigate("/login");
+      }
+      setContentErrorSB("Erro ao salvar dados: " + "\n" + error);
       openErrorSB();
     }
   };
@@ -500,9 +499,9 @@ function Matricula() {
   const handleInativar = async (matriculaId) => {
     try {
       const formData = new FormData();
-      formData.append('ativo', false);
+      formData.append("ativo", false);
       await api.patch(`/api/estudante/matricula/${matriculaId}/`, formData);
-      navigate("/aprendizes");
+      navigate("/aprendizes-inativos");
     } catch (error) {
       console.error("Error deleting data:", error);
     }
@@ -537,6 +536,50 @@ function Matricula() {
       openErrorSB();
     }
   };
+
+  function parseDate(dataInicio, qtdMeses) {
+    let dataDigitadaSplit = dataInicio.split("/");
+
+    let dia = dataDigitadaSplit[0];
+    let mes = dataDigitadaSplit[1];
+    let ano = dataDigitadaSplit[2];
+
+    if (ano.length < 4 && parseInt(ano) < 50) {
+      ano = "20" + ano;
+    } else if (ano.length < 4 && parseInt(ano) >= 50) {
+      ano = "19" + ano;
+    }
+    ano = parseInt(ano);
+
+    mes = parseInt(mes) + parseInt(qtdMeses);
+
+    //Virada de ano
+    while (mes > 12) {
+      ano += 1;
+      mes -= 12;
+    }
+
+    //Adiciona 0 antes do mês
+    if (mes < 10) {
+      mes = "0" + mes;
+    }
+
+    return `${dia}/${mes}/${ano}`;
+  }
+
+  const handleChangeQtdMesesCont = async (event) => {
+    let qtdMeses = event.target.innerText;
+    let dataInicio = matriculaFormData.data_inicio_contrato;
+
+    if (qtdMeses && dataInicio) {
+      let dataTermino = parseDate(dataInicio, qtdMeses);
+      setMatriculaFormData((prevState) => ({
+        ...prevState,
+        quantidade_meses_contrato: qtdMeses,
+        data_terminio_contrato: dataTermino,
+      }));
+    }
+  };
   //#endregion
   return (
     <DashboardLayout>
@@ -563,7 +606,7 @@ function Matricula() {
                     </MDTypography>
                   </MDBox>
                 </MDBox>
-                <div style={{ display: 'flex', gap: '10px' }}>
+                <div style={{ display: "flex", gap: "10px" }}>
                   <TextField
                     style={{ margin: "10px", width: "27vw" }}
                     required
@@ -581,13 +624,10 @@ function Matricula() {
                     value={formData.nome_social}
                     onChange={handleChange}
                   />
-                  <ImageUpload 
-                  value={formData.foto_perfil}
-                  onChange={handleChangeFotoPerfil}
-                  />
+                  <ImageUpload value={formData.foto_perfil} onChange={handleChangeFotoPerfil} />
                 </div>
                 <div style={{ display: "flex", gap: "10px" }}>
-                <InputMask
+                  <InputMask
                     mask="99/99/9999"
                     value={formData.data_nascimento}
                     onChange={handleChange}
@@ -604,22 +644,31 @@ function Matricula() {
                       />
                     )}
                   </InputMask>
-                  <TextField
-                    style={{ margin: "10px", width: "8vw" }}
-                    id="sexo"
-                    name="sexo"
-                    label="Sexo"
-                    value={formData.sexo}
-                    onChange={handleChange}
+                  <Autocomplete
+                    style={{ margin: "10px", width: "12vw" }}
+                    options={sexoOptions}
+                    required
+                    getOptionLabel={(option) => option.label}
+                    onChange={handleChangeSelectMatricula("sexo")}
+                    renderInput={(params) => <TextField {...params} label="sexo" />}
+                    value={
+                      formData
+                        ? {
+                            label:
+                              sexoOptions.find((option) => option.value === formData.sexo)?.label ??
+                              "",
+                            value: formData.sexo ?? "",
+                          }
+                        : null
+                    }
                   />
                   <Autocomplete
                     style={{ margin: "10px", width: "20vw" }}
                     options={escolaridadeOptions}
                     required
                     getOptionLabel={(option) => option.label}
-                    onChange={(event, value) => handleChangeEscolaridade(event, value)}
+                    onChange={handleChangeSelectMatricula("escolaridade")}
                     renderInput={(params) => <TextField {...params} label="Escolaridade" />}
-                    defaultValue={{ label: "", value: null }}
                     value={
                       formData
                         ? {
@@ -628,7 +677,7 @@ function Matricula() {
                           }
                         : null
                     }
-                  />                  
+                  />
                 </div>
                 <MDBox
                   mx={1}
@@ -817,7 +866,6 @@ function Matricula() {
                     {() => (
                       <TextField
                         style={{ margin: "10px", width: "33.25vw" }}
-                        required
                         id="descricao"
                         name="contato.1.descricao"
                         label="Telefone fixo"
@@ -860,9 +908,8 @@ function Matricula() {
                     options={turmasOptions}
                     required
                     getOptionLabel={(option) => option.label}
-                    onChange={(event, value) => handleChangeTurma(event, value)}
+                    onChange={handleChangeSelectMatricula("turma")}
                     renderInput={(params) => <TextField {...params} label="Turma" />}
-                    defaultValue={{ label: "", value: null }}
                     value={
                       matriculaFormData
                         ? { label: matriculaFormData.turma_nome, value: matriculaFormData.turma }
@@ -874,15 +921,65 @@ function Matricula() {
                     options={cursoOptions}
                     required
                     getOptionLabel={(option) => option.label}
-                    onChange={(event, value) => handleChangeCurso(event, value)}
+                    onChange={handleChangeSelectMatricula("curso")}
                     renderInput={(params) => <TextField {...params} label="Curso" />}
-                    defaultValue={{ label: "", value: null }}
                     value={
                       matriculaFormData
                         ? { label: matriculaFormData.curso_nome, value: matriculaFormData.curso }
                         : null
                     }
                   />
+                      <div style={{ display: "flex", height: "10vh" }}>
+    </div>
+                </div>
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <InputMask
+                    mask="99/99/9999"
+                    value={matriculaFormData.data_inicio_contrato}
+                    onChange={handleChangeMatricula}
+                  >
+                    {() => (
+                      <TextField
+                        style={{ margin: "10px", width: "20vw" }}
+                        required
+                        id="data_inicio_contrato"
+                        name="data_inicio_contrato"
+                        label="Início do contrato"
+                        value={matriculaFormData.data_inicio_contrato}
+                        onChange={handleChangeMatricula}
+                      />
+                    )}
+                  </InputMask>
+                  <Autocomplete
+                    style={{ margin: "10px", width: "20vw" }}
+                    options={tipoContrato}
+                    required
+                    getOptionLabel={(option) => option.label}
+                    onChange={handleChangeSelectMatricula("quantidade_meses_contrato")}
+                    renderInput={(params) => <TextField {...params} label="Quantidade de meses" />}
+                    value={
+                      matriculaFormData
+                        ? {
+                            label:
+                              tipoContrato.find(
+                                (option) =>
+                                  option.value === matriculaFormData.quantidade_meses_contrato + ''
+                              )?.label ?? "",
+                            value: matriculaFormData.quantidade_meses_contrato + '' ?? "",
+                          }
+                        : null
+                    }
+                  />
+                      <TextField
+                        style={{ margin: "10px", width: "20vw" }}
+                        disabled
+                        id="data_terminio_contrato"
+                        name="data_terminio_contrato"
+                        label="Final do contrato"
+                        defaultValue="--/--/----"
+                        value={matriculaFormData.data_terminio_contrato}
+                        onChange={handleChangeMatricula}
+                      />
                 </div>
                 <MDBox
                   mx={1}
@@ -902,14 +999,13 @@ function Matricula() {
                   </MDBox>
                 </MDBox>
                 <div style={{ display: "flex", gap: "10px" }}>
-                <Autocomplete
+                  <Autocomplete
                     style={{ margin: "10px", width: "20vw" }}
                     options={empresaOptions}
                     required
                     getOptionLabel={(option) => option.label}
-                    onChange={(event, value) => handleChangeEmpresa(event, value)}
+                    onChange={handleChangeSelectMatricula("empresa")}
                     renderInput={(params) => <TextField {...params} label="Empresa" />}
-                    defaultValue={{ label: "", value: null }}
                     value={
                       matriculaFormData
                         ? {
@@ -919,30 +1015,27 @@ function Matricula() {
                         : null
                     }
                   />
-                <Autocomplete
+                  <Autocomplete
                     style={{ margin: "10px", width: "20vw" }}
                     options={cboOptions}
                     required
                     getOptionLabel={(option) => option.label}
-                    onChange={(event, value) => handleChangeCbo(event, value)}
+                    onChange={handleChangeSelectMatricula("cbo")}
                     renderInput={(params) => <TextField {...params} label="CBO" />}
-                    defaultValue={{ label: "", value: null }}
                     value={
                       matriculaFormData
                         ? { label: matriculaFormData.cbo_nome, value: matriculaFormData.cbo }
                         : null
                     }
                   />
-                </div>
-                <div>
-                <InputMask
+                  <InputMask
                     mask="R$ 9999.99"
                     value={matriculaFormData.salario}
                     onChange={handleChangeMatricula}
                   >
                     {() => (
                       <TextField
-                        style={{ margin: "10px", width: "33.25vw" }}
+                        style={{ margin: "10px", width: "10vw" }}
                         required
                         id="salario"
                         name="salario"
@@ -953,6 +1046,117 @@ function Matricula() {
                     )}
                   </InputMask>
                 </div>
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <InputMask
+                    mask="99/99/9999"
+                    value={matriculaFormData.data_inicio_empresa}
+                    onChange={handleChangeMatricula}
+                  >
+                    {() => (
+                      <TextField
+                        style={{ margin: "10px", width: "20vw" }}
+                        required
+                        id="data_inicio_empresa"
+                        name="data_inicio_empresa"
+                        label="Primeiro dia na empresa"
+                        value={matriculaFormData.data_inicio_empresa}
+                        onChange={handleChangeMatricula}
+                      />
+                    )}
+                  </InputMask>
+                  <InputMask
+                    mask="99/99/9999"
+                    value={matriculaFormData.data_terminio_empresa}
+                    onChange={handleChangeMatricula}
+                  >
+                    {() => (
+                      <TextField
+                        style={{ margin: "10px", width: "20vw" }}
+                        required
+                        id="data_terminio_empresa"
+                        name="data_terminio_empresa"
+                        label="Último dia na empresa"
+                        value={matriculaFormData.data_terminio_empresa}
+                        onChange={handleChangeMatricula}
+                      />
+                    )}
+                  </InputMask>
+                  <InputMask
+                    mask="99:99"
+                    value={matriculaFormData.hora_inicio_expediente}
+                    onChange={handleChangeMatricula}
+                  >
+                    {() => (
+                      <TextField
+                        style={{ margin: "10px", width: "10vw" }}
+                        required
+                        id="hora_inicio_expediente"
+                        name="hora_inicio_expediente"
+                        label="Horário de início do expediente"
+                        value={matriculaFormData.hora_inicio_expediente}
+                        onChange={handleChangeMatricula}
+                      />
+                    )}
+                  </InputMask>
+                  <InputMask
+                    mask="99:99"
+                    value={matriculaFormData.hora_fim_expediente}
+                    onChange={handleChangeMatricula}
+                  >
+                    {() => (
+                      <TextField
+                        style={{ margin: "10px", width: "10vw" }}
+                        required
+                        id="hora_fim_expediente"
+                        name="hora_fim_expediente"
+                        label="Horário de encerramento do expediente"
+                        value={matriculaFormData.hora_fim_expediente}
+                        onChange={handleChangeMatricula}
+                      />
+                    )}
+                  </InputMask>
+                </div>
+                <MDBox
+                  mx={1}
+                  mt={-2}
+                  py={1}
+                  px={1}
+                  variant="gradient"
+                  bgColor="info"
+                  borderRadius="lg"
+                  coloredShadow="info"
+                  style={{ margin: "10px" }}
+                >
+                  <MDBox display="flex" justifyContent="space-between" alignItems="center">
+                    <MDTypography variant="h6" color="white">
+                      Funções e responsabilidades
+                    </MDTypography>
+                  </MDBox>
+                </MDBox>
+                  <textarea
+                  id="atividades_praticas"
+                  required
+                  defaultValue={matriculaFormData.atividades_praticas}
+                  onBlur={(event) => {
+                    setMatriculaFormData((prevState) => ({
+                      ...prevState,
+                      atividades_praticas: event.target.value,
+                    }));
+                  }}
+                  rows="8"
+                  cols="30"
+                  placeholder="Descreva as atividades práticas na empresa.."
+                  style={{
+                    padding: "10px",
+                    fontSize: "16px",
+                    margin: "10px",
+                    borderRadius: "5px",
+                    border: "0.5px solid #ccc",
+                    outline: "none",
+                    resize: "vertical",
+                    fontFamily: "Arial",
+                  }}
+                />
                 <div style={{ display: "flex", width: "100%", justifyContent: "center" }}>
                   <Button
                     variant="contained"
@@ -965,9 +1169,13 @@ function Matricula() {
                   {inativarIsVisible && (
                     <Button
                       variant="contained"
-                      color="primary"
                       onClick={() => handleInativar(item.matricula.id)}
-                      style={{ margin: "10px", width: "35vw", color: "#FFF" }}
+                      style={{
+                        margin: "10px",
+                        width: "35vw",
+                        color: "#FFF",
+                        backgroundColor: "#80001A",
+                      }}
                     >
                       Inativar
                     </Button>

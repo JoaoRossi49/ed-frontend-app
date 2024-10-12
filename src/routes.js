@@ -48,10 +48,13 @@ import SchoolIcon from '@mui/icons-material/School';
 import ListIcon from '@mui/icons-material/List';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import GroupsIcon from '@mui/icons-material/Groups';
+import PersonOffIcon from '@mui/icons-material/PersonOff';
 
 import Turmas from "layouts/turmas";
+import Aulas from "layouts/aulas";
 import CadastroTurma from "layouts/form/turma/cadastroTurma";
 import CadastroAula from "layouts/form/aula/cadastroAula";
+import AprendizesInativos from "layouts/aprendizes_inativos";
 
 
 
@@ -69,20 +72,23 @@ const routes = [
     key: "dashboard",
   },
   {
-    type: "collapse",
-    name: "Matricular",
+    type: 'submenu',
+    title: 'Aprendizes',
     key: "matricular",
-    icon: <AddCircleIcon fontSize="small"></AddCircleIcon>,
-    route: "/aprendizes/add",
-    component: <Matricula />,
-  },
-  {
-    type: "collapse",
-    name: "Aprendizes",
-    key: "Aprendizes",
-    icon: <ListIcon fontSize="small"></ListIcon>,
-    route: "/aprendizes",
-    component: <Aprendizes />,
+    subRoutes: [
+      {
+        name: "Aprendizes ativos",
+        key: "Aprendizes",
+        icon: <ListIcon fontSize="small"></ListIcon>,
+        route: "/aprendizes",
+      },
+      {
+        name: "Aprendizes inativos",
+        key: "AprendizesInativos",
+        icon: <PersonOffIcon fontSize="small"></PersonOffIcon>,
+        route: "/aprendizes-inativos",
+      },
+    ],
   },
   {
     type: "collapse",
@@ -92,15 +98,37 @@ const routes = [
     route: "/turmas",
     component: <Turmas />,
   },
-/*
-  
-    type: "collapse",
-    name: "Cadastrar turmas",
-    key: "cadastrar_turma",
-    icon: <SchoolIcon fontSize="small"></SchoolIcon>,*/
   {
-    route: "/turma/add",
+    type: "collapse",
+    name: "Aulas",
+    key: "aulas",
+    icon: <SchoolIcon fontSize="small"></SchoolIcon>,
+    route: "/aulas",
+    component: <Aulas />,
+  },
+  {
+    route: "/login",
+    component: <SignInSide />,
+  },
+  {
+    route: "/aprendizes/add",
+    component: <Matricula />,
+  },
+  {
+    route: "/aprendizes",
+    component: <Aprendizes />,
+  },
+  {
+    route: "/aprendizes-inativos",
+    component: <AprendizesInativos />,
+  },
+  {
+    route: "/turmas/add",
     component: <CadastroTurma />,
+  },
+  {
+    route:"/aulas/add",
+    component: <CadastroAula/>,
   },
 /*
   {
@@ -111,14 +139,6 @@ const routes = [
     type: "title",
     title: "Aulas",
   },*/
-  {
-    type: "collapse",
-    name: "Diário de aula",
-    key: "diario_aula",
-    icon: <SchoolIcon fontSize="small"></SchoolIcon>,
-    route: "/aula/add",
-    component: <CadastroAula />,
-  },
 ];
 
 export default routes;

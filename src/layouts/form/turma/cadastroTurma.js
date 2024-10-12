@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { Grid, Card, Box, TextField, Button } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -7,32 +6,18 @@ import MDSnackbar from "components/MDSnackbar";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
+import { useLocation, useNavigate } from "react-router-dom";
 import InputMask from "react-input-mask";
-import { useLocation, useNavigate, NavLink } from "react-router-dom";
 
 import ReportGmailerrorredIcon from "@mui/icons-material/ReportGmailerrorred";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+
+import Switch from "@mui/material/Switch";
 
 import api from "services/api.js";
 
 function CadastroTurma() {
   const navigate = useNavigate();
-
-  const CurrentDateWithTimezone = () => {
-    const currentDate = new Date();
-
-    const padZero = (num) => (num < 10 ? `0${num}` : num);
-
-    const timezoneOffset = -currentDate.getTimezoneOffset();
-    const offsetSign = timezoneOffset >= 0 ? "+" : "-";
-    const offsetHours = padZero(Math.floor(Math.abs(timezoneOffset) / 60));
-    const offsetMinutes = padZero(Math.abs(timezoneOffset) % 60);
-
-    const formattedDate = currentDate.toISOString().split(".")[0];
-    const formattedDateWithTimezone = `${formattedDate}${offsetSign}${offsetHours}:${offsetMinutes}`;
-
-    return formattedDateWithTimezone;
-  };
   //#region notificações
   const [errorSB, setErrorSB] = useState(false);
   const openErrorSB = () => setErrorSB(true);
@@ -70,11 +55,15 @@ function CadastroTurma() {
   //#region definição de formdata
   const [formData, setFormData] = useState({
     id: 1,
-		nome: "",
-		descricao: "",
-		data_inclusao: null,
-		data_inicio: null,
-		data_fim: null
+    nome: "",
+    descricao: "",
+    data_inclusao: null,
+    data_inicio: null,
+    data_fim: null,
+    dias_da_semana_empresa: [],
+    dias_da_semana_curso: [],
+    hora_inicio_encontro: null,
+    hora_fim_encontro: null,
   });
   //#endregion
 
@@ -84,19 +73,49 @@ function CadastroTurma() {
 
   React.useEffect(() => {
     if (item) {
-      setExcluirIsVisible(true);
+      //Por enquanto, excluir uma turma não será possível
+      //setExcluirIsVisible(true);
       setFormData({
         id: item.id,
         nome: item.nome ?? null,
         descricao: item.descricao ?? null,
         data_inclusao: item.data_inclusao ?? null,
         data_inicio: item.data_inicio ?? null,
-        data_fim: item.data_fim ?? null
-    });
+        data_fim: item.data_fim ?? null,
+        dias_da_semana_empresa: item.dias_da_semana_empresa ?? [],
+        dias_da_semana_curso: item.dias_da_semana_curso ?? [],
+        hora_inicio_encontro: item.hora_inicio_encontro ?? null,
+        hora_fim_encontro: item.hora_fim_encontro ?? null,
+      });
     }
   }, [item]);
 
   //#endregion
+  const [diasSemanaSelecionados, setDiasSemanaSelecionados] = useState({
+    dias_da_semana_empresa: item?.dias_da_semana_empresa ?? [],
+    dias_da_semana_curso: item?.dias_da_semana_curso ?? [],
+  });
+  const handleRadioChange = (event) => {
+    const selecionado = parseInt(event.target.value, 10);
+    setDiasSemanaSelecionados((prevState) => {
+      const novosDiasCurso = prevState.dias_da_semana_curso.includes(selecionado)
+        ? prevState.dias_da_semana_curso.filter((dia) => dia !== selecionado)
+        : [...prevState.dias_da_semana_curso, selecionado];
+
+      const novosDiasEmpresa = [1, 2, 3, 4, 5].filter((dia) => !novosDiasCurso.includes(dia));
+
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        dias_da_semana_curso: novosDiasCurso,
+        dias_da_semana_empresa: novosDiasEmpresa,
+      }));
+
+      return {
+        dias_da_semana_empresa: novosDiasEmpresa,
+        dias_da_semana_curso: novosDiasCurso,
+      };
+    });
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -122,15 +141,11 @@ function CadastroTurma() {
     event.preventDefault();
     try {
       if (item) {
-        const responsePut = await api.put(`/api/estudante/turmas/${item.id}/`,
-          formData
-        );
-        console.log(responsePut.data.status);
+        const responsePut = await api.put(`/api/estudante/turmas/${item.id}/`, formData);
         openSuccessSB();
         navigate("/turmas");
       } else {
         const response = await api.post("/api/estudante/turmas/", formData);
-        console.log(response.data.status);
         openSuccessSB();
         navigate("/turmas");
       }
@@ -142,12 +157,13 @@ function CadastroTurma() {
   const [excluirIsVisible, setExcluirIsVisible] = useState(false);
   const handleExcluir = async (deleteItemId) => {
     try {
-      await api.delete(`/api/estudante/turmas/${deleteItemId}/`);
+      await api.delete(`estudante/turmas/${deleteItemId}/`);
       navigate("/turmas");
     } catch (error) {
       console.error("Error deleting data:", error);
     }
   };
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -173,7 +189,7 @@ function CadastroTurma() {
                     </MDTypography>
                   </MDBox>
                 </MDBox>
-                <div>
+                <div style={{ display: "flex", gap: "10px" }}>
                   <TextField
                     style={{ margin: "10px", width: "27vw" }}
                     required
@@ -191,24 +207,76 @@ function CadastroTurma() {
                     value={formData.descricao}
                     onChange={handleChange}
                   />
+                </div>
+                <MDBox
+                  mx={1}
+                  mt={-2}
+                  py={1}
+                  px={1}
+                  variant="gradient"
+                  bgColor="info"
+                  borderRadius="lg"
+                  coloredShadow="info"
+                  style={{ margin: "10px" }}
+                >
+                  <MDBox display="flex" justifyContent="space-between" alignItems="center">
+                    <MDTypography variant="h6" color="white">
+                      Rotina de aprendizagem
+                    </MDTypography>
+                  </MDBox>
+                </MDBox>
+                <div style={{ display: "flex", gap: "10px" }}>
                   <InputMask
-                    mask="99/99/9999"
-                    value={formData.data_inicio}
+                    mask="99:99"
+                    value={formData.hora_inicio_encontro}
                     onChange={handleChange}
                   >
                     {() => (
                       <TextField
-                        style={{ margin: "10px" }}
+                        style={{ margin: "10px", width: "18vw" }}
                         required
-                        id="data_inicio"
-                        name="data_inicio"
-                        label="Data de início"
-                        value={formData.data_inicio}
+                        id="hora_inicio_encontro"
+                        name="hora_inicio_encontro"
+                        label="Horário de início do encontro"
+                        value={formData.hora_inicio_encontro}
+                        onChange={handleChange}
+                      />
+                    )}
+                  </InputMask>
+                  <InputMask
+                    mask="99:99"
+                    value={formData.hora_fim_encontro}
+                    onChange={handleChange}
+                  >
+                    {() => (
+                      <TextField
+                        style={{ margin: "10px", width: "18vw" }}
+                        required
+                        id="hora_fim_encontro"
+                        name="hora_fim_encontro"
+                        label="Horário do fim do encontro"
+                        value={formData.hora_fim_encontro}
                         onChange={handleChange}
                       />
                     )}
                   </InputMask>
                 </div>
+                <span style={{ fontSize: 14, opacity: 0.6, marginLeft: 20 }}>
+                  Selecione os dias da semana em que ocorrerão os encontros da turma
+                </span>
+                <form style={{ marginLeft: 20, fontSize: 16}}>
+                  {[1, 2, 3, 4, 5].map((dia) => (
+                    <div key={dia}>
+                      <Switch
+                        name="dias_da_semana"
+                        value={dia}
+                        checked={diasSemanaSelecionados.dias_da_semana_curso.includes(dia)}
+                        onChange={handleRadioChange}
+                      />
+                      <label>{["Segunda", "Terça", "Quarta", "Quinta", "Sexta"][dia - 1]}</label>
+                    </div>
+                  ))}
+                </form>
                 <div style={{ display: "flex", width: "100%", justifyContent: "center" }}>
                   <Button
                     variant="contained"

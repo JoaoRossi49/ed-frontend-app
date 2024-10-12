@@ -12,9 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
-
 import React, { useState } from "react";
-
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -22,26 +20,25 @@ import Card from "@mui/material/Card";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
+import MDInput from "components/MDInput";
+import MDButton from "components/MDButton";
+import { NavLink } from "react-router-dom";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
-import MDInput from "components/MDInput";
-import MDButton from "components/MDButton";
-import { NavLink } from "react-router-dom";
 
 // Data
-import turmasTableData from "layouts/turmas/data/turmasTableData";
+import aprendizesInativosTableData from "layouts/aprendizes_inativos/data/aprendizesInativosTableData";
 
 // Icon
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
-
-function Turmas() {
-const [searchTerm, setSearchTerm] = React.useState("");
-  const { columns, rows } = turmasTableData();
+function AprendizesInativos() {
+  const [searchTerm, setSearchTerm] = React.useState("");
+  const { columns, rows } = aprendizesInativosTableData();
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -49,14 +46,13 @@ const [searchTerm, setSearchTerm] = React.useState("");
   const filteredRows = rows.filter((row) => {
     return Object.values(row).some((value) => {
       try {
-        return value.props.state.nome
+        return value.props.state.pessoa.nome
           .toString()
           .toLowerCase()
           .includes(searchTerm.toLowerCase());
       } catch {}
     });
   });
-
 
   return (
     <DashboardLayout>
@@ -75,11 +71,12 @@ const [searchTerm, setSearchTerm] = React.useState("");
                 borderRadius="lg"
                 coloredShadow="info"
               >
-              <MDBox display="flex" justifyContent="space-between" alignItems="center">
-                <MDTypography variant="h6" color="white">
-                  Turmas
-                </MDTypography>
-              </MDBox>
+                <MDBox display="flex" justifyContent="space-between" alignItems="center">
+                  <MDTypography variant="h6" color="white">
+                    Aprendizes inativos
+                  </MDTypography>
+                  <MDBox ml={2}></MDBox>
+                </MDBox>
               </MDBox>
               <MDBox pt={3}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -89,13 +86,6 @@ const [searchTerm, setSearchTerm] = React.useState("");
                     value={searchTerm}
                     onChange={handleSearch}
                   />
-                  <div style={{marginRight: "2vw"}}>
-                  <NavLink key={"cadastrar_turma"} to={"/turmas/add"}>
-                  <div>
-                  <MDButton>{<AddCircleIcon />}{"Nova turma"}</MDButton>
-                  </div>                    
-                  </NavLink>
-                  </div>
                 </div>
                 <DataTable
                   table={{ columns, rows: filteredRows }}
@@ -114,4 +104,4 @@ const [searchTerm, setSearchTerm] = React.useState("");
   );
 }
 
-export default Turmas;
+export default AprendizesInativos;

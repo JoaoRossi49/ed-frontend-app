@@ -61,8 +61,12 @@ export default function Data() {
         const responsePessoa = await api.get("/pessoa/");
         const dataPessoas = responsePessoa.data;
 
-        const responseMatricula = await api.get("/api/estudante/matricula");
+        console.log("data pessoas: ", dataPessoas)
+
+        const responseMatricula = await api.get("/api/estudante/matricula-inativa/");
         const dataMatriculas = responseMatricula.data;
+
+        console.log("data Matriculas: ", dataMatriculas)
 
         const calculateAge = (birthDateStr) => {
           const [day, month, year] = birthDateStr.split('/');
@@ -119,7 +123,7 @@ export default function Data() {
                 return null;
               }
             })
-            .filter((item) => item !== null && item.matricula.ativo == true)
+            .filter((item) => item !== null && item.matricula.ativo == false)
             .sort((a, b) => {
               if (a.pessoa.nome < b.pessoa.nome) return -1;
               if (a.pessoa.nome > b.pessoa.nome) return 1;
@@ -130,15 +134,14 @@ export default function Data() {
         const mergedData = await mergeData(dataPessoas, dataMatriculas);
 
         if (Array.isArray(mergedData)) {
+          console.log("Merged Data: ", mergedData);
           const mappedRows = mergedData.map((item) => ({
             nome: (
-              <NavLink key={"matricular"} to={"/aprendizes/add"} state={item}>
                 <Author
                   image={item.pessoa.foto_perfil ?? user_default}
                   name={item.pessoa.nome}
                   email={"Nº Matrícula: " + item.matricula.numero_matricula}
                 />
-              </NavLink>
             ),
             idade: (
               <MDTypography
@@ -192,7 +195,7 @@ export default function Data() {
       { Header: "Aprendiz", accessor: "nome", width: "45%", align: "left" },
       { Header: "Idade", accessor: "idade", align: "center" },
       { Header: "Turma", accessor: "turma", align: "left" },
-      { Header: "Empresa", accessor: "data_matricula", align: "center" },
+      //{ Header: "Empresa", accessor: "data_matricula", align: "center" },
       { Header: "Ações", accessor: "dropDownMenu", align: "center" },
     ],
 
