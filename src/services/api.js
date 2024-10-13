@@ -5,7 +5,7 @@ const api = axios.create({
   baseURL: process.env.REACT_APP_DJANGO_URL,
 });
 
-const refreshTokenUrl = `${api.defaults.baseURL}api/token/refresh/`;
+const refreshTokenUrl = `${api.defaults.baseURL}/token/refresh/`;
 
 api.interceptors.request.use(
   async config => {
