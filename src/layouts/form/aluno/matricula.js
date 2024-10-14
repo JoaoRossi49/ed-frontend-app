@@ -177,6 +177,7 @@ function Matricula() {
     cbo_nome: "",
     data_inclusao: CurrentDateWithTimezone(),
     salario: null,
+    taxa_administrativa: null,
     data_inicio_contrato: null,
     data_terminio_contrato: null,
     data_inicio_empresa: null,
@@ -264,6 +265,7 @@ function Matricula() {
         id: item.matricula.id ?? null,
         data_inclusao: item.matricula.data_inclusao ?? null,
         salario: item.matricula.salario ?? null,
+        taxa_administrativa: item.matricula.taxa_administrativa ?? null,
         data_inicio_contrato: item.matricula.data_inicio_contrato ?? null,
         data_terminio_contrato: item.matricula.data_terminio_contrato ?? null,
         data_inicio_empresa: item.matricula.data_inicio_empresa ?? null,
@@ -961,6 +963,23 @@ function Matricula() {
                         : null
                     }
                   />
+                  <InputMask
+                    mask="999"
+                    value={matriculaFormData.taxa_administrativa}
+                    onChange={handleChangeMatricula}
+                  >
+                    {() => (
+                      <TextField
+                        style={{ margin: "10px", width: "10vw" }}
+                        required
+                        id="taxa_administrativa"
+                        name="taxa_administrativa"
+                        label="Taxa administrativa"
+                        value={matriculaFormData.taxa_administrativa}
+                        onChange={handleChangeMatricula}
+                      />
+                    )}
+                  </InputMask>
                   <div style={{ display: "flex", height: "10vh" }}></div>
                 </div>
                 <div style={{ display: "flex", gap: "10px" }}>

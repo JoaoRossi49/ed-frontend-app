@@ -107,6 +107,7 @@ export default function Data() {
                     cbo: matricula.cbo,
                     cbo_nome: matricula.cbo_nome,
                     salario: matricula.salario,
+                    taxa_administrativa: matricula.taxa_administrativa,
                     data_inicio_contrato: matricula.data_inicio_contrato,
                     data_terminio_contrato: matricula.data_terminio_contrato,
                     data_inicio_empresa: matricula.data_inicio_empresa,
