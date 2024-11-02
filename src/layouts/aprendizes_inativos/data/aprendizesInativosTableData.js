@@ -154,17 +154,6 @@ export default function Data() {
                 {calculateAge(item.pessoa.data_nascimento)}
               </MDTypography>
             ),
-            turma: <Job title={item.matricula.turma_nome ? item.matricula.turma_nome : "Não matriculado"} />,
-            data_matricula: (
-              <MDTypography
-                component="a"
-                variant="caption"
-                color="text"
-                fontWeight="medium"
-              >
-                {item.matricula.empresa_nome.toUpperCase()}
-              </MDTypography>
-            ),
             action: (
               <NavLink key={"matricular"} to={"/aprendizes/add"} state={item}>
                 <MDTypography
@@ -195,7 +184,7 @@ export default function Data() {
     columns: [
       { Header: "Aprendiz", accessor: "nome", width: "45%", align: "left" },
       { Header: "Idade", accessor: "idade", align: "center" },
-      { Header: "Turma", accessor: "turma", align: "left" },
+      //{ Header: "Turma", accessor: "turma", align: "left" },
       //{ Header: "Empresa", accessor: "data_matricula", align: "center" },
       { Header: "Ações", accessor: "dropDownMenu", align: "center" },
     ],
