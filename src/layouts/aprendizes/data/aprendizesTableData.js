@@ -158,7 +158,7 @@ export default function Data() {
                 color="text"
                 fontWeight="medium"
               >
-                {item.matricula.empresa_nome.toUpperCase()}
+                {item.matricula.empresa_nome ? item.matricula.empresa_nome.toUpperCase() : "N/A"}
               </MDTypography>
             ),
             action: (

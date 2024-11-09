@@ -695,6 +695,7 @@ function Matricula() {
                     style={{ margin: "10px", width: "12vw" }}
                     options={sexoOptions}
                     required
+                    name="sexo"
                     getOptionLabel={(option) => option.label}
                     onChange={handleChangeSelectMatricula("sexo")}
                     renderInput={(params) => <TextField {...params} label="sexo" />}
