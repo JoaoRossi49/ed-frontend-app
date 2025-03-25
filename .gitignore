@@ -8,6 +8,7 @@ lerna-debug.log*
 
 #node_modules
 ./node_modules
+build/
 
 # Diagnostic reports (https://nodejs.orgreport.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json

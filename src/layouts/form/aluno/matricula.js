@@ -220,23 +220,23 @@ function Matricula() {
         contato: [
           {
             id: item.pessoa.contato[0]?.id ?? null,
-            tipo_contato: item.pessoa.contato[0]?.tipo_contato ?? null,
+            tipo_contato: item.pessoa.contato[0]?.tipo_contato ?? "CELULAR",
             descricao: item.pessoa.contato[0]?.descricao ?? null,
-            data_inclusao: item.pessoa.contato[0]?.data_inclusao ?? null,
+            data_inclusao: item.pessoa.contato[0]?.data_inclusao ?? CurrentDateWithTimezone(),
             data_alteracao: CurrentDateWithTimezone(),
           },
           {
             id: item.pessoa.contato[1]?.id ?? null,
-            tipo_contato: item.pessoa.contato[1]?.tipo_contato ?? null,
+            tipo_contato: item.pessoa.contato[1]?.tipo_contato ?? "CELULAR",
             descricao: item.pessoa.contato[1]?.descricao ?? "Não informado",
-            data_inclusao: item.pessoa.contato[1]?.data_inclusao ?? null,
+            data_inclusao: item.pessoa.contato[1]?.data_inclusao ?? CurrentDateWithTimezone(),
             data_alteracao: CurrentDateWithTimezone(),
           },
           {
             id: item.pessoa.contato[2]?.id ?? null,
-            tipo_contato: item.pessoa.contato[2]?.tipo_contato ?? null,
+            tipo_contato: item.pessoa.contato[2]?.tipo_contato ?? "EMAIL",
             descricao: item.pessoa.contato[2]?.descricao ?? null,
-            data_inclusao: item.pessoa.contato[2]?.data_inclusao ?? null,
+            data_inclusao: item.pessoa.contato[2]?.data_inclusao ?? CurrentDateWithTimezone(),
             data_alteracao: CurrentDateWithTimezone(),
           },
         ],
@@ -244,14 +244,14 @@ function Matricula() {
           {
             id: item.pessoa.documento[0]?.id ?? null,
             nro_documento: item.pessoa.documento[0]?.nro_documento ?? null,
-            data_inclusao: item.pessoa.documento[0]?.data_inclusao ?? null,
-            tipo_documento: item.pessoa.documento[0]?.tipo_documento ?? null,
+            data_inclusao: item.pessoa.documento[0]?.data_inclusao ?? CurrentDateWithTimezone(),
+            tipo_documento: item.pessoa.documento[0]?.tipo_documento ?? "CPF",
           },
           {
             id: item.pessoa.documento[1]?.id ?? null,
             nro_documento: item.pessoa.documento[1]?.nro_documento ?? null,
-            data_inclusao: item.pessoa.documento[1]?.data_inclusao ?? null,
-            tipo_documento: item.pessoa.documento[1]?.tipo_documento ?? null,
+            data_inclusao: item.pessoa.documento[1]?.data_inclusao ?? CurrentDateWithTimezone(),
+            tipo_documento: item.pessoa.documento[1]?.tipo_documento ?? "RG",
           },
         ],
         nome: item.pessoa.nome ?? null,
@@ -488,7 +488,7 @@ function Matricula() {
     const formData = new FormData();
     formData.append("foto_perfil", imageFile);
     try {
-      const response = await api.patch(`/pessoa/${id}/`, formData, {
+      const response = await api.patch(`/api/pessoa/${id}/`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -510,7 +510,7 @@ function Matricula() {
         let foto_perfil = formData.foto_perfil;
         delete formData.foto_perfil;
 
-        const responsePessoaPut = await api.put(`/pessoa/${item.pessoa.id}/`, formData);
+        const responsePessoaPut = await api.put(`/api/pessoa/${item.pessoa.id}/`, formData);
         updatePessoaImage(item.pessoa.id, foto_perfil);
 
         const responsematriculaPut = await api.put(
@@ -525,7 +525,7 @@ function Matricula() {
 
         //Cria registro de pessoa
         let pessoa_id = null;
-        await api.post("/pessoa/", formData).then((responsePessoa) => {
+        await api.post("/api/pessoa/", formData).then((responsePessoa) => {
           pessoa_id = responsePessoa.data.id;
           matriculaFormData.pessoa = pessoa_id;
           //Cria matrícula

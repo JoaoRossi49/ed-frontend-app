@@ -58,7 +58,7 @@ export default function Data() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responsePessoa = await api.get("/pessoa/");
+        const responsePessoa = await api.get("/api/pessoa/");
         const dataPessoas = responsePessoa.data;
 
         console.log("data pessoas: ", dataPessoas)
