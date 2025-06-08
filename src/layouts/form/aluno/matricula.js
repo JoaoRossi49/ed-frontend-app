@@ -19,6 +19,7 @@ import ImageUpload from "components/ImageUpload";
 function Matricula() {
   const navigate = useNavigate();
 
+  //#region Funções
   const CurrentDateWithTimezone = () => {
     const currentDate = new Date();
 
@@ -34,6 +35,45 @@ function Matricula() {
 
     return formattedDateWithTimezone;
   };
+
+  const validarCPF = (cpf) => {
+    // Remove caracteres não numéricos (pontos e traços)
+    cpf = cpf.replace(/[^\d]/g, "");
+    // Verifica se o CPF tem 11 dígitos
+    if (cpf.length !== 11) {
+      return false;
+    }
+    // Verifica se todos os dígitos são iguais (caso inválido)
+    if (/^(\d)\1+$/.test(cpf)) {
+      return false;
+    }
+    // Valida o primeiro dígito verificador
+    let soma = 0;
+    for (let i = 0; i < 9; i++) {
+      soma += parseInt(cpf.charAt(i)) * (10 - i);
+    }
+    let digitoVerificador1 = (soma * 10) % 11;
+    if (digitoVerificador1 === 10 || digitoVerificador1 === 11) {
+      digitoVerificador1 = 0;
+    }
+    // Valida o segundo dígito verificador
+    soma = 0;
+    for (let i = 0; i < 10; i++) {
+      soma += parseInt(cpf.charAt(i)) * (11 - i);
+    }
+    let digitoVerificador2 = (soma * 10) % 11;
+    if (digitoVerificador2 === 10 || digitoVerificador2 === 11) {
+      digitoVerificador2 = 0;
+    }
+    // Verifica se os dígitos verificadores estão corretos
+    return (
+      digitoVerificador1 === parseInt(cpf.charAt(9)) &&
+      digitoVerificador2 === parseInt(cpf.charAt(10))
+    );
+  };
+
+  //#endregion
+
   //#region notificações
   const [errorSB, setErrorSB] = useState(false);
   const openErrorSB = () => setErrorSB(true);
@@ -93,7 +133,7 @@ function Matricula() {
       },
       {
         id: 1,
-        tipo_contato: "TELEFONE",
+        tipo_contato: "CELULAR",
         descricao: "Não informado",
         data_inclusao: CurrentDateWithTimezone(),
         data_alteracao: null,
@@ -117,7 +157,7 @@ function Matricula() {
         id: 1,
         nro_documento: "",
         data_inclusao: CurrentDateWithTimezone(),
-        tipo_documento: "RG",
+        tipo_documento: "RA",
       },
     ],
     nome: "",
@@ -137,6 +177,7 @@ function Matricula() {
     cbo_nome: "",
     data_inclusao: CurrentDateWithTimezone(),
     salario: null,
+    taxa_administrativa: null,
     data_inicio_contrato: null,
     data_terminio_contrato: null,
     data_inicio_empresa: null,
@@ -179,23 +220,23 @@ function Matricula() {
         contato: [
           {
             id: item.pessoa.contato[0]?.id ?? null,
-            tipo_contato: item.pessoa.contato[0]?.tipo_contato ?? null,
+            tipo_contato: item.pessoa.contato[0]?.tipo_contato ?? "CELULAR",
             descricao: item.pessoa.contato[0]?.descricao ?? null,
-            data_inclusao: item.pessoa.contato[0]?.data_inclusao ?? null,
+            data_inclusao: item.pessoa.contato[0]?.data_inclusao ?? CurrentDateWithTimezone(),
             data_alteracao: CurrentDateWithTimezone(),
           },
           {
             id: item.pessoa.contato[1]?.id ?? null,
-            tipo_contato: item.pessoa.contato[1]?.tipo_contato ?? null,
+            tipo_contato: item.pessoa.contato[1]?.tipo_contato ?? "CELULAR",
             descricao: item.pessoa.contato[1]?.descricao ?? "Não informado",
-            data_inclusao: item.pessoa.contato[1]?.data_inclusao ?? null,
+            data_inclusao: item.pessoa.contato[1]?.data_inclusao ?? CurrentDateWithTimezone(),
             data_alteracao: CurrentDateWithTimezone(),
           },
           {
             id: item.pessoa.contato[2]?.id ?? null,
-            tipo_contato: item.pessoa.contato[2]?.tipo_contato ?? null,
+            tipo_contato: item.pessoa.contato[2]?.tipo_contato ?? "EMAIL",
             descricao: item.pessoa.contato[2]?.descricao ?? null,
-            data_inclusao: item.pessoa.contato[2]?.data_inclusao ?? null,
+            data_inclusao: item.pessoa.contato[2]?.data_inclusao ?? CurrentDateWithTimezone(),
             data_alteracao: CurrentDateWithTimezone(),
           },
         ],
@@ -203,14 +244,14 @@ function Matricula() {
           {
             id: item.pessoa.documento[0]?.id ?? null,
             nro_documento: item.pessoa.documento[0]?.nro_documento ?? null,
-            data_inclusao: item.pessoa.documento[0]?.data_inclusao ?? null,
-            tipo_documento: item.pessoa.documento[0]?.tipo_documento ?? null,
+            data_inclusao: item.pessoa.documento[0]?.data_inclusao ?? CurrentDateWithTimezone(),
+            tipo_documento: item.pessoa.documento[0]?.tipo_documento ?? "CPF",
           },
           {
             id: item.pessoa.documento[1]?.id ?? null,
             nro_documento: item.pessoa.documento[1]?.nro_documento ?? null,
-            data_inclusao: item.pessoa.documento[1]?.data_inclusao ?? null,
-            tipo_documento: item.pessoa.documento[1]?.tipo_documento ?? null,
+            data_inclusao: item.pessoa.documento[1]?.data_inclusao ?? CurrentDateWithTimezone(),
+            tipo_documento: item.pessoa.documento[1]?.tipo_documento ?? "RG",
           },
         ],
         nome: item.pessoa.nome ?? null,
@@ -224,6 +265,7 @@ function Matricula() {
         id: item.matricula.id ?? null,
         data_inclusao: item.matricula.data_inclusao ?? null,
         salario: item.matricula.salario ?? null,
+        taxa_administrativa: item.matricula.taxa_administrativa ?? null,
         data_inicio_contrato: item.matricula.data_inicio_contrato ?? null,
         data_terminio_contrato: item.matricula.data_terminio_contrato ?? null,
         data_inicio_empresa: item.matricula.data_inicio_empresa ?? null,
@@ -259,7 +301,7 @@ function Matricula() {
       try {
         const response = await api.get("/api/estudante/turmas/");
         const formattedOptions = response.data.map((turma) => ({
-          label: turma.nome + ' (' + turma.num_matriculas + ')',
+          label: turma.nome + " (" + turma.num_matriculas + ")",
           value: turma.id,
         }));
         setturmasOptions(formattedOptions);
@@ -297,7 +339,7 @@ function Matricula() {
       try {
         const response = await api.get("/api/estudante/cursos/");
         const formattedOptions = response.data.map((curso) => ({
-          label: curso.codigo + ' ' + curso.nome,
+          label: curso.codigo + " " + curso.nome,
           value: curso.id,
         }));
         setcursoOptions(formattedOptions);
@@ -372,8 +414,12 @@ function Matricula() {
 
   //#region handles
   const handleChange = (event) => {
-    const { name, value } = event.target;
+    var { name, value } = event.target;
     const keys = name.split(".");
+
+    if (typeof value === "string") {
+      value = value.toUpperCase();
+    }
 
     setFormData((prevFormData) => {
       let newFormData = { ...prevFormData };
@@ -442,7 +488,7 @@ function Matricula() {
     const formData = new FormData();
     formData.append("foto_perfil", imageFile);
     try {
-      const response = await api.patch(`/pessoa/${id}/`, formData, {
+      const response = await api.patch(`/api/pessoa/${id}/`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -454,19 +500,23 @@ function Matricula() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (!validarCPF(formData.documento[0].nro_documento)) {
+      setContentErrorSB("CPF inválido!");
+      openErrorSB();
+      return;
+    }
     try {
       if (item) {
         let foto_perfil = formData.foto_perfil;
         delete formData.foto_perfil;
 
-        const responsePessoaPut = await api.patch(`/pessoa/${item.pessoa.id}/`, formData);
+        const responsePessoaPut = await api.put(`/api/pessoa/${item.pessoa.id}/`, formData);
         updatePessoaImage(item.pessoa.id, foto_perfil);
 
         const responsematriculaPut = await api.put(
           `/api/estudante/matricula/${item.matricula.id}/`,
           matriculaFormData
         );
-        openSuccessSB();
         navigate("/aprendizes");
       } else {
         //Armazena foto de perfil em variável, a ser enviada posteriormente
@@ -475,7 +525,7 @@ function Matricula() {
 
         //Cria registro de pessoa
         let pessoa_id = null;
-        await api.post("/pessoa/", formData).then((responsePessoa) => {
+        await api.post("/api/pessoa/", formData).then((responsePessoa) => {
           pessoa_id = responsePessoa.data.id;
           matriculaFormData.pessoa = pessoa_id;
           //Cria matrícula
@@ -483,13 +533,9 @@ function Matricula() {
         });
         //Atualiza foto de perfil
         updatePessoaImage(pessoa_id, foto_perfil);
-        openSuccessSB();
         navigate("/aprendizes");
       }
     } catch (error) {
-      if (error.response.status == 400 || error.response.status == 401) {
-        navigate("/login");
-      }
       setContentErrorSB("Erro ao salvar dados: " + "\n" + error);
       openErrorSB();
     }
@@ -520,12 +566,13 @@ function Matricula() {
             ...prevState,
             endereco: {
               id: 1,
-              logradouro: response.data.logradouro,
+              logradouro: response.data.logradouro.toUpperCase(),
               data_inclusao: CurrentDateWithTimezone(),
-              cidade: response.data.localidade,
-              estado: response.data.uf,
+              cidade: response.data.localidade.toUpperCase(),
+              estado: response.data.uf.toUpperCase(),
               cep: formData.endereco.cep,
-              pais: "Brasil",
+              numero: formData.endereco.numero,
+              pais: "BRASIL",
             },
           }));
         }
@@ -648,6 +695,7 @@ function Matricula() {
                     style={{ margin: "10px", width: "12vw" }}
                     options={sexoOptions}
                     required
+                    name="sexo"
                     getOptionLabel={(option) => option.label}
                     onChange={handleChangeSelectMatricula("sexo")}
                     renderInput={(params) => <TextField {...params} label="sexo" />}
@@ -716,7 +764,6 @@ function Matricula() {
                   </InputMask>
                   <TextField
                     style={{ margin: "10px", width: "30vw" }}
-                    required
                     id="logradouro"
                     name="endereco.logradouro"
                     label="Logradouro"
@@ -725,7 +772,6 @@ function Matricula() {
                   />
                   <TextField
                     style={{ margin: "10px" }}
-                    required
                     id="numero"
                     name="endereco.numero"
                     label="Número"
@@ -736,7 +782,6 @@ function Matricula() {
                 <div>
                   <TextField
                     style={{ margin: "10px", width: "30vw" }}
-                    required
                     id="cidade"
                     name="endereco.cidade"
                     label="Cidade"
@@ -745,7 +790,6 @@ function Matricula() {
                   />
                   <TextField
                     style={{ margin: "10px" }}
-                    required
                     id="estado"
                     name="endereco.estado"
                     label="Estado"
@@ -754,7 +798,6 @@ function Matricula() {
                   />
                   <TextField
                     style={{ margin: "10px" }}
-                    required
                     id="pais"
                     name="endereco.pais"
                     label="País"
@@ -805,23 +848,15 @@ function Matricula() {
                       />
                     )}
                   </InputMask>
-                  <InputMask
-                    mask="99.999.999-9"
+                  <TextField
+                    style={{ margin: "10px", width: "20vw" }}
+                    required
+                    id="nro_documento"
+                    name="documento.1.nro_documento"
+                    label="RA"
                     value={formData.documento[1].nro_documento}
                     onChange={handleChange}
-                  >
-                    {() => (
-                      <TextField
-                        style={{ margin: "10px", width: "20vw" }}
-                        required
-                        id="nro_documento"
-                        name="documento.1.nro_documento"
-                        label="RG"
-                        value={formData.documento[1].nro_documento}
-                        onChange={handleChange}
-                      />
-                    )}
-                  </InputMask>
+                  />
                 </div>
                 <MDBox
                   mx={1}
@@ -859,7 +894,7 @@ function Matricula() {
                     )}
                   </InputMask>
                   <InputMask
-                    mask="(99) 9999-9999"
+                    mask="(99) 99999-9999"
                     value={formData.contato[1].descricao}
                     onChange={handleChange}
                   >
@@ -868,7 +903,7 @@ function Matricula() {
                         style={{ margin: "10px", width: "33.25vw" }}
                         id="descricao"
                         name="contato.1.descricao"
-                        label="Telefone fixo"
+                        label="Celular secundário"
                         value={formData.contato[1].descricao}
                         onChange={handleChange}
                       />
@@ -929,8 +964,24 @@ function Matricula() {
                         : null
                     }
                   />
-                      <div style={{ display: "flex", height: "10vh" }}>
-    </div>
+                  <InputMask
+                    mask="999"
+                    value={matriculaFormData.taxa_administrativa}
+                    onChange={handleChangeMatricula}
+                  >
+                    {() => (
+                      <TextField
+                        style={{ margin: "10px", width: "10vw" }}
+                        required
+                        id="taxa_administrativa"
+                        name="taxa_administrativa"
+                        label="Taxa administrativa"
+                        value={matriculaFormData.taxa_administrativa}
+                        onChange={handleChangeMatricula}
+                      />
+                    )}
+                  </InputMask>
+                  <div style={{ display: "flex", height: "10vh" }}></div>
                 </div>
                 <div style={{ display: "flex", gap: "10px" }}>
                   <InputMask
@@ -963,23 +1014,23 @@ function Matricula() {
                             label:
                               tipoContrato.find(
                                 (option) =>
-                                  option.value === matriculaFormData.quantidade_meses_contrato + ''
+                                  option.value === matriculaFormData.quantidade_meses_contrato + ""
                               )?.label ?? "",
-                            value: matriculaFormData.quantidade_meses_contrato + '' ?? "",
+                            value: matriculaFormData.quantidade_meses_contrato + "" ?? "",
                           }
                         : null
                     }
                   />
-                      <TextField
-                        style={{ margin: "10px", width: "20vw" }}
-                        disabled
-                        id="data_terminio_contrato"
-                        name="data_terminio_contrato"
-                        label="Final do contrato"
-                        defaultValue="--/--/----"
-                        value={matriculaFormData.data_terminio_contrato}
-                        onChange={handleChangeMatricula}
-                      />
+                  <TextField
+                    style={{ margin: "10px", width: "20vw" }}
+                    disabled
+                    id="data_terminio_contrato"
+                    name="data_terminio_contrato"
+                    label="Final do contrato"
+                    defaultValue="--/--/----"
+                    value={matriculaFormData.data_terminio_contrato}
+                    onChange={handleChangeMatricula}
+                  />
                 </div>
                 <MDBox
                   mx={1}
@@ -1133,7 +1184,7 @@ function Matricula() {
                     </MDTypography>
                   </MDBox>
                 </MDBox>
-                  <textarea
+                <textarea
                   id="atividades_praticas"
                   required
                   defaultValue={matriculaFormData.atividades_praticas}

@@ -19,7 +19,6 @@ Coded by www.creative-tim.com
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
-import MDBadge from "components/MDBadge";
 import DropdownMenu from "components/DropDownMenu";
 
 // Images
@@ -58,7 +57,7 @@ export default function Data() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responsePessoa = await api.get("/pessoa/");
+        const responsePessoa = await api.get("/api/pessoa/");
         const dataPessoas = responsePessoa.data;
 
         const responseMatricula = await api.get("/api/estudante/matricula");
@@ -103,6 +102,7 @@ export default function Data() {
                     cbo: matricula.cbo,
                     cbo_nome: matricula.cbo_nome,
                     salario: matricula.salario,
+                    taxa_administrativa: matricula.taxa_administrativa,
                     data_inicio_contrato: matricula.data_inicio_contrato,
                     data_terminio_contrato: matricula.data_terminio_contrato,
                     data_inicio_empresa: matricula.data_inicio_empresa,
@@ -135,7 +135,7 @@ export default function Data() {
               <NavLink key={"matricular"} to={"/aprendizes/add"} state={item}>
                 <Author
                   image={item.pessoa.foto_perfil ?? user_default}
-                  name={item.pessoa.nome}
+                  name={(item.pessoa.nome_social ? item.pessoa.nome_social : item.pessoa.nome).toUpperCase()}
                   email={"Nº Matrícula: " + item.matricula.numero_matricula}
                 />
               </NavLink>
@@ -150,7 +150,7 @@ export default function Data() {
                 {calculateAge(item.pessoa.data_nascimento)}
               </MDTypography>
             ),
-            turma: <Job title={item.matricula.turma_nome ? item.matricula.turma_nome : "Não matriculado"} />,
+            turma: <Job title={item.matricula.turma_nome ? item.matricula.turma_nome.toUpperCase() : "NÃO MATRICULADO(A)"} />,
             data_matricula: (
               <MDTypography
                 component="a"
@@ -158,7 +158,7 @@ export default function Data() {
                 color="text"
                 fontWeight="medium"
               >
-                {item.matricula.empresa_nome}
+                {item.matricula.empresa_nome ? item.matricula.empresa_nome.toUpperCase() : "N/A"}
               </MDTypography>
             ),
             action: (

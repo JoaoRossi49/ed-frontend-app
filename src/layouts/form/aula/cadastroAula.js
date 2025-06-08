@@ -104,7 +104,7 @@ function CadastroAula() {
   React.useEffect(() => {
     const fetchTurmas = async () => {
       try {
-        const response = await api.get("estudante/turmas/");
+        const response = await api.get("/api/estudante/turmas/");
         const formattedOptions = response.data.map((turma) => ({
           label: turma.nome,
           value: turma.id,
@@ -123,7 +123,7 @@ function CadastroAula() {
   React.useEffect(() => {
     const fetchModulos = async () => {
       try {
-        const response = await api.get("estudante/modulos/");
+        const response = await api.get("/api/estudante/modulos/");
         const formattedOptions = response.data.map((modulo) => ({
           label: modulo.nome,
           value: modulo.id,
@@ -176,11 +176,11 @@ function CadastroAula() {
     event.preventDefault();
     try {
       if (item) {
-        const responsePut = await api.put(`estudante/aulas/${item.id}/`, formData);
+        const responsePut = await api.put(`/api/estudante/aulas/${item.id}/`, formData);
         openSuccessSB();
         navigate("/aulas");
       } else {
-        const response = await api.post("estudante/aulas/", formData);
+        const response = await api.post("/api/estudante/aulas/", formData);
         openSuccessSB();
         navigate("/aulas");
       }
