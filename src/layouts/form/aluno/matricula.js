@@ -15,6 +15,7 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
 import api from "services/api.js";
 import ImageUpload from "components/ImageUpload";
+import { formatDate } from "date-fns";
 
 function Matricula() {
   const navigate = useNavigate();
@@ -251,7 +252,7 @@ function Matricula() {
             id: item.pessoa.documento[1]?.id ?? null,
             nro_documento: item.pessoa.documento[1]?.nro_documento ?? null,
             data_inclusao: item.pessoa.documento[1]?.data_inclusao ?? CurrentDateWithTimezone(),
-            tipo_documento: item.pessoa.documento[1]?.tipo_documento ?? "RG",
+            tipo_documento: item.pessoa.documento[1]?.tipo_documento ?? "RA",
           },
         ],
         nome: item.pessoa.nome ?? null,
@@ -504,6 +505,9 @@ function Matricula() {
       setContentErrorSB("CPF inválido!");
       openErrorSB();
       return;
+    }
+    if (formData.documento[1].nro_documento == ""){
+      formData.documento.pop(1);
     }
     try {
       if (item) {
@@ -850,7 +854,6 @@ function Matricula() {
                   </InputMask>
                   <TextField
                     style={{ margin: "10px", width: "20vw" }}
-                    required
                     id="nro_documento"
                     name="documento.1.nro_documento"
                     label="RA"
