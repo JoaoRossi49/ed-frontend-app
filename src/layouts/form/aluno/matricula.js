@@ -15,7 +15,7 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
 import api from "services/api.js";
 import ImageUpload from "components/ImageUpload";
-import { formatDate } from "date-fns";
+import { NumericFormat } from 'react-number-format';
 
 function Matricula() {
   const navigate = useNavigate();
@@ -177,7 +177,7 @@ function Matricula() {
     empresa_nome: "",
     cbo_nome: "",
     data_inclusao: CurrentDateWithTimezone(),
-    salario: null,
+    valor_salario: null,
     taxa_administrativa: null,
     data_inicio_contrato: null,
     data_terminio_contrato: null,
@@ -265,7 +265,7 @@ function Matricula() {
       setMatriculaFormData({
         id: item.matricula.id ?? null,
         data_inclusao: item.matricula.data_inclusao ?? null,
-        salario: item.matricula.salario ?? null,
+        valor_salario: item.matricula.valor_salario ?? null,
         taxa_administrativa: item.matricula.taxa_administrativa ?? null,
         data_inicio_contrato: item.matricula.data_inicio_contrato ?? null,
         data_terminio_contrato: item.matricula.data_terminio_contrato ?? null,
@@ -506,7 +506,7 @@ function Matricula() {
       openErrorSB();
       return;
     }
-    if (formData.documento[1].nro_documento == ""){
+    if (formData.documento[1].nro_documento == "" || formData.documento[1].nro_documento == null) {
       formData.documento.pop(1);
     }
     try {
@@ -706,11 +706,11 @@ function Matricula() {
                     value={
                       formData
                         ? {
-                            label:
-                              sexoOptions.find((option) => option.value === formData.sexo)?.label ??
-                              "",
-                            value: formData.sexo ?? "",
-                          }
+                          label:
+                            sexoOptions.find((option) => option.value === formData.sexo)?.label ??
+                            "",
+                          value: formData.sexo ?? "",
+                        }
                         : null
                     }
                   />
@@ -724,9 +724,9 @@ function Matricula() {
                     value={
                       formData
                         ? {
-                            label: matriculaFormData.escolaridade_nome,
-                            value: matriculaFormData.escolaridade,
-                          }
+                          label: matriculaFormData.escolaridade_nome,
+                          value: matriculaFormData.escolaridade,
+                        }
                         : null
                     }
                   />
@@ -967,23 +967,22 @@ function Matricula() {
                         : null
                     }
                   />
-                  <InputMask
-                    mask="999"
+                  <NumericFormat
+                    customInput={TextField}
+                    label="Taxa administrativa (R$)"
+                    style={{ margin: "10px", width: "10vw" }}
                     value={matriculaFormData.taxa_administrativa}
-                    onChange={handleChangeMatricula}
-                  >
-                    {() => (
-                      <TextField
-                        style={{ margin: "10px", width: "10vw" }}
-                        required
-                        id="taxa_administrativa"
-                        name="taxa_administrativa"
-                        label="Taxa administrativa"
-                        value={matriculaFormData.taxa_administrativa}
-                        onChange={handleChangeMatricula}
-                      />
-                    )}
-                  </InputMask>
+                    onValueChange={(values) => {
+                      const { floatValue } = values;
+                      setMatriculaFormData({ ...matriculaFormData, taxa_administrativa: floatValue });
+                    }}
+                    thousandSeparator="."
+                    decimalSeparator=","
+                    prefix="R$ "
+                    decimalScale={2}
+                    fixedDecimalScale
+                    allowNegative={false}
+                  />
                   <div style={{ display: "flex", height: "10vh" }}></div>
                 </div>
                 <div style={{ display: "flex", gap: "10px" }}>
@@ -1014,13 +1013,13 @@ function Matricula() {
                     value={
                       matriculaFormData
                         ? {
-                            label:
-                              tipoContrato.find(
-                                (option) =>
-                                  option.value === matriculaFormData.quantidade_meses_contrato + ""
-                              )?.label ?? "",
-                            value: matriculaFormData.quantidade_meses_contrato + "" ?? "",
-                          }
+                          label:
+                            tipoContrato.find(
+                              (option) =>
+                                option.value === matriculaFormData.quantidade_meses_contrato + ""
+                            )?.label ?? "",
+                          value: matriculaFormData.quantidade_meses_contrato + "" ?? "",
+                        }
                         : null
                     }
                   />
@@ -1063,9 +1062,9 @@ function Matricula() {
                     value={
                       matriculaFormData
                         ? {
-                            label: matriculaFormData.empresa_nome,
-                            value: matriculaFormData.empresa,
-                          }
+                          label: matriculaFormData.empresa_nome,
+                          value: matriculaFormData.empresa,
+                        }
                         : null
                     }
                   />
@@ -1082,23 +1081,22 @@ function Matricula() {
                         : null
                     }
                   />
-                  <InputMask
-                    mask="R$ 9999.99"
-                    value={matriculaFormData.salario}
-                    onChange={handleChangeMatricula}
-                  >
-                    {() => (
-                      <TextField
-                        style={{ margin: "10px", width: "10vw" }}
-                        required
-                        id="salario"
-                        name="salario"
-                        label="Salário (R$)"
-                        value={matriculaFormData.salario}
-                        onChange={handleChangeMatricula}
-                      />
-                    )}
-                  </InputMask>
+                  <NumericFormat
+                    customInput={TextField}
+                    label="Salário (R$)"
+                    style={{ margin: "10px", width: "10vw" }}
+                    value={matriculaFormData.valor_salario}
+                    onValueChange={(values) => {
+                      const { floatValue } = values;
+                      setMatriculaFormData({ ...matriculaFormData, valor_salario: floatValue });
+                    }}
+                    thousandSeparator="."
+                    decimalSeparator=","
+                    prefix="R$ "
+                    decimalScale={2}
+                    fixedDecimalScale
+                    allowNegative={false}
+                  />
                 </div>
                 <div style={{ display: "flex", gap: "10px" }}>
                   <InputMask

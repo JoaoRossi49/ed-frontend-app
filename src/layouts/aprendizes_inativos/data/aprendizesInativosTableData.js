@@ -61,12 +61,9 @@ export default function Data() {
         const responsePessoa = await api.get("/api/pessoa/");
         const dataPessoas = responsePessoa.data;
 
-        console.log("data pessoas: ", dataPessoas)
 
         const responseMatricula = await api.get("/api/estudante/matricula-inativa/");
         const dataMatriculas = responseMatricula.data;
-
-        console.log("data Matriculas: ", dataMatriculas)
 
         const calculateAge = (birthDateStr) => {
           const [day, month, year] = birthDateStr.split('/');
@@ -106,7 +103,7 @@ export default function Data() {
                     empresa_nome: matricula.empresa_nome,
                     cbo: matricula.cbo,
                     cbo_nome: matricula.cbo_nome,
-                    salario: matricula.salario,
+                    valor_salario: matricula.valor_salario,
                     taxa_administrativa: matricula.taxa_administrativa,
                     data_inicio_contrato: matricula.data_inicio_contrato,
                     data_terminio_contrato: matricula.data_terminio_contrato,
@@ -135,7 +132,6 @@ export default function Data() {
         const mergedData = await mergeData(dataPessoas, dataMatriculas);
 
         if (Array.isArray(mergedData)) {
-          console.log("Merged Data: ", mergedData);
           const mappedRows = mergedData.map((item) => ({
             nome: (
                 <Author

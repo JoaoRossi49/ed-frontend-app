@@ -152,7 +152,6 @@ function CadastroAula() {
     const { name, value } = event.target;
     if (name) {
       const keys = name.split(".");
-      console.log("keys:", keys); // Add this logging statement
       if (Array.isArray(keys) && keys.length > 0) {
         setFormData((prevFormData) => {
           let newFormData = { ...prevFormData };
