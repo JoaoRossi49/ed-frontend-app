@@ -618,6 +618,7 @@ function Matricula() {
     return `${dia}/${mes}/${ano}`;
   }
 
+  /* Refazer depois kkk
   const handleChangeQtdMesesCont = async (event) => {
     let qtdMeses = event.target.innerText;
     let dataInicio = matriculaFormData.data_inicio_contrato;
@@ -631,6 +632,8 @@ function Matricula() {
       }));
     }
   };
+  */
+
   //#endregion
   return (
     <DashboardLayout>
@@ -1023,16 +1026,23 @@ function Matricula() {
                         : null
                     }
                   />
-                  <TextField
-                    style={{ margin: "10px", width: "20vw" }}
-                    disabled
-                    id="data_terminio_contrato"
-                    name="data_terminio_contrato"
-                    label="Final do contrato"
-                    defaultValue="--/--/----"
+                  <InputMask
+                    mask="99/99/9999"
                     value={matriculaFormData.data_terminio_contrato}
                     onChange={handleChangeMatricula}
-                  />
+                  >
+                    {() => (
+                      <TextField
+                        style={{ margin: "10px", width: "10vw" }}
+                        required
+                        id="data_terminio_contrato"
+                        name="data_terminio_contrato"
+                        label="Final do contrato"
+                        value={matriculaFormData.data_terminio_contrato}
+                        onChange={handleChangeMatricula}
+                      />
+                    )}
+                  </InputMask>
                 </div>
                 <MDBox
                   mx={1}
