@@ -629,7 +629,6 @@ function Matricula() {
     return `${dia}/${mes}/${ano}`;
   }
 
-  /* Refazer depois kkk
   const handleChangeQtdMesesCont = async (event) => {
     let qtdMeses = event.target.innerText;
     let dataInicio = matriculaFormData.data_inicio_contrato;
@@ -643,7 +642,6 @@ function Matricula() {
       }));
     }
   };
-  */
 
   //#endregion
   return (
