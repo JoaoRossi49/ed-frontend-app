@@ -181,6 +181,8 @@ function Matricula() {
     taxa_administrativa: null,
     data_inicio_contrato: null,
     data_terminio_contrato: null,
+    data_inicio_treinamento: null,
+    data_fim_treinamento: null,
     data_inicio_empresa: null,
     quantidade_meses_contrato: null,
     data_terminio_empresa: null,
@@ -191,6 +193,7 @@ function Matricula() {
     turma: null,
     curso: null,
     empresa: null,
+    funcao_empresa: null,
     cbo: null,
     dias_da_semana_empresa: [],
     dias_da_semana_curso: [],
@@ -269,6 +272,8 @@ function Matricula() {
         taxa_administrativa: item.matricula.taxa_administrativa ?? null,
         data_inicio_contrato: item.matricula.data_inicio_contrato ?? null,
         data_terminio_contrato: item.matricula.data_terminio_contrato ?? null,
+        data_inicio_treinamento: item.matricula.data_inicio_treinamento ?? null,
+        data_fim_treinamento: item.matricula.data_fim_treinamento ?? null,
         data_inicio_empresa: item.matricula.data_inicio_empresa ?? null,
         data_terminio_empresa: item.matricula.data_terminio_empresa ?? null,
         quantidade_meses_contrato: item.matricula.quantidade_meses_contrato ?? null,
@@ -283,6 +288,7 @@ function Matricula() {
         curso_nome: item.matricula.curso_nome ?? "Selecione um curso",
         empresa: item.matricula.empresa ?? null,
         empresa_nome: item.matricula.empresa_nome ?? "Selecione um empresa",
+        funcao_empresa: item.matricula.funcao_empresa ?? "",
         cbo: item.matricula.cbo ?? null,
         cbo_nome: item.matricula.cbo_nome ?? "Selecione um CBO",
         dias_da_semana_empresa: item.matricula.dias_da_semana_empresa ?? [],
@@ -463,6 +469,12 @@ function Matricula() {
 
   const handleChangeSelectMatricula = (fieldPrefix) => async (event, value) => {
     if (value) {
+      if (fieldPrefix == "funcao_empresa") {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          [fieldPrefix]: value.value,
+        }));
+      }
       if (fieldPrefix == "sexo") {
         setFormData((prevFormData) => ({
           ...prevFormData,
@@ -500,14 +512,12 @@ function Matricula() {
   };
 
   const handleSubmit = async (event) => {
+    console.log("Submit com forms: ", formData, matriculaFormData)
     event.preventDefault();
     if (!validarCPF(formData.documento[0].nro_documento)) {
       setContentErrorSB("CPF inválido!");
       openErrorSB();
       return;
-    }
-    if (formData.documento[1].nro_documento == "" || formData.documento[1].nro_documento == null) {
-      formData.documento.pop(1);
     }
     try {
       if (item) {
@@ -540,6 +550,7 @@ function Matricula() {
         navigate("/aprendizes");
       }
     } catch (error) {
+      console.log(error)
       setContentErrorSB("Erro ao salvar dados: " + "\n" + error);
       openErrorSB();
     }
@@ -671,14 +682,17 @@ function Matricula() {
                     onChange={handleChange}
                   />
                   <TextField
-                    style={{ margin: "10px", width: "27vw" }}
+                    style={{ margin: "10px", width: "16.22vw" }}
                     id="nome_social"
                     name="nome_social"
                     label="Nome social"
                     value={formData.nome_social}
                     onChange={handleChange}
                   />
-                  <ImageUpload value={formData.foto_perfil} onChange={handleChangeFotoPerfil} />
+                  <ImageUpload
+                    value={formData.foto_perfil}
+                    onChange={handleChangeFotoPerfil}
+                  />
                 </div>
                 <div style={{ display: "flex", gap: "10px" }}>
                   <InputMask
@@ -813,7 +827,7 @@ function Matricula() {
                   />
                 </div>
                 <TextField
-                  style={{ margin: "10px", width: "67.5vw" }}
+                  style={{ margin: "10px", width: "51.25vw" }}
                   id="complemento"
                   name="endereco.complemento"
                   label="Complemento"
@@ -943,6 +957,42 @@ function Matricula() {
                     </MDTypography>
                   </MDBox>
                 </MDBox>
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <InputMask
+                    mask="99/99/9999"
+                    value={matriculaFormData.data_inicio_treinamento}
+                    onChange={handleChangeMatricula}
+                  >
+                    {() => (
+                      <TextField
+                        style={{ margin: "10px", width: "20vw" }}
+                        required
+                        id="data_inicio_treinamento"
+                        name="data_inicio_treinamento"
+                        label="Início do treinamento"
+                        value={matriculaFormData.data_inicio_treinamento}
+                        onChange={handleChangeMatricula}
+                      />
+                    )}
+                  </InputMask>
+                  <InputMask
+                    mask="99/99/9999"
+                    value={matriculaFormData.data_fim_treinamento}
+                    onChange={handleChangeMatricula}
+                  >
+                    {() => (
+                      <TextField
+                        style={{ margin: "10px", width: "10vw" }}
+                        required
+                        id="data_fim_treinamento"
+                        name="data_fim_treinamento"
+                        label="Final do treinamento"
+                        value={matriculaFormData.data_fim_treinamento}
+                        onChange={handleChangeMatricula}
+                      />
+                    )}
+                  </InputMask>
+                </div>
                 <div style={{ display: "flex", gap: "10px" }}>
                   <Autocomplete
                     style={{ margin: "10px", width: "20vw" }}
@@ -1090,6 +1140,14 @@ function Matricula() {
                         ? { label: matriculaFormData.cbo_nome, value: matriculaFormData.cbo }
                         : null
                     }
+                  />
+                  <TextField
+                    style={{ margin: "10px", width: "21.5vw" }}
+                    id="funcao_empresa"
+                    name="funcao_empresa"
+                    label="Função na empresa"
+                    value={matriculaFormData.funcao_empresa}
+                    onChange={handleChangeMatricula}
                   />
                   <NumericFormat
                     customInput={TextField}
